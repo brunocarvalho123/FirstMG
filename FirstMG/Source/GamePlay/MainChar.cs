@@ -32,7 +32,7 @@ namespace FirstMG.Source.GamePlay
                 Position = new Vector2(Position.X + _speed, Position.Y);
             }
 
-            //Rotation = Globals.RotateTowards(Position, new Vector2(Globals.MyMouse.NewMousePos.X, Globals.MyMouse.NewMousePos.Y));
+            Rotation = Globals.RotateTowards(Position, new Vector2(Globals.MyMouse.NewMousePos.X, Globals.MyMouse.NewMousePos.Y));
 
             base.Update();
         }
