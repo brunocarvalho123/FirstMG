@@ -1,0 +1,107 @@
+﻿#region Includes
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+#endregion
+
+
+namespace FirstMG.Source.Engine
+{
+    class Globals
+    {
+        private static ContentManager _content;
+        private static SpriteBatch _spriteBatch;
+        private static Input.MyKeyboard _keyboard;
+        private static Input.MyMouseControl _mouse;
+
+        public static ContentManager MyContent
+        {
+            get { return _content; }
+            set { _content = value; }
+        }
+        public static SpriteBatch MySpriteBatch
+        {
+            get { return _spriteBatch; }
+            set { _spriteBatch = value; }
+        }
+        public static Input.MyKeyboard MyKeyboard
+        {
+            get { return _keyboard; }
+            set { _keyboard = value; }
+        }
+        public static Input.MyMouseControl MyMouse
+        {
+            get { return _mouse; }
+            set { _mouse = value; }
+        }
+
+
+        public static float GetDistance(Vector2 a_pos, Vector2 a_target)
+        {
+            return (float)Math.Sqrt(Math.Pow(a_pos.X - a_target.X, 2) + Math.Pow(a_pos.Y - a_target.Y, 2));
+        }
+
+
+        public static float RotateTowards(Vector2 a_pos, Vector2 a_focus)
+        {
+
+            float h, sineTheta, angle;
+            if (a_pos.Y - a_focus.Y != 0)
+            {
+                h = (float)Math.Sqrt(Math.Pow(a_pos.X - a_focus.X, 2) + Math.Pow(a_pos.Y - a_focus.Y, 2));
+                sineTheta = (float)(Math.Abs(a_pos.Y - a_focus.Y) / h); //* ((item.a_pos.Y-a_focus.Y)/(Math.Abs(item.a_pos.Y-a_focus.Y))));
+            }
+            else
+            {
+                h = a_pos.X - a_focus.X;
+                sineTheta = 0;
+            }
+
+            angle = (float)Math.Asin(sineTheta);
+
+            // Drawing diagonial lines here.
+            //Quadrant 2
+            if (a_pos.X - a_focus.X > 0 && a_pos.Y - a_focus.Y > 0)
+            {
+                angle = (float)(Math.PI * 3 / 2 + angle);
+            }
+            //Quadrant 3
+            else if (a_pos.X - a_focus.X > 0 && a_pos.Y - a_focus.Y < 0)
+            {
+                angle = (float)(Math.PI * 3 / 2 - angle);
+            }
+            //Quadrant 1
+            else if (a_pos.X - a_focus.X < 0 && a_pos.Y - a_focus.Y > 0)
+            {
+                angle = (float)(Math.PI / 2 - angle);
+            }
+            else if (a_pos.X - a_focus.X < 0 && a_pos.Y - a_focus.Y < 0)
+            {
+                angle = (float)(Math.PI / 2 + angle);
+            }
+            else if (a_pos.X - a_focus.X > 0 && a_pos.Y - a_focus.Y == 0)
+            {
+                angle = (float)Math.PI * 3 / 2;
+            }
+            else if (a_pos.X - a_focus.X < 0 && a_pos.Y - a_focus.Y == 0)
+            {
+                angle = (float)Math.PI / 2;
+            }
+            else if (a_pos.X - a_focus.X == 0 && a_pos.Y - a_focus.Y > 0)
+            {
+                angle = (float)0;
+            }
+            else if (a_pos.X - a_focus.X == 0 && a_pos.Y - a_focus.Y < 0)
+            {
+                angle = (float)Math.PI;
+            }
+
+            return angle;
+        }
+    }
+}
