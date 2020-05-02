@@ -36,7 +36,7 @@ namespace FirstMG.Source.Engine.Input
 
             GetMouseAndAdjust();
 
-            //_screenLoc = new Vector2((int)(systemCursorPos.X/Globals.screenWidth), (int)(systemCursorPos.Y/Globals.screenHeight));
+            //_screenLoc = new Vector2((int)(systemCursorPos.X/Globals.ScreenWidth), (int)(systemCursorPos.Y/Globals.ScreenHeight));
 
         }
 
@@ -105,40 +105,40 @@ namespace FirstMG.Source.Engine.Input
         }
 
 
-        public Vector2 GetScreenPos(MouseState MOUSE)
+        public Vector2 GetScreenPos(MouseState a_mouse)
         {
-            Vector2 tempVec = new Vector2(MOUSE.Position.X, MOUSE.Position.Y);
+            Vector2 tempVec = new Vector2(a_mouse.Position.X, a_mouse.Position.Y);
 
 
             return tempVec;
         }
 
-        //public virtual bool LeftClick()
-        //{
-        //    if( _newMouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && _oldMouse.LeftButton != Microsoft.Xna.Framework.Input.ButtonState.Pressed && _newMouse.Position.X >= 0 && _newMouse.Position.X <= Globals.screenWidth && _newMouse.Position.Y >= 0 && _newMouse.Position.Y <= Globals.screenHeight)
-        //    {
-        //        return true;
-        //    }
+        public virtual bool LeftClick()
+        {
+            if (_newMouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && _oldMouse.LeftButton != Microsoft.Xna.Framework.Input.ButtonState.Pressed && _newMouse.Position.X >= 0 && _newMouse.Position.X <= Globals.ScreenWidth && _newMouse.Position.Y >= 0 && _newMouse.Position.Y <= Globals.ScreenHeight)
+            {
+                return true;
+            }
 
-        //    return false;
-        //}
+            return false;
+        }
 
-        //public virtual bool LeftClickHold()
-        //{
-        //    bool holding = false;
+        public virtual bool LeftClickHold()
+        {
+            bool holding = false;
 
-        //    if( _newMouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && _oldMouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && _newMouse.Position.X >= 0 && _newMouse.Position.X <= Globals.screenWidth && _newMouse.Position.Y >= 0 && _newMouse.Position.Y <= Globals.screenHeight)
-        //    {
-        //        holding = true;
+            if (_newMouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && _oldMouse.LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && _newMouse.Position.X >= 0 && _newMouse.Position.X <= Globals.ScreenWidth && _newMouse.Position.Y >= 0 && _newMouse.Position.Y <= Globals.ScreenHeight)
+            {
+                holding = true;
 
-        //        if(Math.Abs(_newMouse.Position.X - _firstMouse.Position.X) > 8 || Math.Abs(_newMouse.Position.Y - _firstMouse.Position.Y) > 8)
-        //        {
-        //            _dragging = true;
-        //        }
-        //    }
+                if (Math.Abs(_newMouse.Position.X - _firstMouse.Position.X) > 8 || Math.Abs(_newMouse.Position.Y - _firstMouse.Position.Y) > 8)
+                {
+                    _dragging = true;
+                }
+            }
 
-        //    return holding;
-        //}
+            return holding;
+        }
 
         public virtual bool LeftClickRelease()
         {
@@ -151,32 +151,32 @@ namespace FirstMG.Source.Engine.Input
             return false;
         }
 
-        //public virtual bool RightClick()
-        //{
-        //    if(_newMouse.RightButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && _oldMouse.RightButton != Microsoft.Xna.Framework.Input.ButtonState.Pressed && _newMouse.Position.X >= 0 && _newMouse.Position.X <= Globals.screenWidth && _newMouse.Position.Y >= 0 && _newMouse.Position.Y <= Globals.screenHeight)
-        //    {
-        //        return true;
-        //    }
+        public virtual bool RightClick()
+        {
+            if (_newMouse.RightButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && _oldMouse.RightButton != Microsoft.Xna.Framework.Input.ButtonState.Pressed && _newMouse.Position.X >= 0 && _newMouse.Position.X <= Globals.ScreenWidth && _newMouse.Position.Y >= 0 && _newMouse.Position.Y <= Globals.ScreenHeight)
+            {
+                return true;
+            }
 
-        //    return false;
-        //}
+            return false;
+        }
 
-        //public virtual bool RightClickHold()
-        //{
-        //    bool holding = false;
+        public virtual bool RightClickHold()
+        {
+            bool holding = false;
 
-        //    if( _newMouse.RightButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && _oldMouse.RightButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && _newMouse.Position.X >= 0 && _newMouse.Position.X <= Globals.screenWidth && _newMouse.Position.Y >= 0 && _newMouse.Position.Y <= Globals.screenHeight)
-        //    {
-        //        holding = true;
+            if (_newMouse.RightButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && _oldMouse.RightButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed && _newMouse.Position.X >= 0 && _newMouse.Position.X <= Globals.ScreenWidth && _newMouse.Position.Y >= 0 && _newMouse.Position.Y <= Globals.ScreenHeight)
+            {
+                holding = true;
 
-        //        if(Math.Abs(_newMouse.Position.X - _firstMouse.Position.X) > 8 || Math.Abs(_newMouse.Position.Y - _firstMouse.Position.Y) > 8)
-        //        {
-        //            _rightDrag = true;
-        //        }
-        //    }
+                if (Math.Abs(_newMouse.Position.X - _firstMouse.Position.X) > 8 || Math.Abs(_newMouse.Position.Y - _firstMouse.Position.Y) > 8)
+                {
+                    _rightDrag = true;
+                }
+            }
 
-        //    return holding;
-        //}
+            return holding;
+        }
 
         public virtual bool RightClickRelease()
         {

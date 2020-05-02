@@ -49,8 +49,13 @@
     <Compile Include="Source\Engine\Input\Keyboard\MyKey.cs" />
     <Compile Include="Source\Engine\Input\MyMouseControl.cs" />
     <Compile Include="Source\Engine\Input\MyKeyboard.cs" />
+    <Compile Include="Source\Engine\MyTimer.cs" />
+    <Compile Include="Source\GamePlay\GameGlobals.cs" />
+    <Compile Include="Source\GamePlay\Projectile.cs" />
+    <Compile Include="Source\GamePlay\Projectiles\CurlyLine.cs" />
+    <Compile Include="Source\GamePlay\Unit.cs" />
     <Compile Include="Source\GamePlay\World.cs" />
-    <Compile Include="Source\GamePlay\MainChar.cs" />
+    <Compile Include="Source\GamePlay\Units\MainChar.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -58,6 +63,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
@@ -114,6 +120,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Assets\pixo.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Assets\curly_line.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

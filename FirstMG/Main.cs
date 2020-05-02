@@ -29,7 +29,13 @@ namespace FirstMG
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            Source.Engine.Globals.ScreenWidth = 1600;
+            Source.Engine.Globals.ScreenHeight = 900;
+
+            graphics.PreferredBackBufferWidth = Source.Engine.Globals.ScreenWidth;
+            graphics.PreferredBackBufferHeight = Source.Engine.Globals.ScreenHeight;
+
+            graphics.ApplyChanges();
 
             base.Initialize();
         }
@@ -72,6 +78,7 @@ namespace FirstMG
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            Source.Engine.Globals.GlobalGameTime = gameTime;
             Source.Engine.Globals.MyKeyboard.Update();
             Source.Engine.Globals.MyMouse.Update();
 
@@ -96,7 +103,7 @@ namespace FirstMG
 
             _world.Draw(Vector2.Zero);
 
-            _cursor.Draw(new Vector2(Source.Engine.Globals.MyMouse.NewMousePos.X, Source.Engine.Globals.MyMouse.NewMousePos.Y), Vector2.Zero);
+            _cursor.Draw(Source.Engine.Globals.NewVector(Source.Engine.Globals.MyMouse.NewMousePos), Vector2.Zero);
 
             Source.Engine.Globals.MySpriteBatch.End();
 

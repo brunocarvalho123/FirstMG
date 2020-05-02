@@ -26,10 +26,15 @@ namespace FirstMG.Source.Engine
             _asset = Globals.MyContent.Load<Texture2D>(a_path);
         }
 
-        protected Vector2 Position
+        public Vector2 Position
         {
             get { return _position; }
-            set { _position = value; }
+            protected set { _position = value; }
+        }
+        public Vector2 Dimension
+        {
+            get { return _dimension; }
+            protected set { _dimension = value; }
         }
         protected float Rotation
         {
@@ -66,7 +71,7 @@ namespace FirstMG.Source.Engine
                                           null,                                                                                                                       // Source rectangle
                                           Color.White,                                                                                                                // Color
                                           _rotation,                                                                                                                  // Rotation
-                                          new Vector2(a_origin.X, a_origin.Y),                                                                                        // Origin
+                                          Globals.NewVector(a_origin),                                                                                        // Origin
                                           new SpriteEffects(),                                                                                                        // Effects
                                           0.0f);                                                                                                                      // Layer depth
             }

@@ -12,12 +12,19 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FirstMG.Source.Engine
 {
+
+    public delegate void PassObject(object i);
+    public delegate object PassObjectAndReturn(object i);
+
     class Globals
     {
         private static ContentManager _content;
         private static SpriteBatch _spriteBatch;
         private static Input.MyKeyboard _keyboard;
         private static Input.MyMouseControl _mouse;
+        private static int _screenWidth;
+        private static int _screenHeight;
+        private static GameTime _gameTime;
 
         public static ContentManager MyContent
         {
@@ -39,7 +46,29 @@ namespace FirstMG.Source.Engine
             get { return _mouse; }
             set { _mouse = value; }
         }
+        public static int ScreenWidth
+        {
+            get { return _screenWidth; }
+            set { _screenWidth = value; }
+        }
+        public static  int ScreenHeight
+        {
+            get { return _screenHeight; }
+            set { _screenHeight = value; }
+        }
+        public static GameTime GlobalGameTime
+        {
+            get { return _gameTime; }
+            set { _gameTime = value; }
+        }
 
+
+
+
+        public static Vector2 NewVector(Vector2 a_vector2)
+        {
+            return new Vector2(a_vector2.X, a_vector2.Y);
+        }
 
         public static float GetDistance(Vector2 a_pos, Vector2 a_target)
         {

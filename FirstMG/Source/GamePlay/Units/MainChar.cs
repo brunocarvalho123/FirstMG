@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 
 namespace FirstMG.Source.GamePlay
 {
-    class MainChar : Engine.Asset2D
+    class MainChar : Unit
     {
 
         private float _speed;
@@ -32,7 +32,12 @@ namespace FirstMG.Source.GamePlay
                 Position = new Vector2(Position.X + _speed, Position.Y);
             }
 
-            Rotation = Globals.RotateTowards(Position, new Vector2(Globals.MyMouse.NewMousePos.X, Globals.MyMouse.NewMousePos.Y));
+            //Rotation = Globals.RotateTowards(Position, Globals.NewVector(Globals.MyMouse.NewMousePos));
+
+            if (Globals.MyMouse.LeftClick())
+            {
+                GameGlobals.PassProjectile(new CurlyLine(new Vector2(Position.X, Position.Y-(Dimension.Y/2) ), this, Globals.NewVector(Globals.MyMouse.NewMousePos)));
+            }
 
             base.Update();
         }
