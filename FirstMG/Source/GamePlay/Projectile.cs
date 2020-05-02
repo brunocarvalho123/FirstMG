@@ -58,7 +58,15 @@ namespace FirstMG.Source.GamePlay
 
         public virtual bool HitSomething(List<Unit> a_units)
         {
-            return false; // For now...
+            foreach (Unit unit in a_units)
+            {
+                if (Engine.Globals.GetDistance(Position,unit.Position) < unit.HitDistance)
+                {
+                    unit.GetHit();
+                    return true;
+                }
+            }
+            return false;
         }
 
         public override void Draw(Vector2 a_offset)

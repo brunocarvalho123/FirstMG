@@ -42,7 +42,7 @@ namespace FirstMG.Source.Engine
             set { _rotation = value; }
         }
 
-        public virtual void Update()
+        public virtual void Update(Vector2 a_offset)
         {
 
         }

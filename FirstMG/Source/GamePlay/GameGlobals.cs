@@ -9,5 +9,6 @@ namespace FirstMG.Source.GamePlay
     class GameGlobals
     {
         public static Engine.PassObject PassProjectile;
+        public static Engine.PassObject PassNpc;
     }
 }

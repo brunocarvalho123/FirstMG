@@ -75,6 +75,18 @@ namespace FirstMG.Source.Engine
             return (float)Math.Sqrt(Math.Pow(a_pos.X - a_target.X, 2) + Math.Pow(a_pos.Y - a_target.Y, 2));
         }
 
+        public static Vector2 RadialMovement(Vector2 a_pos, Vector2 a_focus, float a_speed)
+        {
+            float distance = Globals.GetDistance(a_pos, a_focus);
+
+            if (distance <= a_speed)
+            {
+                return a_focus - a_pos;
+            } else
+            {
+                return (a_focus - a_pos) * (a_speed / distance);
+            }
+        }
 
         public static float RotateTowards(Vector2 a_pos, Vector2 a_focus)
         {
