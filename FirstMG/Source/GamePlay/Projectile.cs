@@ -9,17 +9,17 @@ namespace FirstMG.Source.GamePlay
 {
     class Projectile : Engine.Asset2D
     {
-        private float _speed;
-        private bool _done;
-        private Vector2 _direction;
-        private Unit _owner;
+        private float          _speed;
+        private bool           _done;
+        private Vector2        _direction;
+        private Unit           _owner;
         private Engine.MyTimer _timer;
 
         public Projectile(string a_path, Vector2 a_position, Vector2 a_dimension, Unit a_owner, Vector2 a_target) 
             : base(a_path, a_position, a_dimension)
         {
             _speed = 2.0f;
-            _done = false;
+            _done  = false;
             _owner = a_owner;
 
             _direction = a_target - a_owner.Position;
@@ -62,7 +62,7 @@ namespace FirstMG.Source.GamePlay
             {
                 if (Engine.Globals.GetDistance(Position,unit.Position) < unit.HitDistance)
                 {
-                    unit.GetHit();
+                    unit.GetHit(1);
                     return true;
                 }
             }

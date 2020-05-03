@@ -10,44 +10,61 @@ namespace FirstMG.Source.GamePlay
 {
     class Unit : Asset2D
     {
-        private float _speed;
-        private float _jumpSpeed;
+        /* Floats */
+        private float _floorDist;
+        private float _health;
+        private float _healthMax;
         private float _hitDist;
-        private float _maxJump;
-        private float _floorDistance;
-        private bool _jumping;
+        private float _jumpSpeed;
+        private float _maxJump; //TODO: Remove this implement proper acceleration
+        private float _speed;
+        private float _stamina;
+        private float _staminaMax;
+
+        /* Booleans */
         private bool _dead;
+        private bool _jumping;
 
         public Unit(string a_path, Vector2 a_position, Vector2 a_dimension) : base(a_path, a_position, a_dimension)
         {
-            _speed = 2.0f;
-            _jumpSpeed = 5.0f;
-            _dead = false;
-            _jumping = false;
-            _hitDist = 50.0f;
-            _maxJump = 50.0f;
-            _floorDistance = 0.0f;
+            _floorDist  = 0.0f;
+            _health     = 1.0f;
+            _healthMax  = _health;
+            _stamina    = 0;
+            _staminaMax = _stamina;
+            _hitDist    = 50.0f;
+            _jumpSpeed  = 5.0f;
+            _maxJump    = 50.0f;
+            _speed      = 2.0f;
+
+            _dead      = false;
+            _jumping   = false;
         }
 
+        public float FloorDistance
+        {
+            get { return _floorDist; }
+            protected set { _floorDist = value; }
+        }
+        public float Health
+        {
+            get { return _health; }
+            set { _health = value; }
+        }
+        public float HealthMax
+        {
+            get { return _healthMax; }
+            protected set { _healthMax = value; }
+        }
         public float HitDistance
         {
             get { return _hitDist; }
             protected set { _hitDist = value; }
         }
-        public float Speed
-        {
-            get { return _speed; }
-            protected set { _speed = value; }
-        }
         public float MaxJump
         {
             get { return _maxJump; }
             protected set { _maxJump = value; }
-        }
-        public float FloorDistance
-        {
-            get { return _floorDistance; }
-            protected set { _floorDistance = value; }
         }
         public bool Dead
         {
@@ -59,17 +76,37 @@ namespace FirstMG.Source.GamePlay
             get { return _jumping; }
             protected set { _jumping = value; }
         }
-
-        public virtual void GetHit()
+        public float Speed
         {
-            _dead = true;
+            get { return _speed; }
+            protected set { _speed = value; }
+        }
+        public float Stamina
+        {
+            get { return _stamina; }
+            set { _stamina = value; }
+        }
+        public float StaminaMax
+        {
+            get { return _staminaMax; }
+            protected set { _staminaMax = value; }
+        }
+
+
+        public virtual void GetHit(float a_damage)
+        {
+            Health -= a_damage;
+            if (Health <= 0)
+            {
+                Dead = true;
+            }
         }
 
         public virtual void Jump()
         {
             if (FloorDistance < MaxJump)
             {
-                FloorDistance += (_jumpSpeed);
+                FloorDistance += _jumpSpeed;
                 Position = new Vector2(Position.X, GameGlobals.FloorLevel - FloorDistance);
             }
             else
@@ -77,13 +114,15 @@ namespace FirstMG.Source.GamePlay
                 Jumping = false;
             }
         }
+
         public virtual void GravityEffect()
         {
             if (FloorDistance > 0)
             {
-                FloorDistance -= (_jumpSpeed);
+                FloorDistance -= _jumpSpeed;
+                if (FloorDistance < 0) FloorDistance = 0;
                 Position = new Vector2(Position.X, GameGlobals.FloorLevel - FloorDistance);
-            }
+            } 
         }
 
         public override void Update(Vector2 a_offset)

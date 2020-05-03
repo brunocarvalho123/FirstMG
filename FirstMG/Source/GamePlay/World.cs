@@ -21,7 +21,7 @@ namespace FirstMG.Source.GamePlay
 
         public World()
         {
-            _mainChar = new MainChar("Assets\\pixo", /* position */ new Vector2(300, GameGlobals.FloorLevel), /* dimension */ new Vector2(150,150));
+            _mainChar = new MainChar("Assets\\pixo", /* position */ new Vector2(Engine.Globals.ScreenWidth / 2, GameGlobals.FloorLevel), /* dimension */ new Vector2(150,150));
             _ui = new UI();
 
             GameGlobals.PassProjectile = AddProjectile;
@@ -31,6 +31,11 @@ namespace FirstMG.Source.GamePlay
             _nKilled = 0;
 
             _offset = new Vector2(0, 0);
+        }
+
+        public MainChar MainCharacter
+        {
+            get { return _mainChar; }
         }
 
         public virtual void AddProjectile(object a_projectile)
@@ -89,7 +94,7 @@ namespace FirstMG.Source.GamePlay
                 }
             }
 
-            _ui.Update();
+            _ui.Update(this);
         }
 
         public virtual void Draw(Vector2 a_offset)

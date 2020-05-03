@@ -22,6 +22,12 @@ namespace FirstMG.Source.GamePlay
         {
             Position += Globals.RadialMovement(Position, a_mainChar.Position, Speed);
             Rotation = Globals.RotateTowards(Position, a_mainChar.Position);
+
+            if (Globals.GetDistance(Position, a_mainChar.Position) < 50)
+            {
+                a_mainChar.GetHit(1);
+                Dead = true;
+            }
         }
 
         public virtual void Update(Vector2 a_offset, MainChar a_mainChar)

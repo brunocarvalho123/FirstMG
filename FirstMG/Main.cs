@@ -52,7 +52,7 @@ namespace FirstMG
             Source.Engine.Globals.MySpriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
 
-            _cursor = new Source.Engine.Asset2D("Assets\\CursorArrow", Vector2.Zero, new Vector2(40,40));
+            _cursor = new Source.Engine.Asset2D("Assets\\cursor_arrow", Vector2.Zero, new Vector2(40,40));
 
             Source.Engine.Globals.MyKeyboard = new Source.Engine.Input.MyKeyboard();
             Source.Engine.Globals.MyMouse = new Source.Engine.Input.MyMouseControl();
@@ -104,7 +104,7 @@ namespace FirstMG
 
             _world.Draw(Vector2.Zero);
 
-            _cursor.Draw(Source.Engine.Globals.NewVector(Source.Engine.Globals.MyMouse.NewMousePos), Vector2.Zero);
+            _cursor.Draw(Source.Engine.Globals.NewVector(Source.Engine.Globals.MyMouse.NewMousePos), Vector2.Zero, Color.White);
 
             Source.Engine.Globals.MySpriteBatch.End();
 

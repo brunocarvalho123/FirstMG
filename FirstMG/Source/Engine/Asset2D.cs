@@ -34,7 +34,7 @@ namespace FirstMG.Source.Engine
         public Vector2 Dimension
         {
             get { return _dimension; }
-            protected set { _dimension = value; }
+            set { _dimension = value; }
         }
         protected float Rotation
         {
@@ -62,16 +62,16 @@ namespace FirstMG.Source.Engine
             }
         }
 
-        public virtual void Draw(Vector2 a_offset, Vector2 a_origin)
+        public virtual void Draw(Vector2 a_offset, Vector2 a_origin, Color a_color)
         {
             if (_asset != null)
             {
                 Globals.MySpriteBatch.Draw(_asset,                                                                                                                    // Texture 
                                           new Rectangle((int)(_position.X + a_offset.X), (int)(_position.Y + a_offset.Y), (int)(_dimension.X), (int)(_dimension.Y)),  // Destination rectangle
                                           null,                                                                                                                       // Source rectangle
-                                          Color.White,                                                                                                                // Color
+                                          a_color,                                                                                                                    // Color
                                           _rotation,                                                                                                                  // Rotation
-                                          Globals.NewVector(a_origin),                                                                                        // Origin
+                                          Globals.NewVector(a_origin),                                                                                                // Origin
                                           new SpriteEffects(),                                                                                                        // Effects
                                           0.0f);                                                                                                                      // Layer depth
             }
