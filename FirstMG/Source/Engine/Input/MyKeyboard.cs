@@ -50,6 +50,28 @@ namespace FirstMG.Source.Engine.Input
             return false;
         }
 
+        public bool GetNewPress(string a_key)
+        {
+            bool isPressed = false;
+            bool wasPressed = false;
+            for (int i = 0; i < _pressedKeys.Count; i++)
+            {
+                if (_pressedKeys[i].Key == a_key)
+                {
+                    isPressed = true;
+                }
+            }
+            for (int i = 0; i < _oldPressedKeys.Count; i++)
+            {
+                if (_oldPressedKeys[i].Key == a_key)
+                {
+                    wasPressed = true;
+                }
+            }
+            if (!wasPressed && isPressed) return true;
+            return false;
+        }
+
 
         public virtual void GetPressedKeys()
         {

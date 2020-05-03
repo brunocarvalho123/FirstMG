@@ -9,11 +9,6 @@ namespace FirstMG.Source.GamePlay
 {
     class CurlyLine : Projectile
     {
-        //private float _speed;
-        //private bool _done;
-        //private Vector2 _direction;
-        //private Unit _owner;
-        //private Engine.MyTimer _timer;d
 
         public CurlyLine(Vector2 a_position, Unit a_owner, Vector2 a_target) 
             : base("Assets\\curly_line", a_position, new Vector2 (20,50), a_owner, a_target)
