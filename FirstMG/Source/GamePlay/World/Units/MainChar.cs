@@ -20,8 +20,9 @@ namespace FirstMG.Source.GamePlay
             Stamina = 10.0f;
             StaminaMax = Stamina;
 
-            Speed = 3.0f;
-            MaxJump = 80;
+            Speed = 4.5f;
+            JumpSpeed = 7.0f;
+            MaxJump = 120.0f;
         }
 
 
@@ -32,6 +33,16 @@ namespace FirstMG.Source.GamePlay
                 Stamina--;
                 GameGlobals.PassProjectile(new CurlyLine(new Vector2(Position.X, Position.Y - (Dimension.Y / 2)), this, new Vector2(Globals.MyMouse.NewMousePos.X, Globals.MyMouse.NewMousePos.Y + (Dimension.Y / 2)) - a_offset));
             }
+        }
+
+        public void MoveLeft()
+        {
+            Position = new Vector2(Position.X - Speed, Position.Y);
+        }
+
+        public void MoveRight()
+        {
+            Position = new Vector2(Position.X + Speed, Position.Y);
         }
 
         public void RechargeStamina (float a_value)
@@ -48,25 +59,26 @@ namespace FirstMG.Source.GamePlay
             }
         }
 
-        public override void Update(Vector2 a_offset)
+        public override void Update(Vector2 a_offset, List<Terrain> a_terrains)
         {
             bool checkScroll = false;
             if (Globals.MyKeyboard.GetPress("A"))
             {
                 checkScroll = true;
-                Position = new Vector2(Position.X - Speed, Position.Y);
+                MoveLeft();
             }
 
             if (Globals.MyKeyboard.GetPress("D"))
             {
                 checkScroll = true;
-                Position = new Vector2(Position.X + Speed, Position.Y);
+                MoveRight();
             }
 
             if (Globals.MyKeyboard.GetNewPress("Space"))
             {
-                if (Jumping == false && FloorDistance <= 0)
+                if (Jumping == false && OnTerrain(a_terrains).Item2 == true)
                 {
+                    InitialYPos = Position.Y;
                     Jumping = true;
                 }
             }
@@ -92,7 +104,7 @@ namespace FirstMG.Source.GamePlay
                 GameGlobals.PassNpc(new FirstEnemy(Globals.NewVector(Globals.MyMouse.NewMousePos) - a_offset));
             }
 
-            base.Update(a_offset);
+            base.Update(a_offset, a_terrains);
         }
 
         public override void Draw(Vector2 a_offset)

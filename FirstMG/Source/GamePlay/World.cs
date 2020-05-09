@@ -79,7 +79,7 @@ namespace FirstMG.Source.GamePlay
             XDocument xml = XDocument.Load("XML\\Levels\\Level" + a_level + ".xml");
 
             String mcAsset = "Assets\\pixo";
-            Vector2 mcPosition = new Vector2(Engine.Globals.ScreenWidth / 2, GameGlobals.FloorLevel);
+            Vector2 mcPosition = new Vector2(Engine.Globals.ScreenWidth / 2, Engine.Globals.ScreenHeight / 2);
 
             if (xml.Element("Root").Element("Unit").Element("MainChar") != null)
             {
@@ -89,15 +89,15 @@ namespace FirstMG.Source.GamePlay
                 }
                 if (xml.Element("Root").Element("Unit").Element("MainChar").Element("position") != null)
                 {
-                    mcPosition = new Vector2(Convert.ToInt32(xml.Element("Root").Element("Unit").Element("MainChar").Element("position").Value), GameGlobals.FloorLevel);
+                    mcPosition = new Vector2(Convert.ToInt32(xml.Element("Root").Element("Unit").Element("MainChar").Element("position").Value), Engine.Globals.ScreenHeight / 2);
                 }
             }
 
-            _mainChar = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(150, 150));
+            _mainChar = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(110, 110));
 
             for (int i = 0; i < 50; i++)
             {
-                _terrains.Add(new Dirt(/* position */ new Vector2((i*50), GameGlobals.FloorLevel + 25)));
+                _terrains.Add(new Dirt(/* position */ new Vector2((i*50), GameGlobals.FloorLevel)));
             }
         }
 
@@ -105,7 +105,7 @@ namespace FirstMG.Source.GamePlay
         {
             if (!_mainChar.Dead)
             {
-                _mainChar.Update(_offset);
+                _mainChar.Update(_offset, _terrains);
 
                 for (int idx = 0; idx < _projectiles.Count(); idx++)
                 {
@@ -143,7 +143,7 @@ namespace FirstMG.Source.GamePlay
         {
             foreach (Terrain terrain in _terrains)
             {
-                terrain.Draw(_offset);
+                terrain.Draw(new Vector2(_offset.X, _offset.Y + (terrain.Dimension.Y/2 + _mainChar.Dimension.Y/2)));
             }
 
             _mainChar.Draw(_offset);

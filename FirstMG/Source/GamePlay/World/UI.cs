@@ -43,7 +43,7 @@ namespace FirstMG.Source.GamePlay
 
             if (a_world.MainCharacter.Dead)
             {
-                displayLine = "Press Enter to restart!";
+                displayLine = "You ded brah... Press Enter to restart!";
                 stringDimension = _font.MeasureString(displayLine);
                 Engine.Globals.MySpriteBatch.DrawString(_font, displayLine, new Vector2(Engine.Globals.ScreenWidth / 2 - (stringDimension.X / 2), Engine.Globals.ScreenHeight/2), Color.Black);
             }

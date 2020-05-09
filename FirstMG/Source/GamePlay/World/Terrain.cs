@@ -10,9 +10,16 @@ namespace FirstMG.Source.GamePlay
 {
     class Terrain : Asset2D
     {
+        private bool _isBackground = true;
         public Terrain(string a_path, Vector2 a_position, Vector2 a_dimension) : base(a_path, a_position, a_dimension)
         {
             /* empty */
+        }
+
+        public bool IsBackground
+        {
+            get { return _isBackground; }
+            protected set { _isBackground = value;  }
         }
 
         public override void Update(Vector2 a_offset)

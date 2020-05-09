@@ -16,6 +16,7 @@ namespace FirstMG.Source.GamePlay
         private float _healthMax;
         private float _hitDist;
         private float _jumpSpeed;
+        private float _initialYPos;
         private float _maxJump; //TODO: Remove this implement proper acceleration
         private float _speed;
         private float _stamina;
@@ -66,6 +67,11 @@ namespace FirstMG.Source.GamePlay
             get { return _maxJump; }
             protected set { _maxJump = value; }
         }
+        public float InitialYPos
+        {
+            get { return _initialYPos; }
+            protected set { _initialYPos = value; }
+        }
         public bool Dead
         {
             get { return _dead; }
@@ -75,6 +81,11 @@ namespace FirstMG.Source.GamePlay
         {
             get { return _jumping; }
             protected set { _jumping = value; }
+        }
+        public float JumpSpeed
+        {
+            get { return _jumpSpeed; }
+            protected set { _jumpSpeed = value; }
         }
         public float Speed
         {
@@ -102,12 +113,27 @@ namespace FirstMG.Source.GamePlay
             }
         }
 
+        public virtual Tuple<Terrain,bool> OnTerrain(List<Terrain> a_terrains)
+        {
+            foreach (Terrain terrain in a_terrains)
+            {
+                if (Math.Abs(terrain.Position.X - Position.X) < 30)
+                {
+                    if (terrain.Position.Y == Position.Y)
+                    {
+                        return new Tuple<Terrain, bool>(terrain,true);
+                    }
+                    return new Tuple<Terrain, bool>(terrain, false);
+                }
+            }
+            return new Tuple<Terrain, bool>(null,false);
+        }
+
         public virtual void Jump()
         {
-            if (FloorDistance < MaxJump)
+            if (Position.Y > (InitialYPos - MaxJump))
             {
-                FloorDistance += _jumpSpeed;
-                Position = new Vector2(Position.X, GameGlobals.FloorLevel - FloorDistance);
+                Position = new Vector2(Position.X, Position.Y - _jumpSpeed);
             }
             else
             {
@@ -115,17 +141,23 @@ namespace FirstMG.Source.GamePlay
             }
         }
 
-        public virtual void GravityEffect()
+        public virtual void GravityEffect(List<Terrain> a_terrains)
         {
-            if (FloorDistance > 0)
+            Tuple<Terrain,bool> terrainTuple = OnTerrain(a_terrains);
+            if (terrainTuple.Item2 == false && Engine.Globals.ScreenHeight > Position.Y)
             {
-                FloorDistance -= _jumpSpeed;
-                if (FloorDistance < 0) FloorDistance = 0;
-                Position = new Vector2(Position.X, GameGlobals.FloorLevel - FloorDistance);
-            } 
+                if (terrainTuple.Item1 != null && Position.Y <= terrainTuple.Item1.Position.Y && Position.Y + _jumpSpeed >= terrainTuple.Item1.Position.Y)
+                {
+                    Position = new Vector2(Position.X, terrainTuple.Item1.Position.Y);
+                }
+                else
+                {
+                    Position = new Vector2(Position.X, Position.Y + _jumpSpeed);
+                }
+            }
         }
 
-        public override void Update(Vector2 a_offset)
+        public virtual void Update(Vector2 a_offset, List<Terrain> a_terrains)
         {
             if (Jumping == true)
             {
@@ -133,7 +165,12 @@ namespace FirstMG.Source.GamePlay
             } 
             else
             {
-                GravityEffect();
+                GravityEffect(a_terrains);
+            }
+
+            if (Position.Y >= Engine.Globals.ScreenHeight)
+            {
+                Dead = true;
             }
             base.Update(a_offset);
         }
