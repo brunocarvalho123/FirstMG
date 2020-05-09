@@ -13,7 +13,7 @@ namespace FirstMG
     {
         GraphicsDeviceManager graphics;
         //SpriteBatch spriteBatch;
-        Source.GamePlay.World _world;
+        Source.GamePlay.GamePlay _gameplay;
         Source.Engine.Asset2D _cursor;
         
         public Main()
@@ -54,10 +54,12 @@ namespace FirstMG
 
             _cursor = new Source.Engine.Asset2D("Assets\\cursor_arrow", Vector2.Zero, new Vector2(40,40));
 
+            Source.Engine.Globals.NormalEffect = Source.Engine.Globals.MyContent.Load<Effect>("Shaders\\basic_shader");
+
             Source.Engine.Globals.MyKeyboard = new Source.Engine.Input.MyKeyboard();
             Source.Engine.Globals.MyMouse = new Source.Engine.Input.MyMouseControl();
 
-            _world = new Source.GamePlay.World();
+            _gameplay = new Source.GamePlay.GamePlay();
         }
 
         /// <summary>
@@ -83,7 +85,7 @@ namespace FirstMG
             Source.Engine.Globals.MyKeyboard.Update();
             Source.Engine.Globals.MyMouse.Update();
 
-            _world.Update();
+            _gameplay.Update();
 
             Source.Engine.Globals.MyKeyboard.UpdateOld();
             Source.Engine.Globals.MyMouse.UpdateOld();
@@ -99,13 +101,13 @@ namespace FirstMG
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            Source.Engine.Globals.MySpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            Source.Engine.Globals.MySpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
 
-            _world.Draw(Vector2.Zero);
+            _gameplay.Draw();
 
+                
             _cursor.Draw(Source.Engine.Globals.NewVector(Source.Engine.Globals.MyMouse.NewMousePos), Vector2.Zero, Color.White);
-
             Source.Engine.Globals.MySpriteBatch.End();
 
             base.Draw(gameTime);

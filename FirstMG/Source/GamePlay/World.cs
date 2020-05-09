@@ -19,8 +19,11 @@ namespace FirstMG.Source.GamePlay
 
         public int _nKilled;
 
-        public World()
+        Engine.PassObject ResetWorld;
+
+        public World(Engine.PassObject a_resetWorld)
         {
+            ResetWorld = a_resetWorld;
             _mainChar = new MainChar("Assets\\pixo", /* position */ new Vector2(Engine.Globals.ScreenWidth / 2, GameGlobals.FloorLevel), /* dimension */ new Vector2(150,150));
             _ui = new UI();
 
@@ -71,26 +74,36 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void Update()
         {
-            _mainChar.Update(_offset);
-
-            for (int idx = 0; idx < _projectiles.Count(); idx++)
+            if (!_mainChar.Dead)
             {
-                _projectiles[idx].Update(_offset, _npcs.ToList<Unit>());
-                if (_projectiles[idx].Done)
+                _mainChar.Update(_offset);
+
+                for (int idx = 0; idx < _projectiles.Count(); idx++)
                 {
-                    _projectiles.RemoveAt(idx);
-                    idx--;
+                    _projectiles[idx].Update(_offset, _npcs.ToList<Unit>());
+                    if (_projectiles[idx].Done)
+                    {
+                        _projectiles.RemoveAt(idx);
+                        idx--;
+                    }
+                }
+
+                for (int idx = 0; idx < _npcs.Count(); idx++)
+                {
+                    _npcs[idx].Update(_offset, _mainChar);
+                    if (_npcs[idx].Dead)
+                    {
+                        _nKilled++;
+                        _npcs.RemoveAt(idx);
+                        idx--;
+                    }
                 }
             }
-
-            for (int idx = 0; idx < _npcs.Count(); idx++)
+            else
             {
-                _npcs[idx].Update(_offset, _mainChar);
-                if (_npcs[idx].Dead)
+                if (Engine.Globals.MyKeyboard.GetPress("Enter"))
                 {
-                    _nKilled++;
-                    _npcs.RemoveAt(idx);
-                    idx--;
+                    ResetWorld(null);
                 }
             }
 

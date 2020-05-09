@@ -52,14 +52,15 @@
     <Compile Include="Source\Engine\MyTimer.cs" />
     <Compile Include="Source\Engine\Output\DisplayBar.cs" />
     <Compile Include="Source\GamePlay\GameGlobals.cs" />
-    <Compile Include="Source\GamePlay\Projectile.cs" />
-    <Compile Include="Source\GamePlay\Projectiles\CurlyLine.cs" />
-    <Compile Include="Source\GamePlay\UI.cs" />
-    <Compile Include="Source\GamePlay\Unit.cs" />
-    <Compile Include="Source\GamePlay\Units\Npc.cs" />
-    <Compile Include="Source\GamePlay\Units\Npcs\FirstEnemy.cs" />
+    <Compile Include="Source\GamePlay\GamePlay.cs" />
+    <Compile Include="Source\GamePlay\World\Projectile.cs" />
+    <Compile Include="Source\GamePlay\World\Projectiles\CurlyLine.cs" />
+    <Compile Include="Source\GamePlay\World\UI.cs" />
+    <Compile Include="Source\GamePlay\World\Unit.cs" />
+    <Compile Include="Source\GamePlay\World\Units\Npc.cs" />
+    <Compile Include="Source\GamePlay\World\Units\Npcs\FirstEnemy.cs" />
     <Compile Include="Source\GamePlay\World.cs" />
-    <Compile Include="Source\GamePlay\Units\MainChar.cs" />
+    <Compile Include="Source\GamePlay\World\Units\MainChar.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -163,6 +164,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Fonts\Lindsey20.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Shaders\basic_shader.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

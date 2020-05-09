@@ -20,6 +20,7 @@ namespace FirstMG.Source.Engine
     {
         private static ContentManager _content;
         private static SpriteBatch _spriteBatch;
+        private static Effect _normalEffect;
         private static Input.MyKeyboard _keyboard;
         private static Input.MyMouseControl _mouse;
         private static int _screenWidth;
@@ -35,6 +36,11 @@ namespace FirstMG.Source.Engine
         {
             get { return _spriteBatch; }
             set { _spriteBatch = value; }
+        }
+        public static Effect NormalEffect
+        {
+            get { return _normalEffect; }
+            set { _normalEffect = value; }
         }
         public static Input.MyKeyboard MyKeyboard
         {

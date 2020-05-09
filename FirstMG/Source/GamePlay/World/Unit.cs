@@ -140,6 +140,13 @@ namespace FirstMG.Source.GamePlay
 
         public override void Draw(Vector2 a_offset)
         {
+            Engine.Globals.NormalEffect.Parameters["xSize"].SetValue((float)Asset.Bounds.Width);
+            Engine.Globals.NormalEffect.Parameters["ySize"].SetValue((float)Asset.Bounds.Height);
+            Engine.Globals.NormalEffect.Parameters["xDraw"].SetValue((float)((int)Dimension.X));
+            Engine.Globals.NormalEffect.Parameters["yDraw"].SetValue((float)((int)Dimension.Y));
+            Engine.Globals.NormalEffect.Parameters["filterColor"].SetValue(Color.White.ToVector4());
+            Engine.Globals.NormalEffect.CurrentTechnique.Passes[0].Apply();
+
             base.Draw(a_offset);
         }
     }

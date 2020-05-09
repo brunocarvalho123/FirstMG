@@ -30,7 +30,17 @@ namespace FirstMG.Source.Engine.Output
 
         public virtual void Draw(Vector2 a_offset)
         {
+            Engine.Globals.NormalEffect.Parameters["xSize"].SetValue(1.0f);
+            Engine.Globals.NormalEffect.Parameters["ySize"].SetValue(1.0f);
+            Engine.Globals.NormalEffect.Parameters["xDraw"].SetValue(1.0f);
+            Engine.Globals.NormalEffect.Parameters["yDraw"].SetValue(1.0f);
+            Engine.Globals.NormalEffect.Parameters["filterColor"].SetValue(Color.Black.ToVector4());
+            Engine.Globals.NormalEffect.CurrentTechnique.Passes[0].Apply();
+
             _barBackground.Draw(a_offset, new Vector2(0,0), Color.Black);
+
+            Engine.Globals.NormalEffect.Parameters["filterColor"].SetValue(_color.ToVector4());
+            Engine.Globals.NormalEffect.CurrentTechnique.Passes[0].Apply();
 
             _bar.Draw(a_offset + new Vector2(_border, _border), new Vector2(0, 0), _color);
         }

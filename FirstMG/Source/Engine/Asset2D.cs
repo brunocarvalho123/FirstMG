@@ -36,6 +36,10 @@ namespace FirstMG.Source.Engine
             get { return _dimension; }
             set { _dimension = value; }
         }
+        protected Texture2D Asset
+        {
+            get { return _asset; }
+        }
         protected float Rotation
         {
             get { return _rotation; }
