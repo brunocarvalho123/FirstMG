@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Root>
+  <Unit>
+    <MainChar>
+      <asset>Assets\pixo</asset>
+      <position>800</position>
+    </MainChar>
+    <Npc>
+    </Npc>
+  </Unit>
+</Root>

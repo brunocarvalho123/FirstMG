@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Xml.Linq;
 
 namespace FirstMG
 {
@@ -30,8 +31,17 @@ namespace FirstMG
         /// </summary>
         protected override void Initialize()
         {
-            Source.Engine.Globals.ScreenWidth = 1600;
-            Source.Engine.Globals.ScreenHeight = 900;
+            XDocument settingsXml = XDocument.Load("XML\\Settings\\Settings.xml");
+            int sWidth = 800;
+            int sHeight = 600;
+
+            if (settingsXml.Element("Root").Element("Resolution") != null)
+            {
+                sWidth = Convert.ToInt32(settingsXml.Element("Root").Element("Resolution").Element("width").Value);
+                sHeight = Convert.ToInt32(settingsXml.Element("Root").Element("Resolution").Element("height").Value);
+            }
+            Source.Engine.Globals.ScreenWidth = sWidth;
+            Source.Engine.Globals.ScreenHeight = sHeight;
 
             graphics.PreferredBackBufferWidth = Source.Engine.Globals.ScreenWidth;
             graphics.PreferredBackBufferHeight = Source.Engine.Globals.ScreenHeight;
