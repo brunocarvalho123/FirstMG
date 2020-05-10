@@ -13,14 +13,13 @@ namespace FirstMG.Source.GamePlay
     class World
     {
         private Vector2 _offset;
-        private MainChar _mainChar;
         private UI _ui;
         private List<Projectile> _projectiles = new List<Projectile>();
         private List<Npc> _npcs = new List<Npc>();
         private List<Terrain> _terrains = new List<Terrain>();
 
         public int _nKilled;
-
+        public MainChar MainCharacter { get; private set; }
         Engine.PassObject ResetWorld;
 
         public World(Engine.PassObject a_resetWorld)
@@ -38,11 +37,6 @@ namespace FirstMG.Source.GamePlay
             LoadData(1);
         }
 
-        public MainChar MainCharacter
-        {
-            get { return _mainChar; }
-        }
-
         public virtual void AddProjectile(object a_projectile)
         {
             _projectiles.Add((Projectile)a_projectile);
@@ -58,19 +52,19 @@ namespace FirstMG.Source.GamePlay
             Vector2 tmpPos = (Vector2)a_position;
             if (tmpPos.X < (-_offset.X + (Engine.Globals.ScreenWidth * .3f)))
             {
-                _offset = new Vector2(_offset.X + _mainChar.Speed, _offset.Y);
+                _offset = new Vector2(_offset.X + MainCharacter.Speed, _offset.Y);
             }
             if (tmpPos.X > (-_offset.X + (Engine.Globals.ScreenWidth * .7f)))
             {
-                _offset = new Vector2(_offset.X - _mainChar.Speed, _offset.Y);
+                _offset = new Vector2(_offset.X - MainCharacter.Speed, _offset.Y);
             }
             if (tmpPos.Y < (-_offset.Y + (Engine.Globals.ScreenHeight * .3f)))
             {
-                _offset = new Vector2(_offset.X, _offset.Y + _mainChar.Speed);
+                _offset = new Vector2(_offset.X, _offset.Y + MainCharacter.Speed);
             }
             if (tmpPos.Y > (-_offset.Y + (Engine.Globals.ScreenHeight * .7f)))
             {
-                _offset = new Vector2(_offset.X, _offset.Y - _mainChar.Speed);
+                _offset = new Vector2(_offset.X, _offset.Y - MainCharacter.Speed);
             }
         }
 
@@ -78,34 +72,49 @@ namespace FirstMG.Source.GamePlay
         {
             XDocument xml = XDocument.Load("XML\\Levels\\Level" + a_level + ".xml");
 
+            // Load MainChar
             String mcAsset = "Assets\\pixo";
             Vector2 mcPosition = new Vector2(Engine.Globals.ScreenWidth / 2, Engine.Globals.ScreenHeight / 2);
-
-            if (xml.Element("Root").Element("Unit").Element("MainChar") != null)
+            XElement mainCharXML = xml.Element("Root").Element("Unit").Element("MainChar");
+            if (mainCharXML != null)
             {
-                if (xml.Element("Root").Element("Unit").Element("MainChar").Element("asset") != null)
+                if (mainCharXML.Element("asset") != null)
                 {
-                    mcAsset = xml.Element("Root").Element("Unit").Element("MainChar").Element("asset").Value;
+                    mcAsset = mainCharXML.Element("asset").Value;
                 }
-                if (xml.Element("Root").Element("Unit").Element("MainChar").Element("position") != null)
+                if (mainCharXML.Element("position") != null)
                 {
-                    mcPosition = new Vector2(Convert.ToInt32(xml.Element("Root").Element("Unit").Element("MainChar").Element("position").Value), Engine.Globals.ScreenHeight / 2);
+                    mcPosition = new Vector2(Convert.ToInt32(mainCharXML.Element("position").Value), Engine.Globals.ScreenHeight / 2);
                 }
             }
+            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(110, 110));
 
-            _mainChar = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(110, 110));
 
-            for (int i = 0; i < 50; i++)
+            // Load Terrain
+            XElement terrainXML = xml.Element("Root").Element("Terrain");
+            if (terrainXML != null)
             {
-                _terrains.Add(new Dirt(/* position */ new Vector2((i*50), GameGlobals.FloorLevel)));
+                List<XElement> dirtRows = (from t in terrainXML.Descendants("DirtRow") select t).ToList<XElement>();
+
+                foreach (XElement dirtRow in dirtRows)
+                {
+                    int yVal = Convert.ToInt32(dirtRow.Element("Position").Element("y").Value);
+                    int startingXVal = Convert.ToInt32(dirtRow.Element("Position").Element("starting_x").Value);
+                    int finalXVal = Convert.ToInt32(dirtRow.Element("Position").Element("final_x").Value);
+
+                    for (int i = startingXVal; i <= finalXVal; i += 50)
+                    {
+                        _terrains.Add(new Dirt(/* position */ new Vector2(i, yVal)));
+                    }
+                }
             }
         }
 
         public virtual void Update()
         {
-            if (!_mainChar.Dead)
+            if (!MainCharacter.Dead)
             {
-                _mainChar.Update(_offset, _terrains);
+                MainCharacter.Update(_offset, _terrains);
 
                 for (int idx = 0; idx < _projectiles.Count(); idx++)
                 {
@@ -119,7 +128,7 @@ namespace FirstMG.Source.GamePlay
 
                 for (int idx = 0; idx < _npcs.Count(); idx++)
                 {
-                    _npcs[idx].Update(_offset, _mainChar);
+                    _npcs[idx].Update(_offset, MainCharacter);
                     if (_npcs[idx].Dead)
                     {
                         _nKilled++;
@@ -143,10 +152,10 @@ namespace FirstMG.Source.GamePlay
         {
             foreach (Terrain terrain in _terrains)
             {
-                terrain.Draw(new Vector2(_offset.X, _offset.Y + (terrain.Dimension.Y/2 + _mainChar.Dimension.Y/2)));
+                terrain.Draw(new Vector2(_offset.X, _offset.Y + (terrain.Dimension.Y/2 + MainCharacter.Dimension.Y/2)));
             }
 
-            _mainChar.Draw(_offset);
+            MainCharacter.Draw(_offset);
 
             foreach (Projectile proj in _projectiles)
             {

@@ -115,18 +115,23 @@ namespace FirstMG.Source.GamePlay
 
         public virtual Tuple<Terrain,bool> OnTerrain(List<Terrain> a_terrains)
         {
-            foreach (Terrain terrain in a_terrains)
+            IEnumerable<Terrain> query = from terrain in a_terrains
+                                         where Math.Abs(terrain.Position.X - Position.X) < Dimension.X / 2
+                                         select terrain;
+
+            Terrain closestTerrain = null;
+            foreach (Terrain terrain in query)
             {
-                if (Math.Abs(terrain.Position.X - Position.X) < 30)
+                if (terrain.Position.Y == Position.Y)
                 {
-                    if (terrain.Position.Y == Position.Y)
-                    {
-                        return new Tuple<Terrain, bool>(terrain,true);
-                    }
-                    return new Tuple<Terrain, bool>(terrain, false);
+                    return new Tuple<Terrain, bool>(terrain,true);
+                }
+                else if (closestTerrain == null ||  (terrain.Position.Y > Position.Y) && (terrain.Position.Y - Position.Y < closestTerrain.Position.Y - Position.Y) )
+                {
+                    closestTerrain = terrain;
                 }
             }
-            return new Tuple<Terrain, bool>(null,false);
+            return new Tuple<Terrain, bool>(closestTerrain, false);
         }
 
         public virtual void Jump()
@@ -144,7 +149,7 @@ namespace FirstMG.Source.GamePlay
         public virtual void GravityEffect(List<Terrain> a_terrains)
         {
             Tuple<Terrain,bool> terrainTuple = OnTerrain(a_terrains);
-            if (terrainTuple.Item2 == false && Engine.Globals.ScreenHeight > Position.Y)
+            if (terrainTuple.Item2 == false && Globals.ScreenHeight > Position.Y)
             {
                 if (terrainTuple.Item1 != null && Position.Y <= terrainTuple.Item1.Position.Y && Position.Y + _jumpSpeed >= terrainTuple.Item1.Position.Y)
                 {
@@ -168,7 +173,7 @@ namespace FirstMG.Source.GamePlay
                 GravityEffect(a_terrains);
             }
 
-            if (Position.Y >= Engine.Globals.ScreenHeight)
+            if (Position.Y >= Globals.ScreenHeight)
             {
                 Dead = true;
             }
@@ -177,12 +182,12 @@ namespace FirstMG.Source.GamePlay
 
         public override void Draw(Vector2 a_offset)
         {
-            Engine.Globals.NormalEffect.Parameters["xSize"].SetValue((float)Asset.Bounds.Width);
-            Engine.Globals.NormalEffect.Parameters["ySize"].SetValue((float)Asset.Bounds.Height);
-            Engine.Globals.NormalEffect.Parameters["xDraw"].SetValue((float)((int)Dimension.X));
-            Engine.Globals.NormalEffect.Parameters["yDraw"].SetValue((float)((int)Dimension.Y));
-            Engine.Globals.NormalEffect.Parameters["filterColor"].SetValue(Color.White.ToVector4());
-            Engine.Globals.NormalEffect.CurrentTechnique.Passes[0].Apply();
+            Globals.NormalEffect.Parameters["xSize"].SetValue((float)Asset.Bounds.Width);
+            Globals.NormalEffect.Parameters["ySize"].SetValue((float)Asset.Bounds.Height);
+            Globals.NormalEffect.Parameters["xDraw"].SetValue((float)((int)Dimension.X));
+            Globals.NormalEffect.Parameters["yDraw"].SetValue((float)((int)Dimension.Y));
+            Globals.NormalEffect.Parameters["filterColor"].SetValue(Color.White.ToVector4());
+            Globals.NormalEffect.CurrentTechnique.Passes[0].Apply();
 
             base.Draw(a_offset);
         }

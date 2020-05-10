@@ -8,4 +8,20 @@
     <Npc>
     </Npc>
   </Unit>
+  <Terrain>
+    <DirtRow>
+      <Position>
+        <starting_x>0</starting_x>
+        <final_x>1000</final_x>
+        <y>600</y>
+      </Position>
+    </DirtRow>
+    <DirtRow>
+      <Position>
+        <starting_x>500</starting_x>
+        <final_x>700</final_x>
+        <y>500</y>
+      </Position>
+    </DirtRow>
+  </Terrain>
 </Root>
