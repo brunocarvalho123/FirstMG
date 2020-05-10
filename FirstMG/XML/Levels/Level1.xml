@@ -2,7 +2,7 @@
 <Root>
   <Unit>
     <MainChar>
-      <asset>Assets\pixo</asset>
+      <asset>Assets\nice_sprite</asset>
       <position>800</position>
     </MainChar>
     <Npc>

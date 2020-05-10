@@ -116,7 +116,7 @@ namespace FirstMG.Source.GamePlay
         public virtual Tuple<Terrain,bool> OnTerrain(List<Terrain> a_terrains)
         {
             IEnumerable<Terrain> query = from terrain in a_terrains
-                                         where Math.Abs(terrain.Position.X - Position.X) < Dimension.X / 2
+                                         where Math.Abs(terrain.Position.X - Position.X) <= terrain.Dimension.X / 2 + Dimension.X / 2
                                          select terrain;
 
             Terrain closestTerrain = null;
@@ -189,7 +189,13 @@ namespace FirstMG.Source.GamePlay
             Globals.NormalEffect.Parameters["filterColor"].SetValue(Color.White.ToVector4());
             Globals.NormalEffect.CurrentTechnique.Passes[0].Apply();
 
-            base.Draw(a_offset);
+            if (Dead)
+            {
+                base.Draw(a_offset, Color.Red);
+            } else
+            {
+                base.Draw(a_offset);
+            }
         }
     }
 }

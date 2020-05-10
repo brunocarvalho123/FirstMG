@@ -46,6 +46,23 @@ namespace FirstMG.Source.Engine
             set { _rotation = value; }
         }
 
+        public virtual bool Hover(Vector2 a_offset)
+        {
+            return HoverImg(a_offset);
+        }
+
+        public virtual bool HoverImg(Vector2 a_offset)
+        {
+            Vector2 mousePos = new Vector2(Globals.MyMouse.NewMousePos.X, Globals.MyMouse.NewMousePos.Y);
+            if ((mousePos.X >= (Position.X + a_offset.X) - Dimension.X / 2 && mousePos.X <= (Position.X + a_offset.X) + Dimension.X / 2)
+                 &&
+                (mousePos.Y >= (Position.Y + a_offset.Y) - Dimension.Y / 2 && mousePos.Y <= (Position.Y + a_offset.Y) + Dimension.Y / 2))
+            {
+                return true;
+            }
+            return false;
+        }
+
         public virtual void Update(Vector2 a_offset)
         {
 
@@ -61,6 +78,21 @@ namespace FirstMG.Source.Engine
                                           Color.White,                                                                                                         // Color
                                           _rotation,                                                                                                           // Rotation
                                           new Vector2(_asset.Bounds.Width/2, _asset.Bounds.Height/2),                                                          // Origin
+                                          new SpriteEffects(),                                                                                                 // Effects
+                                          0.0f);                                                                                                               // Layer depth
+            }
+        }
+
+        public virtual void Draw(Vector2 a_offset, Color a_color)
+        {
+            if (_asset != null)
+            {
+                Globals.MySpriteBatch.Draw(_asset,                                                                                                             // Texture 
+                                          new Rectangle((int)(_position.X + a_offset.X), (int)(_position.Y + a_offset.Y), (int)(_dimension.X), (int)(_dimension.Y)),  // Destination rectangle
+                                          null,                                                                                                                // Source rectangle
+                                          a_color,                                                                                                         // Color
+                                          _rotation,                                                                                                           // Rotation
+                                          new Vector2(_asset.Bounds.Width / 2, _asset.Bounds.Height / 2),                                                          // Origin
                                           new SpriteEffects(),                                                                                                 // Effects
                                           0.0f);                                                                                                               // Layer depth
             }

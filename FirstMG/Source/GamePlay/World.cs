@@ -19,6 +19,7 @@ namespace FirstMG.Source.GamePlay
         private List<Terrain> _terrains = new List<Terrain>();
 
         public int _nKilled;
+        private Engine.MyTimer _enemyTimer = new Engine.MyTimer(1000);
         public MainChar MainCharacter { get; private set; }
         Engine.PassObject ResetWorld;
 
@@ -33,7 +34,7 @@ namespace FirstMG.Source.GamePlay
 
             _nKilled = 0;
             _offset  = new Vector2(0, 0);
-            _ui      = new UI();
+            _ui      = new UI(ResetWorld);
 
             LoadData(1);
         }
@@ -74,7 +75,7 @@ namespace FirstMG.Source.GamePlay
             XDocument xml = XDocument.Load("XML\\Levels\\Level" + a_level + ".xml");
 
             // Load MainChar
-            String mcAsset = "Assets\\pixo";
+            String mcAsset = "Assets\\nice_sprite";
             Vector2 mcPosition = new Vector2(Engine.Globals.ScreenWidth / 2, Engine.Globals.ScreenHeight / 2);
             XElement mainCharXML = xml.Element("Root").Element("Unit").Element("MainChar");
             if (mainCharXML != null)
@@ -88,7 +89,7 @@ namespace FirstMG.Source.GamePlay
                     mcPosition = new Vector2(Convert.ToInt32(mainCharXML.Element("position").Value), Engine.Globals.ScreenHeight / 2);
                 }
             }
-            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(110, 110));
+            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(57, 50));
 
 
             // Load Terrain
@@ -103,10 +104,12 @@ namespace FirstMG.Source.GamePlay
                     int startingXVal = Convert.ToInt32(dirtRow.Element("Position").Element("starting_x").Value);
                     int finalXVal = Convert.ToInt32(dirtRow.Element("Position").Element("final_x").Value);
 
-                    for (int i = startingXVal; i <= finalXVal; i += 50)
+                    _terrains.Add(new Dirt("Assets\\dirt_left", /* position */ new Vector2(startingXVal, yVal)));
+                    for (int i = startingXVal+16; i <= finalXVal; i += 16)
                     {
-                        _terrains.Add(new Dirt(/* position */ new Vector2(i, yVal)));
+                        _terrains.Add(new Dirt("Assets\\dirt_mid", /* position */ new Vector2(i, yVal)));
                     }
+                    _terrains.Add(new Dirt("Assets\\dirt_right", /* position */ new Vector2(finalXVal - (finalXVal%16) + 16 , yVal)));
                 }
             }
         }
@@ -115,6 +118,16 @@ namespace FirstMG.Source.GamePlay
         {
             if (!MainCharacter.Dead && GameGlobals.paused == false)
             {
+                //_enemyTimer.UpdateTimer();
+                //if (_enemyTimer.Test())
+                //{
+                //    int randomX = Engine.Globals.RandomNumber(0, 1000);
+                //    int randomY = Engine.Globals.RandomNumber(0, 1000);
+                //    Console.WriteLine(randomX + " , " + randomY);
+                //    GameGlobals.PassNpc(new FirstEnemy(new Vector2(randomX,randomY)));;
+                //    _enemyTimer.Reset();
+                //}
+
                 MainCharacter.Update(_offset, _terrains);
 
                 for (int idx = 0; idx < _projectiles.Count(); idx++)

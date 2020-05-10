@@ -9,8 +9,8 @@ namespace FirstMG.Source.GamePlay
 {
     class Dirt : Terrain
     {
-        public Dirt(Vector2 a_position)
-            : base("Assets\\dirt", a_position, new Vector2(50, 50))
+        public Dirt(string a_path, Vector2 a_position)
+            : base(a_path, a_position, new Vector2(16, 48))
         {
             IsBackground = false;
         }

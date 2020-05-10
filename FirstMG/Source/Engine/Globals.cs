@@ -69,7 +69,11 @@ namespace FirstMG.Source.Engine
         }
 
 
-
+        public static int RandomNumber(int a_min, int a_max)
+        {
+            Random random = new Random();
+            return random.Next(a_min, a_max);
+        }
 
         public static Vector2 NewVector(Vector2 a_vector2)
         {
