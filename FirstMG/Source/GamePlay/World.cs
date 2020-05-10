@@ -27,8 +27,9 @@ namespace FirstMG.Source.GamePlay
             ResetWorld = a_resetWorld;
 
             GameGlobals.PassProjectile = AddProjectile;
-            GameGlobals.PassNpc = AddNpc;
-            GameGlobals.CheckScroll = CheckScroll;
+            GameGlobals.PassNpc        = AddNpc;
+            GameGlobals.CheckScroll    = CheckScroll;
+            GameGlobals.paused         = false;
 
             _nKilled = 0;
             _offset  = new Vector2(0, 0);
@@ -112,7 +113,7 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void Update()
         {
-            if (!MainCharacter.Dead)
+            if (!MainCharacter.Dead && GameGlobals.paused == false)
             {
                 MainCharacter.Update(_offset, _terrains);
 
@@ -139,10 +140,15 @@ namespace FirstMG.Source.GamePlay
             }
             else
             {
-                if (Engine.Globals.MyKeyboard.GetPress("Enter"))
+                if (Engine.Globals.MyKeyboard.GetNewPress("Enter"))
                 {
                     ResetWorld(null);
                 }
+            }
+
+            if (Engine.Globals.MyKeyboard.GetNewPress("Escape"))
+            {
+                GameGlobals.paused = !GameGlobals.paused;
             }
 
             _ui.Update(this);

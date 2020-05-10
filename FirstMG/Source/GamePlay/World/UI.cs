@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FirstMG.Source.Engine;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace FirstMG.Source.GamePlay
 {
     class UI
     {
+        private Asset2D _pauseOverlay;
         private SpriteFont _font;
         private Engine.Output.DisplayBar _healthBar;
         private Engine.Output.DisplayBar _staminaBar;
@@ -17,6 +19,7 @@ namespace FirstMG.Source.GamePlay
         public UI()
         {
             _font = Engine.Globals.MyContent.Load<SpriteFont>("Fonts\\Arial16");
+            _pauseOverlay = new Asset2D("Assets\\pause_overlay", new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2), new Vector2(300,300));
 
             _healthBar  = new Engine.Output.DisplayBar(new Vector2(154, 20), 3, Color.Red);
             _staminaBar = new Engine.Output.DisplayBar(new Vector2(154, 20), 3, Color.Yellow);
@@ -50,6 +53,11 @@ namespace FirstMG.Source.GamePlay
 
             _healthBar.Draw(new Vector2(100, Engine.Globals.ScreenHeight - 100));
             _staminaBar.Draw(new Vector2(Engine.Globals.ScreenWidth - 300, Engine.Globals.ScreenHeight - 100));
+
+            if (GameGlobals.paused)
+            {
+                _pauseOverlay.Draw(Vector2.Zero);
+            }
         }
     }
 }

@@ -12,11 +12,6 @@ namespace FirstMG.Source.GamePlay
         public static Engine.PassObject PassNpc;
         public static Engine.PassObject CheckScroll;
 
-        private static float _floorLevel = 600.0f;
-
-        public static float FloorLevel
-        {
-            get { return _floorLevel; }
-        }
+        public static bool paused = false;
     }
 }
