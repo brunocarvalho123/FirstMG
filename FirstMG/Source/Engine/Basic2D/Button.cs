@@ -27,6 +27,7 @@ namespace FirstMG.Source.Engine
         {
             _text = a_text;
             ButtonClicked = a_buttonClicked;
+            _info = a_info;
 
             if (a_fontPath != "")
             {

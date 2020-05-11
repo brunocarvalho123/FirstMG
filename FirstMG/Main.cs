@@ -15,6 +15,7 @@ namespace FirstMG
         GraphicsDeviceManager graphics;
         //SpriteBatch spriteBatch;
         Source.GamePlay.GamePlay _gameplay;
+        Source.GamePlay.MainMenu _mainMenu;
         Source.Engine.Asset2D _cursor;
         
         public Main()
@@ -62,14 +63,15 @@ namespace FirstMG
             Source.Engine.Globals.MySpriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
 
-            _cursor = new Source.Engine.Asset2D("Assets\\cursor_arrow", Vector2.Zero, new Vector2(40,40));
+            _cursor = new Source.Engine.Asset2D("Assets\\UI\\cursor_arrow", Vector2.Zero, new Vector2(40,40));
 
             Source.Engine.Globals.NormalEffect = Source.Engine.Globals.MyContent.Load<Effect>("Shaders\\basic_shader");
 
             Source.Engine.Globals.MyKeyboard = new Source.Engine.Input.MyKeyboard();
             Source.Engine.Globals.MyMouse = new Source.Engine.Input.MyMouseControl();
 
-            _gameplay = new Source.GamePlay.GamePlay();
+            _mainMenu = new Source.GamePlay.MainMenu(ChangeGameState, ExitGame);
+            _gameplay = new Source.GamePlay.GamePlay(ChangeGameState);
         }
 
         /// <summary>
@@ -79,6 +81,16 @@ namespace FirstMG
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+        }
+
+        protected virtual void ChangeGameState(object a_info)
+        {
+            _gameplay.ResetWorld(null);
+            Source.Engine.Globals.GameState = Convert.ToInt32(a_info);
+        }
+        protected virtual void ExitGame(object a_info)
+        {
+            Exit();
         }
 
         /// <summary>
@@ -95,7 +107,15 @@ namespace FirstMG
             Source.Engine.Globals.MyKeyboard.Update();
             Source.Engine.Globals.MyMouse.Update();
 
-            _gameplay.Update();
+            if (Source.Engine.Globals.GameState == 0)
+            {
+                _mainMenu.Update();
+            }
+            else if (Source.Engine.Globals.GameState == 1)
+            {
+                _gameplay.Update();
+            }
+
 
             Source.Engine.Globals.MyKeyboard.UpdateOld();
             Source.Engine.Globals.MyMouse.UpdateOld();
@@ -114,9 +134,16 @@ namespace FirstMG
             Source.Engine.Globals.MySpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
 
-            _gameplay.Draw();
+            if (Source.Engine.Globals.GameState == 0)
+            {
+                _mainMenu.Draw();
+            }
+            else if (Source.Engine.Globals.GameState == 1)
+            {
+                _gameplay.Draw();
+            }
 
-                
+
             _cursor.Draw(Source.Engine.Globals.NewVector(Source.Engine.Globals.MyMouse.NewMousePos), Vector2.Zero, Color.White);
             Source.Engine.Globals.MySpriteBatch.End();
 

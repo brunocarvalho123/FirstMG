@@ -25,6 +25,7 @@ namespace FirstMG.Source.Engine
         private static Input.MyMouseControl _mouse;
         private static int _screenWidth;
         private static int _screenHeight;
+        private static int _gameState = 0;
         private static GameTime _gameTime;
 
         public static ContentManager MyContent
@@ -66,6 +67,11 @@ namespace FirstMG.Source.Engine
         {
             get { return _gameTime; }
             set { _gameTime = value; }
+        }
+        public static int GameState
+        {
+            get { return _gameState; }
+            set { _gameState = value; }
         }
 
 

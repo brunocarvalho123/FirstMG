@@ -19,8 +19,8 @@ namespace FirstMG.Source.Engine.Output
             _border = a_border;
             _color  = a_color;
 
-            _bar           = new Asset2D("Assets\\solid", new Vector2(0, 0), new Vector2(a_dimensions.X - _border * 2, a_dimensions.Y - _border * 2));
-            _barBackground = new Asset2D("Assets\\shade", new Vector2(0, 0), new Vector2(a_dimensions.X, a_dimensions.Y));
+            _bar           = new Asset2D("Assets\\UI\\solid", new Vector2(0, 0), new Vector2(a_dimensions.X - _border * 2, a_dimensions.Y - _border * 2));
+            _barBackground = new Asset2D("Assets\\UI\\shade", new Vector2(0, 0), new Vector2(a_dimensions.X, a_dimensions.Y));
         }
 
         public virtual void Update(float a_current, float a_max)

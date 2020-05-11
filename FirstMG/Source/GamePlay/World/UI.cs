@@ -13,15 +13,18 @@ namespace FirstMG.Source.GamePlay
     {
         private Asset2D _pauseOverlay;
         private Button _resetButton;
+        private Button _mainMenuButton;
         private SpriteFont _font;
         private Engine.Output.DisplayBar _healthBar;
         private Engine.Output.DisplayBar _staminaBar;
 
-        public UI(PassObject a_resetWorld)
+        public UI(PassObject a_resetWorld, PassObject a_changeGameState)
         {
             _font = Globals.MyContent.Load<SpriteFont>("Fonts\\Arial16");
-            _pauseOverlay = new Asset2D("Assets\\pause_overlay", new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2), new Vector2(300,300));
-            _resetButton = new Button("Assets\\simple_button", new Vector2(0,0), new Vector2(96,32), "Fonts\\Arial16", "Restart", a_resetWorld, null);
+
+            _pauseOverlay   = new Asset2D("Assets\\UI\\pause_overlay", new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2), new Vector2(300,300));
+            _resetButton    = new Button("Assets\\UI\\simple_button", new Vector2(0,0), new Vector2(96,32), "Fonts\\Arial16", "Restart", a_resetWorld, null);
+            _mainMenuButton = new Button("Assets\\UI\\simple_button", new Vector2(0, 0), new Vector2(96, 32), "Fonts\\Arial16", "Main menu", a_changeGameState, null);
 
             _healthBar  = new Engine.Output.DisplayBar(new Vector2(154, 20), 3, Color.Red);
             _staminaBar = new Engine.Output.DisplayBar(new Vector2(154, 20), 3, Color.Yellow);
@@ -36,6 +39,11 @@ namespace FirstMG.Source.GamePlay
             {
                 _resetButton.Update(new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2 + 100));
             }
+            if (GameGlobals.paused)
+            {
+                _mainMenuButton.Update(new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2 + 300));
+            }
+
         }
 
         public void Draw(World a_world)
@@ -65,7 +73,8 @@ namespace FirstMG.Source.GamePlay
 
             if (GameGlobals.paused)
             {
-                _pauseOverlay.Draw(Vector2.Zero);
+                _mainMenuButton.Draw(new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2 + 300));
+                _pauseOverlay.Draw(Vector2.Zero, Color.Black);
             }
         }
     }

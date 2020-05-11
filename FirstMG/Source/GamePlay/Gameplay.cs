@@ -13,16 +13,18 @@ namespace FirstMG.Source.GamePlay
         private int _playState;
         private World _world;
 
-        public GamePlay()
+        Engine.PassObject ChangeGameState;
+
+        public GamePlay(Engine.PassObject a_changeGameState)
         {
             _playState = 0;
-
+            ChangeGameState = a_changeGameState;
             ResetWorld(null);
         }
 
         public virtual void ResetWorld(object a_object)
         {
-            _world = new World(ResetWorld);
+            _world = new World(ResetWorld, ChangeGameState);
         }
 
         public virtual void Update()

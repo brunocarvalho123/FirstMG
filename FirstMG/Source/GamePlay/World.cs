@@ -22,10 +22,12 @@ namespace FirstMG.Source.GamePlay
         private Engine.MyTimer _enemyTimer = new Engine.MyTimer(1000);
         public MainChar MainCharacter { get; private set; }
         Engine.PassObject ResetWorld;
+        Engine.PassObject ChangeGameState;
 
-        public World(Engine.PassObject a_resetWorld)
+        public World(Engine.PassObject a_resetWorld, Engine.PassObject a_changeGameState)
         {
             ResetWorld = a_resetWorld;
+            ChangeGameState = a_changeGameState;
 
             GameGlobals.PassProjectile = AddProjectile;
             GameGlobals.PassNpc        = AddNpc;
@@ -34,7 +36,7 @@ namespace FirstMG.Source.GamePlay
 
             _nKilled = 0;
             _offset  = new Vector2(0, 0);
-            _ui      = new UI(ResetWorld);
+            _ui      = new UI(ResetWorld, ChangeGameState);
 
             LoadData(1);
         }
@@ -159,7 +161,7 @@ namespace FirstMG.Source.GamePlay
                 }
             }
 
-            if (Engine.Globals.MyKeyboard.GetNewPress("Escape"))
+            if (Engine.Globals.MyKeyboard.GetNewPress("Escape") && !MainCharacter.Dead)
             {
                 GameGlobals.paused = !GameGlobals.paused;
             }
