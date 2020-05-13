@@ -13,7 +13,7 @@ namespace FirstMG.Source.GamePlay
     class MainChar : Unit
     {
         private Engine.MyTimer _staminaTimer = new Engine.MyTimer(1000);
-        public MainChar(string a_path, Vector2 a_position, Vector2 a_dimension) : base(a_path, a_position, a_dimension)
+        public MainChar(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames)
         {
             Health = 5.0f;
             HealthMax = Health;
@@ -23,6 +23,11 @@ namespace FirstMG.Source.GamePlay
             Speed = 4.5f;
             JumpSpeed = 7.0f;
             MaxJump = 120.0f;
+
+            FrameAnimations = false;
+            //CurrentAnimation = 0;
+            //FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 0), 4, 66, 0, "Walk"));
+            //FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 0), 1, 66, 0, "Stand"));
         }
 
 
@@ -90,7 +95,15 @@ namespace FirstMG.Source.GamePlay
                 _staminaTimer.Reset();
             }
 
-            if (checkScroll) GameGlobals.CheckScroll(Position);
+            if (checkScroll)
+            {
+                GameGlobals.CheckScroll(Position);
+                SetAnimationByName("Stand");
+            }
+            else
+            {
+                SetAnimationByName("Stand");
+            }
 
             //Rotation = Globals.RotateTowards(Position, Globals.NewVector(Globals.MyMouse.NewMousePos) - a_offset);
 
@@ -101,7 +114,7 @@ namespace FirstMG.Source.GamePlay
 
             if (Globals.MyMouse.RightClick())
             {
-                GameGlobals.PassNpc(new FirstEnemy(Globals.NewVector(Globals.MyMouse.NewMousePos) - a_offset));
+                GameGlobals.PassNpc(new FirstEnemy(Globals.NewVector(Globals.MyMouse.NewMousePos) - a_offset, new Vector2(1,1)));
             }
 
             base.Update(a_offset, a_terrains);

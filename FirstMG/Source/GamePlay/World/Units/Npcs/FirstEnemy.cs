@@ -13,8 +13,8 @@ namespace FirstMG.Source.GamePlay
     class FirstEnemy : Npc
     {
 
-        public FirstEnemy(Vector2 a_position) 
-            : base("Assets\\shrek", a_position, new Vector2(100,100))
+        public FirstEnemy(Vector2 a_position, Vector2 a_frames) 
+            : base("Assets\\shrek", a_position, new Vector2(100,100), a_frames)
         {
             Speed = 4.2f;
         }

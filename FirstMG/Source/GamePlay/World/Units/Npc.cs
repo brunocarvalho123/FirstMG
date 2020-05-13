@@ -13,7 +13,7 @@ namespace FirstMG.Source.GamePlay
     class Npc : Unit
     {
 
-        public Npc(string a_path, Vector2 a_position, Vector2 a_dimension) : base(a_path, a_position, a_dimension)
+        public Npc(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames)
         {
             Speed = 2.0f;
         }

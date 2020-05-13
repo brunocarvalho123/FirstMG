@@ -16,6 +16,7 @@ namespace FirstMG.Source.Engine
         private float _rotation;
         private Vector2 _position;
         private Vector2 _dimension;
+        private Vector2 _frameSize;
         private Texture2D _asset;
 
         public Asset2D(string a_path, Vector2 a_position, Vector2 a_dimension)
@@ -35,6 +36,11 @@ namespace FirstMG.Source.Engine
         {
             get { return _dimension; }
             set { _dimension = value; }
+        }
+        public Vector2 FrameSize
+        {
+            get { return _frameSize; }
+            set { _frameSize = value; }
         }
         protected Texture2D Asset
         {

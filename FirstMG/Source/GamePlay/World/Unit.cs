@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FirstMG.Source.GamePlay
 {
-    class Unit : Asset2D
+    class Unit : Animated2D
     {
         /* Floats */
         private float _floorDist;
@@ -26,7 +26,7 @@ namespace FirstMG.Source.GamePlay
         private bool _dead;
         private bool _jumping;
 
-        public Unit(string a_path, Vector2 a_position, Vector2 a_dimension) : base(a_path, a_position, a_dimension)
+        public Unit(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames, Color.White)
         {
             _floorDist  = 0.0f;
             _health     = 1.0f;
