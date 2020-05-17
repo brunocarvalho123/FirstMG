@@ -25,7 +25,7 @@ namespace FirstMG.Source.Engine
         private List<List<GridLocation>> _slots = new List<List<GridLocation>>();
 
 
-        public SquareGrid(Vector2 a_slotDims, Vector2 a_startPos, Vector2 a_totalDims, float a_gravity = .8f, float a_friction = 2)
+        public SquareGrid(Vector2 a_slotDims, Vector2 a_startPos, Vector2 a_totalDims, float a_gravity = .8f, float a_friction = 2f)
         {
             _gravity  = a_gravity;
             _friction = a_friction;
@@ -56,6 +56,10 @@ namespace FirstMG.Source.Engine
         public float Gravity
         {
             get { return _gravity; }
+        }
+        public float Friction
+        {
+            get { return _friction; }
         }
 
 

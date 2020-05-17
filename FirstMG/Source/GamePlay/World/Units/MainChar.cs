@@ -74,6 +74,12 @@ namespace FirstMG.Source.GamePlay
         {
             bool checkScroll = false;
             a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = false;
+
+            if (VSpeed != 0)
+            {
+                checkScroll = true;
+            }
+
             if (Globals.MyKeyboard.GetPress("A"))
             {
                 checkScroll = true;
@@ -125,7 +131,7 @@ namespace FirstMG.Source.GamePlay
 
                 if (location != null && !location.Filled && !location.Impassible)
                 {
-                    location.SetToFilled(false);
+                    location.SetToFilled(true);
                     FirstEnemy tmpEnemy = new FirstEnemy(Vector2.Zero, new Vector2(1, 1));
 
                     tmpEnemy.Position = a_grid.GetPositionFromLocation(tmpLocation) + a_grid.SlotDimensions / 2;

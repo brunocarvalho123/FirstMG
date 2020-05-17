@@ -119,7 +119,7 @@ namespace FirstMG.Source.GamePlay
             {
                 return false;
             } 
-            else if (Math.Abs(a_slotBelow.Position.Y - Position.Y) > 0.1f)
+            else if (Math.Abs(a_slotBelow.Position.Y - Position.Y) > 0.11f)
             {
                 return false;
             }
@@ -163,11 +163,13 @@ namespace FirstMG.Source.GamePlay
                 GravityEffect(a_grid, slotBelow);
             }
 
-            Position = new Vector2(Position.X, Position.Y + VSpeed);
-
-            if (Position.Y >= Globals.ScreenHeight)
+            if (VSpeed != 0)
             {
-                Dead = true;
+                Position = new Vector2(Position.X, Position.Y + VSpeed);
+                if (Position.Y >= Globals.ScreenHeight)
+                {
+                    Dead = true;
+                }
             }
 
             base.Update(a_offset);

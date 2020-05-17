@@ -69,11 +69,11 @@ namespace FirstMG.Source.GamePlay
             }
             if (tmpPos.Y < (-_offset.Y + (Engine.Globals.ScreenHeight * .3f)))
             {
-                _offset = new Vector2(_offset.X, _offset.Y + MainCharacter.Speed);
+                _offset = new Vector2(_offset.X, _offset.Y - MainCharacter.VSpeed);
             }
             if (tmpPos.Y > (-_offset.Y + (Engine.Globals.ScreenHeight * .7f)))
             {
-                _offset = new Vector2(_offset.X, _offset.Y - MainCharacter.Speed);
+                _offset = new Vector2(_offset.X, _offset.Y - MainCharacter.VSpeed);
             }
         }
 
