@@ -12,7 +12,7 @@ namespace FirstMG.Source.GamePlay
         public Dirt(string a_path, Vector2 a_position)
             : base(a_path, a_position, new Vector2(16, 48))
         {
-            IsBackground = false;
+            /* empty */
         }
 
         public override void Update(Vector2 a_offset)

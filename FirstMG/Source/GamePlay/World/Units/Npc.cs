@@ -30,9 +30,9 @@ namespace FirstMG.Source.GamePlay
             }
         }
 
-        public virtual void Update(Vector2 a_offset, MainChar a_mainChar)
+        public virtual void Update(Vector2 a_offset, MainChar a_mainChar, SquareGrid a_grid)
         {
-            AI(a_mainChar);
+            //AI(a_mainChar);
 
             base.Update(a_offset);
         }

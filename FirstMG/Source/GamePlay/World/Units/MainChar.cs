@@ -21,8 +21,8 @@ namespace FirstMG.Source.GamePlay
             StaminaMax = Stamina;
 
             Speed = 4.5f;
-            JumpSpeed = 7.0f;
-            MaxJump = 120.0f;
+            VSpeed = 7.0f;
+            JumpSpeed = 15.0f;
 
             FrameAnimations = false;
             //CurrentAnimation = 0;
@@ -42,12 +42,18 @@ namespace FirstMG.Source.GamePlay
 
         public void MoveLeft()
         {
-            Position = new Vector2(Position.X - Speed, Position.Y);
+            if(Speed > 0)
+            {
+                Position = new Vector2(Position.X - Speed, Position.Y);
+            }
         }
 
         public void MoveRight()
         {
-            Position = new Vector2(Position.X + Speed, Position.Y);
+            if (Speed > 0)
+            {
+                Position = new Vector2(Position.X + Speed, Position.Y);
+            }
         }
 
         public void RechargeStamina (float a_value)
@@ -64,9 +70,10 @@ namespace FirstMG.Source.GamePlay
             }
         }
 
-        public override void Update(Vector2 a_offset, List<Terrain> a_terrains)
+        public override void Update(Vector2 a_offset, SquareGrid a_grid)
         {
             bool checkScroll = false;
+            a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = false;
             if (Globals.MyKeyboard.GetPress("A"))
             {
                 checkScroll = true;
@@ -81,9 +88,8 @@ namespace FirstMG.Source.GamePlay
 
             if (Globals.MyKeyboard.GetNewPress("Space"))
             {
-                if (Jumping == false && OnTerrain(a_terrains).Item2 == true)
+                if (OnGround == true)
                 {
-                    InitialYPos = Position.Y;
                     Jumping = true;
                 }
             }
@@ -114,10 +120,22 @@ namespace FirstMG.Source.GamePlay
 
             if (Globals.MyMouse.RightClick())
             {
-                GameGlobals.PassNpc(new FirstEnemy(Globals.NewVector(Globals.MyMouse.NewMousePos) - a_offset, new Vector2(1,1)));
+                Vector2 tmpLocation = a_grid.GetLocationFromPixel(Globals.NewVector(Globals.MyMouse.NewMousePos) - a_offset, Vector2.Zero);
+                GridLocation location = a_grid.GetSlotFromLocation(tmpLocation);
+
+                if (location != null && !location.Filled && !location.Impassible)
+                {
+                    location.SetToFilled(false);
+                    FirstEnemy tmpEnemy = new FirstEnemy(Vector2.Zero, new Vector2(1, 1));
+
+                    tmpEnemy.Position = a_grid.GetPositionFromLocation(tmpLocation) + a_grid.SlotDimensions / 2;
+
+                    GameGlobals.PassNpc(tmpEnemy);
+                }
             }
 
-            base.Update(a_offset, a_terrains);
+            base.Update(a_offset, a_grid);
+            a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = true;
         }
 
         public override void Draw(Vector2 a_offset)

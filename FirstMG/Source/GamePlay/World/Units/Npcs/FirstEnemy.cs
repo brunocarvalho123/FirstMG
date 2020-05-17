@@ -14,14 +14,14 @@ namespace FirstMG.Source.GamePlay
     {
 
         public FirstEnemy(Vector2 a_position, Vector2 a_frames) 
-            : base("Assets\\shrek", a_position, new Vector2(100,100), a_frames)
+            : base("Assets\\shrek", a_position, new Vector2(50,50), a_frames)
         {
             Speed = 4.2f;
         }
 
-        public override void Update(Vector2 a_offset, MainChar a_mainChar)
+        public override void Update(Vector2 a_offset, MainChar a_mainChar, SquareGrid a_grid)
         {
-            base.Update(a_offset, a_mainChar);
+            base.Update(a_offset, a_mainChar, a_grid);
         }
 
         public override void Draw(Vector2 a_offset)

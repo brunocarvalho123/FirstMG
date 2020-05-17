@@ -11,42 +11,37 @@ namespace FirstMG.Source.GamePlay
     class Unit : Animated2D
     {
         /* Floats */
-        private float _floorDist;
         private float _health;
         private float _healthMax;
-        private float _hitDist;
-        private float _jumpSpeed;
-        private float _initialYPos;
-        private float _maxJump; //TODO: Remove this implement proper acceleration
-        private float _speed;
         private float _stamina;
         private float _staminaMax;
+
+        private float _hitDist;
+
+        private float _hSpeed;
+        private float _vSpeed;
+        private float _jumpSpeed;
 
         /* Booleans */
         private bool _dead;
         private bool _jumping;
+        private bool _onGround;
 
         public Unit(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames, Color.White)
         {
-            _floorDist  = 0.0f;
             _health     = 1.0f;
             _healthMax  = _health;
             _stamina    = 0;
             _staminaMax = _stamina;
             _hitDist    = 50.0f;
-            _jumpSpeed  = 5.0f;
-            _maxJump    = 50.0f;
-            _speed      = 2.0f;
+            _vSpeed     = 5.0f;
+            _hSpeed     = 2.0f;
 
             _dead      = false;
             _jumping   = false;
+            _onGround  = true;
         }
 
-        public float FloorDistance
-        {
-            get { return _floorDist; }
-            protected set { _floorDist = value; }
-        }
         public float Health
         {
             get { return _health; }
@@ -62,16 +57,6 @@ namespace FirstMG.Source.GamePlay
             get { return _hitDist; }
             protected set { _hitDist = value; }
         }
-        public float MaxJump
-        {
-            get { return _maxJump; }
-            protected set { _maxJump = value; }
-        }
-        public float InitialYPos
-        {
-            get { return _initialYPos; }
-            protected set { _initialYPos = value; }
-        }
         public bool Dead
         {
             get { return _dead; }
@@ -82,6 +67,16 @@ namespace FirstMG.Source.GamePlay
             get { return _jumping; }
             protected set { _jumping = value; }
         }
+        public bool OnGround
+        {
+            get { return _onGround; }
+            protected set { _onGround = value; }
+        }
+        public float VSpeed
+        {
+            get { return _vSpeed; }
+            protected set { _vSpeed = value; }
+        }
         public float JumpSpeed
         {
             get { return _jumpSpeed; }
@@ -89,8 +84,8 @@ namespace FirstMG.Source.GamePlay
         }
         public float Speed
         {
-            get { return _speed; }
-            protected set { _speed = value; }
+            get { return _hSpeed; }
+            protected set { _hSpeed = value; }
         }
         public float Stamina
         {
@@ -113,70 +108,68 @@ namespace FirstMG.Source.GamePlay
             }
         }
 
-        public virtual Tuple<Terrain,bool> OnTerrain(List<Terrain> a_terrains)
-        {
-            IEnumerable<Terrain> query = from terrain in a_terrains
-                                         where Math.Abs(terrain.Position.X - Position.X) <= terrain.Dimension.X / 2 + Dimension.X / 2
-                                         select terrain;
-
-            Terrain closestTerrain = null;
-            foreach (Terrain terrain in query)
-            {
-                if (terrain.Position.Y == Position.Y)
-                {
-                    return new Tuple<Terrain, bool>(terrain,true);
-                }
-                else if (closestTerrain == null ||  (terrain.Position.Y > Position.Y) && (terrain.Position.Y - Position.Y < closestTerrain.Position.Y - Position.Y) )
-                {
-                    closestTerrain = terrain;
-                }
-            }
-            return new Tuple<Terrain, bool>(closestTerrain, false);
-        }
-
         public virtual void Jump()
         {
-            if (Position.Y > (InitialYPos - MaxJump))
+            VSpeed = -JumpSpeed;
+        }
+
+        public virtual bool IsOnGround(SquareGrid a_grid, GridLocation a_slotBelow)
+        {
+            if(a_slotBelow == null)
             {
-                Position = new Vector2(Position.X, Position.Y - _jumpSpeed);
+                return false;
+            } 
+            else if (Math.Abs(a_slotBelow.Position.Y - Position.Y) > 0.1f)
+            {
+                return false;
+            }
+
+            return a_slotBelow.Impassible;
+        }
+
+        public virtual void GravityEffect(SquareGrid a_grid, GridLocation a_slotBelow)
+        {
+            if (OnGround)
+            {
+                VSpeed = 0;
             }
             else
             {
-                Jumping = false;
+                VSpeed += a_grid.Gravity;
+                if (a_slotBelow != null && a_slotBelow.Impassible && a_slotBelow.Position.Y - (Position.Y + VSpeed) < 0)
+                {
+                    VSpeed = Math.Abs(a_slotBelow.Position.Y - Position.Y) - 0.1f;
+                }
             }
-        }
 
-        public virtual void GravityEffect(List<Terrain> a_terrains)
-        {
-            Tuple<Terrain,bool> terrainTuple = OnTerrain(a_terrains);
-            if (terrainTuple.Item2 == false && Globals.ScreenHeight > Position.Y)
+            if (VSpeed > GameGlobals.maxVSpeed)
             {
-                if (terrainTuple.Item1 != null && Position.Y <= terrainTuple.Item1.Position.Y && Position.Y + _jumpSpeed >= terrainTuple.Item1.Position.Y)
-                {
-                    Position = new Vector2(Position.X, terrainTuple.Item1.Position.Y);
-                }
-                else
-                {
-                    Position = new Vector2(Position.X, Position.Y + _jumpSpeed);
-                }
+                VSpeed = GameGlobals.maxVSpeed;
             }
         }
 
-        public virtual void Update(Vector2 a_offset, List<Terrain> a_terrains)
+        public virtual void Update(Vector2 a_offset, SquareGrid a_grid)
         {
+            GridLocation slotBelow = a_grid.GetSlotBelow(a_grid.GetLocationFromPixel(Position, Vector2.Zero));
+            OnGround = IsOnGround(a_grid, slotBelow);
+
             if (Jumping == true)
             {
                 Jump();
-            } 
+                Jumping = false;
+            }
             else
             {
-                GravityEffect(a_terrains);
+                GravityEffect(a_grid, slotBelow);
             }
+
+            Position = new Vector2(Position.X, Position.Y + VSpeed);
 
             if (Position.Y >= Globals.ScreenHeight)
             {
                 Dead = true;
             }
+
             base.Update(a_offset);
         }
 

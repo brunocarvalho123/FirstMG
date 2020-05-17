@@ -64,6 +64,8 @@
     <Compile Include="Source\Engine\Asset2D.cs" />
     <Compile Include="Source\Engine\Basic2D\Button.cs" />
     <Compile Include="Source\Engine\Globals.cs" />
+    <Compile Include="Source\Engine\Grids\GridLocation.cs" />
+    <Compile Include="Source\Engine\Grids\SquareGrid.cs" />
     <Compile Include="Source\Engine\Input\Keyboard\MyKey.cs" />
     <Compile Include="Source\Engine\Input\MyMouseControl.cs" />
     <Compile Include="Source\Engine\Input\MyKeyboard.cs" />

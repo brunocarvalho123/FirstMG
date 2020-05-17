@@ -12,15 +12,15 @@
     <DirtRow>
       <Position>
         <starting_x>0</starting_x>
-        <final_x>1000</final_x>
-        <y>600</y>
+        <final_x>20</final_x>
+        <y>15</y>
       </Position>
     </DirtRow>
     <DirtRow>
       <Position>
-        <starting_x>500</starting_x>
-        <final_x>700</final_x>
-        <y>500</y>
+        <starting_x>5</starting_x>
+        <final_x>10</final_x>
+        <y>13</y>
       </Position>
     </DirtRow>
   </Terrain>
