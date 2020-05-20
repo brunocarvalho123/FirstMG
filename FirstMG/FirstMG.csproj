@@ -71,6 +71,7 @@
     <Compile Include="Source\Engine\Input\MyKeyboard.cs" />
     <Compile Include="Source\Engine\MyTimer.cs" />
     <Compile Include="Source\Engine\Output\DisplayBar.cs" />
+    <Compile Include="Source\Engine\Output\TiledBackground.cs" />
     <Compile Include="Source\GamePlay\GameGlobals.cs" />
     <Compile Include="Source\GamePlay\GamePlay.cs" />
     <Compile Include="Source\GamePlay\MainMenu.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Source\GamePlay\World\Units\Npcs\FirstEnemy.cs" />
     <Compile Include="Source\GamePlay\World.cs" />
     <Compile Include="Source\GamePlay\World\Units\MainChar.cs" />
+    <Content Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -223,6 +225,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Assets\sheep.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Assets\UI\standard_dirt.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Assets\UI\standard_grass.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Assets\UI\standard_snow.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

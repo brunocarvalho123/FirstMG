@@ -53,6 +53,10 @@ namespace FirstMG.Source.Engine
         {
             get { return _slotDims; }
         }
+        public Vector2 TotalPhysicalDims
+        {
+            get { return _totalPhysicalDims; }
+        }
         public float Gravity
         {
             get { return _gravity; }

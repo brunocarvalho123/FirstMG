@@ -21,6 +21,8 @@ namespace FirstMG.Source.GamePlay
 
         private SquareGrid _grid;
 
+        private TiledBackground _tiledBackground;
+
         public int _nKilled;
         private Engine.MyTimer _enemyTimer = new Engine.MyTimer(1000);
         public MainChar MainCharacter { get; private set; }
@@ -43,7 +45,8 @@ namespace FirstMG.Source.GamePlay
 
             LoadData(1);
             
-            _ui   = new UI(ResetWorld, ChangeGameState);
+            _ui = new UI(ResetWorld, ChangeGameState);
+            _tiledBackground = new TiledBackground("Assets\\UI\\standard_snow", new Vector2(-100,-100), new Vector2(120,100), new Vector2(_grid.TotalPhysicalDims.X + 100, _grid.TotalPhysicalDims.Y + 100));
         }
 
         public virtual void AddProjectile(object a_projectile)
@@ -201,6 +204,7 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void Draw(Vector2 a_offset)
         {
+            _tiledBackground.Draw(_offset);
             _grid.DrawGrid(_offset);
 
             foreach (Terrain terrain in _terrains)
