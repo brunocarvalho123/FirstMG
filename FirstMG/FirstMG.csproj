@@ -64,6 +64,7 @@
     <Compile Include="Source\Engine\Asset2D.cs" />
     <Compile Include="Source\Engine\Basic2D\Button.cs" />
     <Compile Include="Source\Engine\Globals.cs" />
+    <Compile Include="Source\Engine\Grids\GridItem.cs" />
     <Compile Include="Source\Engine\Grids\GridLocation.cs" />
     <Compile Include="Source\Engine\Grids\SquareGrid.cs" />
     <Compile Include="Source\Engine\Input\Keyboard\MyKey.cs" />
@@ -77,8 +78,6 @@
     <Compile Include="Source\GamePlay\MainMenu.cs" />
     <Compile Include="Source\GamePlay\World\Projectile.cs" />
     <Compile Include="Source\GamePlay\World\Projectiles\CurlyLine.cs" />
-    <Compile Include="Source\GamePlay\World\Terrain.cs" />
-    <Compile Include="Source\GamePlay\World\Terrains\Dirt.cs" />
     <Compile Include="Source\GamePlay\World\UI.cs" />
     <Compile Include="Source\GamePlay\World\Unit.cs" />
     <Compile Include="Source\GamePlay\World\Units\Npc.cs" />

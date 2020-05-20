@@ -17,7 +17,6 @@ namespace FirstMG.Source.GamePlay
         private UI _ui;
         private List<Projectile> _projectiles = new List<Projectile>();
         private List<Npc> _npcs = new List<Npc>();
-        private List<Terrain> _terrains = new List<Terrain>();
 
         private SquareGrid _grid;
 
@@ -41,7 +40,6 @@ namespace FirstMG.Source.GamePlay
 
             _nKilled = 0;
             _offset  = new Vector2(0, 0);
-            _grid    = new SquareGrid(new Vector2(48, 48), new Vector2(0, 0), new Vector2(Globals.ScreenWidth, Globals.ScreenHeight));
 
             LoadData(1);
             
@@ -101,39 +99,7 @@ namespace FirstMG.Source.GamePlay
             }
             MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(57, 50), /* frames */ new Vector2(1,1));
 
-
-            // Load Terrain
-            XElement terrainXML = xml.Element("Root").Element("Terrain");
-            if (terrainXML != null)
-            {
-                List<XElement> dirtRows = (from t in terrainXML.Descendants("DirtRow") select t).ToList<XElement>();
-
-                foreach (XElement dirtRow in dirtRows)
-                {
-                    int yVal = Convert.ToInt32(dirtRow.Element("Position").Element("y").Value);
-                    int startingXVal = Convert.ToInt32(dirtRow.Element("Position").Element("starting_x").Value);
-                    int finalXVal = Convert.ToInt32(dirtRow.Element("Position").Element("final_x").Value);
-
-                    GridLocation dirtSlot = _grid.GetSlotFromLocation(new Vector2(startingXVal, yVal));
-                    dirtSlot.SetToFilled(/*impassible*/ true);
-                    _terrains.Add(new Dirt("Assets\\dirt_left", new Vector2(dirtSlot.Position.X + 8, dirtSlot.Position.Y) ));
-                    _terrains.Add(new Dirt("Assets\\dirt_mid", new Vector2(dirtSlot.Position.X + 8 + 16 , dirtSlot.Position.Y) ));
-                    _terrains.Add(new Dirt("Assets\\dirt_mid", new Vector2(dirtSlot.Position.X + 8 + 32, dirtSlot.Position.Y) ));
-                    for (int i = startingXVal+1; i < finalXVal; i ++)
-                    {
-                        dirtSlot = _grid.GetSlotFromLocation(new Vector2(i, yVal));
-                        dirtSlot.SetToFilled(/*impassible*/ true);
-                        _terrains.Add(new Dirt("Assets\\dirt_mid", new Vector2(dirtSlot.Position.X + 8, dirtSlot.Position.Y) ));
-                        _terrains.Add(new Dirt("Assets\\dirt_mid", new Vector2(dirtSlot.Position.X + 8 + 16, dirtSlot.Position.Y) ));
-                        _terrains.Add(new Dirt("Assets\\dirt_mid", new Vector2(dirtSlot.Position.X + 8 + 32, dirtSlot.Position.Y) ));
-                    }
-                    dirtSlot = _grid.GetSlotFromLocation(new Vector2(finalXVal, yVal));
-                    dirtSlot.SetToFilled(/*impassible*/ true);
-                    _terrains.Add(new Dirt("Assets\\dirt_mid", new Vector2(dirtSlot.Position.X + 8, dirtSlot.Position.Y) ));
-                    _terrains.Add(new Dirt("Assets\\dirt_mid", new Vector2(dirtSlot.Position.X + 8 + 16, dirtSlot.Position.Y) ));
-                    _terrains.Add(new Dirt("Assets\\dirt_right", new Vector2(dirtSlot.Position.X + 8 + 32, dirtSlot.Position.Y) ));
-                }
-            }
+            _grid = new SquareGrid(new Vector2(48, 48), new Vector2(0, 0), new Vector2(Globals.ScreenWidth + 200, Globals.ScreenHeight + 200), xml.Element("Root").Element("GridItem"));
         }
 
         public virtual void Update()
@@ -207,10 +173,6 @@ namespace FirstMG.Source.GamePlay
             _tiledBackground.Draw(_offset);
             _grid.DrawGrid(_offset);
 
-            foreach (Terrain terrain in _terrains)
-            {
-                terrain.Draw(new Vector2(_offset.X, _offset.Y + (terrain.Dimension.Y/2 + MainCharacter.Dimension.Y/2)));
-            }
 
             MainCharacter.Draw(_offset);
 

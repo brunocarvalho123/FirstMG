@@ -14,7 +14,7 @@ namespace FirstMG.Source.GamePlay
     {
 
         public FirstEnemy(Vector2 a_position, Vector2 a_frames) 
-            : base("Assets\\shrek", a_position, new Vector2(50,50), a_frames)
+            : base("Assets\\UI\\standard_dirt", a_position, new Vector2(50,50), a_frames)
         {
             Speed = 4.2f;
         }

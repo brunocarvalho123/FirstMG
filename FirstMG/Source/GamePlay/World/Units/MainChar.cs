@@ -127,6 +127,7 @@ namespace FirstMG.Source.GamePlay
             if (Globals.MyMouse.RightClick())
             {
                 Vector2 tmpLocation = a_grid.GetLocationFromPixel(Globals.NewVector(Globals.MyMouse.NewMousePos) - a_offset, Vector2.Zero);
+
                 GridLocation location = a_grid.GetSlotFromLocation(tmpLocation);
 
                 if (location != null && !location.Filled && !location.Impassible)
@@ -134,7 +135,7 @@ namespace FirstMG.Source.GamePlay
                     location.SetToFilled(true);
                     FirstEnemy tmpEnemy = new FirstEnemy(Vector2.Zero, new Vector2(1, 1));
 
-                    tmpEnemy.Position = a_grid.GetPositionFromLocation(tmpLocation) + a_grid.SlotDimensions / 2;
+                    tmpEnemy.Position = location.Position + tmpEnemy.Dimension/2;
 
                     GameGlobals.PassNpc(tmpEnemy);
                 }

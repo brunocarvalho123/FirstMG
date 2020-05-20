@@ -97,6 +97,10 @@ namespace FirstMG.Source.GamePlay
             get { return _staminaMax; }
             protected set { _staminaMax = value; }
         }
+        public float PositionYOffseted
+        {
+            get { return Position.Y + Dimension.Y/2; }
+        }
 
 
         public virtual void GetHit(float a_damage)
@@ -113,21 +117,40 @@ namespace FirstMG.Source.GamePlay
             VSpeed = -JumpSpeed;
         }
 
-        public virtual bool IsOnGround(SquareGrid a_grid, GridLocation a_slotBelow)
+        public virtual bool IsOnGround(SquareGrid a_grid, GridLocation a_slotBelowLeft, GridLocation a_slotBelowRight)
         {
-            if(a_slotBelow == null)
+            bool impassibleLeft = false;
+            if(a_slotBelowLeft == null)
             {
-                return false;
+                impassibleLeft = false;
             } 
-            else if (Math.Abs(a_slotBelow.Position.Y - Position.Y) > 0.11f)
+            else if (Math.Abs(a_slotBelowLeft.Position.Y - PositionYOffseted) > 0.11f)
             {
-                return false;
+                impassibleLeft = false;
+            }
+            else
+            {
+                impassibleLeft = a_slotBelowLeft.Impassible;
             }
 
-            return a_slotBelow.Impassible;
+            bool impassibleRight = false;
+            if (a_slotBelowRight == null)
+            {
+                impassibleRight = false;
+            }
+            else if (Math.Abs(a_slotBelowRight.Position.Y - PositionYOffseted) > 0.11f)
+            {
+                impassibleRight = false;
+            }
+            else
+            {
+                impassibleRight = a_slotBelowRight.Impassible;
+            }
+
+            return impassibleLeft || impassibleRight;
         }
 
-        public virtual void GravityEffect(SquareGrid a_grid, GridLocation a_slotBelow)
+        public virtual void GravityEffect(SquareGrid a_grid, GridLocation a_slotBelowLeft, GridLocation a_slotBelowRight)
         {
             if (OnGround)
             {
@@ -136,9 +159,9 @@ namespace FirstMG.Source.GamePlay
             else
             {
                 VSpeed += a_grid.Gravity;
-                if (a_slotBelow != null && a_slotBelow.Impassible && a_slotBelow.Position.Y - (Position.Y + VSpeed) < 0)
+                if (a_slotBelowLeft != null && (a_slotBelowLeft.Impassible || a_slotBelowRight.Impassible) && a_slotBelowLeft.Position.Y - (PositionYOffseted + VSpeed) < 0)
                 {
-                    VSpeed = Math.Abs(a_slotBelow.Position.Y - Position.Y) - 0.1f;
+                    VSpeed = Math.Abs(a_slotBelowLeft.Position.Y - PositionYOffseted) - 0.1f;
                 }
             }
 
@@ -150,8 +173,9 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void Update(Vector2 a_offset, SquareGrid a_grid)
         {
-            GridLocation slotBelow = a_grid.GetSlotBelow(a_grid.GetLocationFromPixel(Position, Vector2.Zero));
-            OnGround = IsOnGround(a_grid, slotBelow);
+            GridLocation slotBelowLeft = a_grid.GetSlotBelow(a_grid.GetLocationFromPixel(Position + new Vector2(-Dimension.Y/2, Dimension.Y/2), Vector2.Zero));
+            GridLocation slotBelowRight = a_grid.GetSlotBelow(a_grid.GetLocationFromPixel(Position + new Vector2(Dimension.Y/2, Dimension.Y/2), Vector2.Zero));
+            OnGround = IsOnGround(a_grid, slotBelowLeft, slotBelowRight);
 
             if (Jumping == true)
             {
@@ -160,7 +184,7 @@ namespace FirstMG.Source.GamePlay
             }
             else
             {
-                GravityEffect(a_grid, slotBelow);
+                GravityEffect(a_grid, slotBelowLeft, slotBelowRight);
             }
 
             if (VSpeed != 0)

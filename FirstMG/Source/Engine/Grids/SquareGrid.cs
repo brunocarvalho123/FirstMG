@@ -1,6 +1,8 @@
 ﻿#region Includes
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 #endregion
 
@@ -22,10 +24,12 @@ namespace FirstMG.Source.Engine
 
         private Asset2D _gridImg;
 
+
+        private List<GridItem> _gridItems = new List<GridItem>();
         private List<List<GridLocation>> _slots = new List<List<GridLocation>>();
 
 
-        public SquareGrid(Vector2 a_slotDims, Vector2 a_startPos, Vector2 a_totalDims, float a_gravity = .8f, float a_friction = 2f)
+        public SquareGrid(Vector2 a_slotDims, Vector2 a_startPos, Vector2 a_totalDims, XElement a_data, float a_gravity = .8f, float a_friction = 2f)
         {
             _gravity  = a_gravity;
             _friction = a_friction;
@@ -42,6 +46,8 @@ namespace FirstMG.Source.Engine
             SetBaseGrid();
             
             _gridImg = new Asset2D("Assets\\UI\\shade", _slotDims/2, new Vector2(_slotDims.X-2, _slotDims.Y-2));
+
+            LoadData(a_data);
         }
 
         public bool ShowGrid
@@ -112,7 +118,41 @@ namespace FirstMG.Source.Engine
             return null;
         }
 
-        
+
+        public virtual void AddGridItem(string a_path, Vector2 a_location)
+        {
+            _gridItems.Add(new GridItem(/* Path       */ a_path,
+                                        /* Position   */ GetPositionFromLocation(a_location) + SlotDimensions/2,
+                                        /* Dimensions */ Globals.NewVector(SlotDimensions),
+                                        /* Frames      */ new Vector2(1,1)));
+
+            GetSlotFromLocation(a_location).SetToFilled(/* impasssible */ true);
+        }
+
+        public virtual void LoadData(XElement a_data)
+        {
+            if (a_data != null)
+            {
+                List<XElement> dirtRows = (from t in a_data.Descendants("DirtRow") select t).ToList<XElement>();
+
+                // Load Terrain
+                foreach (XElement dirtRow in dirtRows)
+                {
+                    int yVal = Convert.ToInt32(dirtRow.Element("Position").Element("y").Value);
+                    int startingXVal = Convert.ToInt32(dirtRow.Element("Position").Element("starting_x").Value);
+                    int finalXVal = Convert.ToInt32(dirtRow.Element("Position").Element("final_x").Value);
+
+                    AddGridItem("Assets\\dirt_left", new Vector2(startingXVal, yVal));
+                    for (int i = startingXVal + 1; i < finalXVal; i++)
+                    {
+                        AddGridItem("Assets\\dirt_mid", new Vector2(i, yVal));
+                    }
+                    AddGridItem("Assets\\dirt_right", new Vector2(finalXVal, yVal));
+                }
+            }
+        }
+
+
         public virtual void SetBaseGrid()
         {
             _gridDims = new Vector2((int)(_totalPhysicalDims.X/_slotDims.X), (int)(_totalPhysicalDims.Y/_slotDims.Y));
@@ -169,6 +209,11 @@ namespace FirstMG.Source.Engine
                         _gridImg.Draw(a_offset + _physicalStartPos + new Vector2(j * _slotDims.X, k * _slotDims.Y));
                     }
                 }
+            }
+
+            foreach (GridItem item in _gridItems)
+            {
+                item.Draw(a_offset);
             }
         }
     }

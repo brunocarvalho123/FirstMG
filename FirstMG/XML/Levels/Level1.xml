@@ -8,7 +8,7 @@
     <Npc>
     </Npc>
   </Unit>
-  <Terrain>
+  <GridItem>
     <DirtRow>
       <Position>
         <starting_x>0</starting_x>
@@ -23,5 +23,5 @@
         <y>13</y>
       </Position>
     </DirtRow>
-  </Terrain>
+  </GridItem>
 </Root>
