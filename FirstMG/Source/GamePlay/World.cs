@@ -60,11 +60,11 @@ namespace FirstMG.Source.GamePlay
         public virtual void CheckScroll(object a_position)
         {
             Vector2 tmpPos = (Vector2)a_position;
-            if ((tmpPos.X < (-_offset.X + (Engine.Globals.ScreenWidth * .3f))) && tmpPos.X > (_grid.TotalPhysicalDims.X * .2f))
+            if ((tmpPos.X < (-_offset.X + (Engine.Globals.ScreenWidth * .3f))) )
             {
                 _offset = new Vector2(_offset.X - MainCharacter.HSpeed, _offset.Y);
             }
-            if (tmpPos.X > (-_offset.X + (Engine.Globals.ScreenWidth * .7f)) && tmpPos.X < (_grid.TotalPhysicalDims.X * .8f))
+            if (tmpPos.X > (-_offset.X + (Engine.Globals.ScreenWidth * .7f)) )
             {
                 _offset = new Vector2(_offset.X - MainCharacter.HSpeed, _offset.Y);
             }

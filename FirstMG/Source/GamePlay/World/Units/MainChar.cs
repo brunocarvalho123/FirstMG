@@ -73,12 +73,9 @@ namespace FirstMG.Source.GamePlay
                 HSpeed += MovSpeed;
             }
 
-            if (Globals.MyKeyboard.GetNewPress("Space"))
+            if (Globals.MyKeyboard.GetNewPress("Space") && OnGround)
             {
-                if (OnGround == true)
-                {
-                    Jumping = true;
-                }
+                VSpeed = -JumpSpeed;
             }
 
             _staminaTimer.UpdateTimer();

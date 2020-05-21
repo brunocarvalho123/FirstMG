@@ -115,6 +115,17 @@ namespace FirstMG.Source.Engine
 
             return null;
         }
+
+        public virtual GridLocation GetSlotAbove(Vector2 a_loc)
+        {
+            if (a_loc.X >= 0 && a_loc.Y - 1 >= 0 && a_loc.X < _slots.Count && a_loc.Y - 1 < _slots[(int)a_loc.X].Count)
+            {
+                return _slots[(int)a_loc.X][(int)a_loc.Y - 1];
+            }
+
+            return null;
+        }
+        
         public virtual GridLocation GetSlotBelow(Vector2 a_loc)
         {
             if (a_loc.X >= 0 && a_loc.Y + 1 >= 0 && a_loc.X < _slots.Count && a_loc.Y + 1 < _slots[(int)a_loc.X].Count)

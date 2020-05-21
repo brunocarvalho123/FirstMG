@@ -25,9 +25,6 @@ namespace FirstMG.Source.GamePlay
 
         /* Booleans */
         private bool _dead;
-        private bool _movingLeft;
-        private bool _movingRight;
-        private bool _jumping;
         private bool _onGround;
 
         public Unit(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames, Color.White)
@@ -39,9 +36,6 @@ namespace FirstMG.Source.GamePlay
             _hitDist    = 50.0f;
 
             _dead        = false;
-            _jumping     = false;
-            _movingLeft  = false;
-            _movingRight = false;
             _onGround    = false;
         }
 
@@ -64,21 +58,6 @@ namespace FirstMG.Source.GamePlay
         {
             get { return _dead; }
             protected set { _dead = value; }
-        }
-        public bool MovingLeft
-        {
-            get { return _movingLeft; }
-            protected set { _movingLeft = value; }
-        }
-        public bool MovingRight
-        {
-            get { return _movingRight; }
-            protected set { _movingRight = value; }
-        }
-        public bool Jumping
-        {
-            get { return _jumping; }
-            protected set { _jumping = value; }
         }
         public bool OnGround
         {
@@ -133,6 +112,7 @@ namespace FirstMG.Source.GamePlay
         public virtual void MoveLeft(SquareGrid a_grid, GridLocation a_slotLeft)
         {
             if (OnGround) HSpeed = Math.Min(0, HSpeed + a_grid.Friction);
+            else HSpeed = Math.Min(0, HSpeed + a_grid.Friction / 2);
 
             if (a_slotLeft == null)
             {
@@ -163,6 +143,7 @@ namespace FirstMG.Source.GamePlay
         public virtual void MoveRight(SquareGrid a_grid, GridLocation a_slotRight)
         {
             if (OnGround) HSpeed = Math.Max(0, HSpeed - a_grid.Friction);
+            else HSpeed = Math.Max(0, HSpeed - a_grid.Friction/2);
 
             if (a_slotRight == null)
             {
@@ -189,9 +170,21 @@ namespace FirstMG.Source.GamePlay
             HSpeed = Math.Min(HSpeed, GameGlobals.maxHSpeed);
         }
 
-        public virtual void Jump()
+        public virtual void Jump(SquareGrid a_grid, GridLocation a_slotAbove)
         {
-            VSpeed = -JumpSpeed;
+            if (a_slotAbove == null)
+            {
+                VSpeed = 0;
+                return;
+            }
+
+            float offsetedYPos = Position.Y - Dimension.Y / 2;
+            float offsetedSlotYPos = a_slotAbove.Position.Y + a_grid.SlotDimensions.Y;
+
+            if (a_slotAbove != null && a_slotAbove.Impassible && (offsetedYPos + VSpeed < offsetedSlotYPos))
+            {
+                VSpeed = offsetedSlotYPos - offsetedYPos;
+            }
         }
 
         public virtual bool IsOnGround(SquareGrid a_grid, GridLocation a_slotBelowLeft, GridLocation a_slotBelowRight)
@@ -229,9 +222,10 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void GravityEffect(SquareGrid a_grid, GridLocation a_slotBelowLeft, GridLocation a_slotBelowRight)
         {
-            if (OnGround)
+            if (OnGround && VSpeed > 0)
             {
                 VSpeed = 0;
+                return;
             }
             else
             {
@@ -242,10 +236,7 @@ namespace FirstMG.Source.GamePlay
                 }
             }
 
-            if (VSpeed > GameGlobals.maxVSpeed)
-            {
-                VSpeed = GameGlobals.maxVSpeed;
-            }
+            VSpeed = Math.Min(VSpeed, GameGlobals.maxVSpeed);
         }
 
         public virtual void Update(Vector2 a_offset, SquareGrid a_grid)
@@ -254,15 +245,13 @@ namespace FirstMG.Source.GamePlay
             GridLocation slotBelowRight = a_grid.GetSlotBelow(a_grid.GetLocationFromPixel(Position + new Vector2(Dimension.X/2 - 5, Dimension.Y/2 - 5), Vector2.Zero));
             OnGround = IsOnGround(a_grid, slotBelowLeft, slotBelowRight);
 
-            if (Jumping)
+            if (VSpeed < 0)
             {
-                Jump();
-                Jumping = false;
+                GridLocation slotAbove = a_grid.GetSlotAbove(a_grid.GetLocationFromPixel(Position + new Vector2(0, -Dimension.Y / 2), Vector2.Zero));
+                Jump(a_grid, slotAbove);
             }
-            else
-            {
-                GravityEffect(a_grid, slotBelowLeft, slotBelowRight);
-            }
+
+            GravityEffect(a_grid, slotBelowLeft, slotBelowRight);
 
             Position = new Vector2(Position.X, Position.Y + VSpeed);
 
