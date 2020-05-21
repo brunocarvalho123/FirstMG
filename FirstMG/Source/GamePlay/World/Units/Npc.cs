@@ -15,12 +15,12 @@ namespace FirstMG.Source.GamePlay
 
         public Npc(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames)
         {
-            Speed = 2.0f;
+            MovSpeed = 2.0f;
         }
 
         protected virtual void AI(MainChar a_mainChar)
         {
-            Position += Globals.RadialMovement(Position, a_mainChar.Position, Speed);
+            Position += Globals.RadialMovement(Position, a_mainChar.Position, MovSpeed);
             Rotation = Globals.RotateTowards(Position, a_mainChar.Position);
 
             if (Globals.GetDistance(Position, a_mainChar.Position) < 50)

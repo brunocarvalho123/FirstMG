@@ -97,6 +97,24 @@ namespace FirstMG.Source.Engine
             return null;
         }
 
+        public virtual GridLocation GetSlotLeft(Vector2 a_loc)
+        {
+            if (a_loc.X - 1 >= 0 && a_loc.Y >= 0 && a_loc.X - 1 < _slots.Count && a_loc.Y < _slots[(int)a_loc.X -1].Count)
+            {
+                return _slots[(int)a_loc.X - 1][(int)a_loc.Y];
+            }
+
+            return null;
+        }
+        public virtual GridLocation GetSlotRight(Vector2 a_loc)
+        {
+            if (a_loc.X + 1 >= 0 && a_loc.Y >= 0 && a_loc.X + 1 < _slots.Count && a_loc.Y < _slots[(int)a_loc.X + 1].Count)
+            {
+                return _slots[(int)a_loc.X + 1][(int)a_loc.Y];
+            }
+
+            return null;
+        }
         public virtual GridLocation GetSlotBelow(Vector2 a_loc)
         {
             if (a_loc.X >= 0 && a_loc.Y + 1 >= 0 && a_loc.X < _slots.Count && a_loc.Y + 1 < _slots[(int)a_loc.X].Count)
@@ -142,12 +160,12 @@ namespace FirstMG.Source.Engine
                     int startingXVal = Convert.ToInt32(dirtRow.Element("Position").Element("starting_x").Value);
                     int finalXVal = Convert.ToInt32(dirtRow.Element("Position").Element("final_x").Value);
 
-                    AddGridItem("Assets\\dirt_left", new Vector2(startingXVal, yVal));
+                    AddGridItem("Assets\\dirt_big_left", new Vector2(startingXVal, yVal));
                     for (int i = startingXVal + 1; i < finalXVal; i++)
                     {
-                        AddGridItem("Assets\\dirt_mid", new Vector2(i, yVal));
+                        AddGridItem("Assets\\dirt_big_mid", new Vector2(i, yVal));
                     }
-                    AddGridItem("Assets\\dirt_right", new Vector2(finalXVal, yVal));
+                    AddGridItem("Assets\\dirt_big_right", new Vector2(finalXVal, yVal));
                 }
             }
         }

@@ -14,9 +14,9 @@ namespace FirstMG.Source.GamePlay
     {
 
         public FirstEnemy(Vector2 a_position, Vector2 a_frames) 
-            : base("Assets\\UI\\standard_dirt", a_position, new Vector2(50,50), a_frames)
+            : base("Assets\\dirt_big", a_position, new Vector2(50,50), a_frames)
         {
-            Speed = 4.2f;
+            MovSpeed = 4.2f;
         }
 
         public override void Update(Vector2 a_offset, MainChar a_mainChar, SquareGrid a_grid)

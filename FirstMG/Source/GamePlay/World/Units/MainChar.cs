@@ -20,8 +20,7 @@ namespace FirstMG.Source.GamePlay
             Stamina = 10.0f;
             StaminaMax = Stamina;
 
-            Speed = 4.5f;
-            VSpeed = 7.0f;
+            MovSpeed  = 4.5f;
             JumpSpeed = 15.0f;
 
             FrameAnimations = false;
@@ -37,22 +36,6 @@ namespace FirstMG.Source.GamePlay
             {
                 Stamina--;
                 GameGlobals.PassProjectile(new CurlyLine(new Vector2(Position.X, Position.Y - (Dimension.Y / 2)), this, new Vector2(Globals.MyMouse.NewMousePos.X, Globals.MyMouse.NewMousePos.Y + (Dimension.Y / 2)) - a_offset));
-            }
-        }
-
-        public void MoveLeft()
-        {
-            if(Speed > 0)
-            {
-                Position = new Vector2(Position.X - Speed, Position.Y);
-            }
-        }
-
-        public void MoveRight()
-        {
-            if (Speed > 0)
-            {
-                Position = new Vector2(Position.X + Speed, Position.Y);
             }
         }
 
@@ -83,13 +66,13 @@ namespace FirstMG.Source.GamePlay
             if (Globals.MyKeyboard.GetPress("A"))
             {
                 checkScroll = true;
-                MoveLeft();
+                MovingLeft  = true;
             }
 
             if (Globals.MyKeyboard.GetPress("D"))
             {
                 checkScroll = true;
-                MoveRight();
+                MovingRight = true;
             }
 
             if (Globals.MyKeyboard.GetNewPress("Space"))
@@ -107,9 +90,8 @@ namespace FirstMG.Source.GamePlay
                 _staminaTimer.Reset();
             }
 
-            if (checkScroll)
+            if (MovingLeft | MovingRight)
             {
-                GameGlobals.CheckScroll(Position);
                 SetAnimationByName("Stand");
             }
             else
@@ -142,6 +124,11 @@ namespace FirstMG.Source.GamePlay
             }
 
             base.Update(a_offset, a_grid);
+            
+            if (checkScroll)
+            {
+                GameGlobals.CheckScroll(Position);
+            }
             a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = true;
         }
 

@@ -20,10 +20,13 @@ namespace FirstMG.Source.GamePlay
 
         private float _hSpeed;
         private float _vSpeed;
+        private float _movSpeed;
         private float _jumpSpeed;
 
         /* Booleans */
         private bool _dead;
+        private bool _movingLeft;
+        private bool _movingRight;
         private bool _jumping;
         private bool _onGround;
 
@@ -34,12 +37,12 @@ namespace FirstMG.Source.GamePlay
             _stamina    = 0;
             _staminaMax = _stamina;
             _hitDist    = 50.0f;
-            _vSpeed     = 5.0f;
-            _hSpeed     = 2.0f;
 
-            _dead      = false;
-            _jumping   = false;
-            _onGround  = true;
+            _dead        = false;
+            _jumping     = false;
+            _movingLeft  = false;
+            _movingRight = false;
+            _onGround    = false;
         }
 
         public float Health
@@ -62,6 +65,16 @@ namespace FirstMG.Source.GamePlay
             get { return _dead; }
             protected set { _dead = value; }
         }
+        public bool MovingLeft
+        {
+            get { return _movingLeft; }
+            protected set { _movingLeft = value; }
+        }
+        public bool MovingRight
+        {
+            get { return _movingRight; }
+            protected set { _movingRight = value; }
+        }
         public bool Jumping
         {
             get { return _jumping; }
@@ -72,20 +85,25 @@ namespace FirstMG.Source.GamePlay
             get { return _onGround; }
             protected set { _onGround = value; }
         }
+        public float HSpeed
+        {
+            get { return _hSpeed; }
+            protected set { _hSpeed = value; }
+        }
         public float VSpeed
         {
             get { return _vSpeed; }
             protected set { _vSpeed = value; }
         }
+        public float MovSpeed
+        {
+            get { return _movSpeed; }
+            protected set { _movSpeed = value; }
+        }
         public float JumpSpeed
         {
             get { return _jumpSpeed; }
             protected set { _jumpSpeed = value; }
-        }
-        public float Speed
-        {
-            get { return _hSpeed; }
-            protected set { _hSpeed = value; }
         }
         public float Stamina
         {
@@ -109,6 +127,59 @@ namespace FirstMG.Source.GamePlay
             if (Health <= 0)
             {
                 Dead = true;
+            }
+        }
+
+        public virtual void MoveLeft(SquareGrid a_grid, GridLocation a_slotLeft)
+        {
+            HSpeed = -MovSpeed;
+            if (a_slotLeft == null)
+            {
+                HSpeed = 0;
+                return;
+            }
+
+            float offsetXPos = Position.X - Dimension.X / 2 + 4;
+            float offsetXSlotPos = a_slotLeft.Position.X + a_grid.SlotDimensions.X;
+            
+            
+
+            if (a_slotLeft.Impassible)
+            {
+                if (offsetXPos + HSpeed < offsetXSlotPos)
+                {
+                    HSpeed = -(offsetXPos - offsetXSlotPos);
+                }
+                else if (offsetXPos + HSpeed == offsetXSlotPos)
+                {
+                    HSpeed = -4;
+                }
+            }
+        }
+
+        public virtual void MoveRight(SquareGrid a_grid, GridLocation a_slotRight)
+        {
+            HSpeed = MovSpeed;
+            if (a_slotRight == null)
+            {
+                HSpeed = 0;
+                return;
+            }
+
+            float offsetXPos = Position.X + Dimension.X / 2 - 4;
+            float offsetXSlotPos = a_slotRight.Position.X;
+
+
+            if (a_slotRight.Impassible)
+            {
+                if (offsetXPos + HSpeed > offsetXSlotPos)
+                {
+                    HSpeed = offsetXSlotPos - offsetXPos;
+                }
+                else if (offsetXPos + HSpeed == offsetXSlotPos)
+                {
+                    HSpeed = 4;
+                }
             }
         }
 
@@ -173,11 +244,11 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void Update(Vector2 a_offset, SquareGrid a_grid)
         {
-            GridLocation slotBelowLeft = a_grid.GetSlotBelow(a_grid.GetLocationFromPixel(Position + new Vector2(-Dimension.Y/2, Dimension.Y/2), Vector2.Zero));
-            GridLocation slotBelowRight = a_grid.GetSlotBelow(a_grid.GetLocationFromPixel(Position + new Vector2(Dimension.Y/2, Dimension.Y/2), Vector2.Zero));
+            GridLocation slotBelowLeft = a_grid.GetSlotBelow(a_grid.GetLocationFromPixel(Position + new Vector2(-(Dimension.X/2 - 5), Dimension.Y/2 - 5), Vector2.Zero));
+            GridLocation slotBelowRight = a_grid.GetSlotBelow(a_grid.GetLocationFromPixel(Position + new Vector2(Dimension.X/2 - 5, Dimension.Y/2 - 5), Vector2.Zero));
             OnGround = IsOnGround(a_grid, slotBelowLeft, slotBelowRight);
 
-            if (Jumping == true)
+            if (Jumping)
             {
                 Jump();
                 Jumping = false;
@@ -187,15 +258,28 @@ namespace FirstMG.Source.GamePlay
                 GravityEffect(a_grid, slotBelowLeft, slotBelowRight);
             }
 
-            if (VSpeed != 0)
+            Position = new Vector2(Position.X, Position.Y + VSpeed);
+
+            if (MovingLeft)
             {
-                Position = new Vector2(Position.X, Position.Y + VSpeed);
-                if (Position.Y >= Globals.ScreenHeight)
-                {
-                    Dead = true;
-                }
+                GridLocation slotLeft = a_grid.GetSlotLeft(a_grid.GetLocationFromPixel(Position + new Vector2(0, Dimension.Y / 2), Vector2.Zero));
+                MoveLeft(a_grid, slotLeft);
+                MovingLeft = false;
+            }
+            if (MovingRight)
+            {
+                GridLocation slotRight = a_grid.GetSlotRight(a_grid.GetLocationFromPixel(Position + new Vector2(0, Dimension.Y / 2), Vector2.Zero));
+                MoveRight(a_grid, slotRight);
+                MovingRight = false;
             }
 
+            Position = new Vector2(Position.X + HSpeed, Position.Y);
+            if (Position.Y >= Globals.ScreenHeight)
+            {
+                Dead = true;
+            }
+
+            HSpeed = 0;
             base.Update(a_offset);
         }
 
