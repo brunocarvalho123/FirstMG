@@ -14,5 +14,6 @@ namespace FirstMG.Source.GamePlay
 
         public static bool paused     = false;
         public static float maxVSpeed = 49.9f;
+        public static float maxHSpeed = 5.5f;
     }
 }

@@ -62,11 +62,11 @@ namespace FirstMG.Source.GamePlay
             Vector2 tmpPos = (Vector2)a_position;
             if ((tmpPos.X < (-_offset.X + (Engine.Globals.ScreenWidth * .3f))) && tmpPos.X > (_grid.TotalPhysicalDims.X * .2f))
             {
-                _offset = new Vector2(_offset.X + MainCharacter.MovSpeed, _offset.Y);
+                _offset = new Vector2(_offset.X - MainCharacter.HSpeed, _offset.Y);
             }
             if (tmpPos.X > (-_offset.X + (Engine.Globals.ScreenWidth * .7f)) && tmpPos.X < (_grid.TotalPhysicalDims.X * .8f))
             {
-                _offset = new Vector2(_offset.X - MainCharacter.MovSpeed, _offset.Y);
+                _offset = new Vector2(_offset.X - MainCharacter.HSpeed, _offset.Y);
             }
             if (tmpPos.Y < (-_offset.Y + (Engine.Globals.ScreenHeight * .3f)))
             {

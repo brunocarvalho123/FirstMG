@@ -20,7 +20,7 @@ namespace FirstMG.Source.GamePlay
             Stamina = 10.0f;
             StaminaMax = Stamina;
 
-            MovSpeed  = 4.5f;
+            MovSpeed  = 1f;
             JumpSpeed = 15.0f;
 
             FrameAnimations = false;
@@ -65,14 +65,12 @@ namespace FirstMG.Source.GamePlay
 
             if (Globals.MyKeyboard.GetPress("A"))
             {
-                checkScroll = true;
-                MovingLeft  = true;
+                HSpeed -= MovSpeed;
             }
 
             if (Globals.MyKeyboard.GetPress("D"))
             {
-                checkScroll = true;
-                MovingRight = true;
+                HSpeed += MovSpeed;
             }
 
             if (Globals.MyKeyboard.GetNewPress("Space"))
@@ -90,16 +88,15 @@ namespace FirstMG.Source.GamePlay
                 _staminaTimer.Reset();
             }
 
-            if (MovingLeft | MovingRight)
+            if (HSpeed != 0)
             {
+                checkScroll = true;
                 SetAnimationByName("Stand");
             }
             else
             {
                 SetAnimationByName("Stand");
             }
-
-            //Rotation = Globals.RotateTowards(Position, Globals.NewVector(Globals.MyMouse.NewMousePos) - a_offset);
 
             if (Globals.MyMouse.LeftClick())
             {

@@ -132,7 +132,8 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void MoveLeft(SquareGrid a_grid, GridLocation a_slotLeft)
         {
-            HSpeed = -MovSpeed;
+            if (OnGround) HSpeed = Math.Min(0, HSpeed + a_grid.Friction);
+
             if (a_slotLeft == null)
             {
                 HSpeed = 0;
@@ -155,11 +156,14 @@ namespace FirstMG.Source.GamePlay
                     HSpeed = -4;
                 }
             }
+
+            HSpeed = Math.Max(HSpeed, -GameGlobals.maxHSpeed);
         }
 
         public virtual void MoveRight(SquareGrid a_grid, GridLocation a_slotRight)
         {
-            HSpeed = MovSpeed;
+            if (OnGround) HSpeed = Math.Max(0, HSpeed - a_grid.Friction);
+
             if (a_slotRight == null)
             {
                 HSpeed = 0;
@@ -181,6 +185,8 @@ namespace FirstMG.Source.GamePlay
                     HSpeed = 4;
                 }
             }
+
+            HSpeed = Math.Min(HSpeed, GameGlobals.maxHSpeed);
         }
 
         public virtual void Jump()
@@ -260,18 +266,17 @@ namespace FirstMG.Source.GamePlay
 
             Position = new Vector2(Position.X, Position.Y + VSpeed);
 
-            if (MovingLeft)
+            if (HSpeed < 0)
             {
                 GridLocation slotLeft = a_grid.GetSlotLeft(a_grid.GetLocationFromPixel(Position + new Vector2(0, Dimension.Y / 2), Vector2.Zero));
                 MoveLeft(a_grid, slotLeft);
-                MovingLeft = false;
             }
-            if (MovingRight)
+            else if (HSpeed > 0)
             {
                 GridLocation slotRight = a_grid.GetSlotRight(a_grid.GetLocationFromPixel(Position + new Vector2(0, Dimension.Y / 2), Vector2.Zero));
                 MoveRight(a_grid, slotRight);
-                MovingRight = false;
             }
+
 
             Position = new Vector2(Position.X + HSpeed, Position.Y);
             if (Position.Y >= Globals.ScreenHeight)
@@ -279,7 +284,6 @@ namespace FirstMG.Source.GamePlay
                 Dead = true;
             }
 
-            HSpeed = 0;
             base.Update(a_offset);
         }
 
