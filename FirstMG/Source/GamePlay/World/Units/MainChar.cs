@@ -12,15 +12,18 @@ namespace FirstMG.Source.GamePlay
 {
     class MainChar : Unit
     {
+        private Engine.MyTimer _jumpTimer = new Engine.MyTimer(100);
         private Engine.MyTimer _staminaTimer = new Engine.MyTimer(1000);
+        private bool _hasJumped = false;
+
         public MainChar(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames)
         {
-            Health = 5.0f;
-            HealthMax = Health;
-            Stamina = 10.0f;
+            Health     = 5.0f;
+            HealthMax  = Health;
+            Stamina    = 10.0f;
             StaminaMax = Stamina;
 
-            MovSpeed  = 1f;
+            MovSpeed  = 1.1f;
             JumpSpeed = 15.0f;
 
             FrameAnimations = false;
@@ -63,19 +66,38 @@ namespace FirstMG.Source.GamePlay
                 checkScroll = true;
             }
 
-            if (Globals.MyKeyboard.GetPress("A"))
+            if (Globals.MyKeyboard.GetPress("A") || Globals.MyKeyboard.GetPress("Left"))
             {
                 HSpeed -= MovSpeed;
             }
 
-            if (Globals.MyKeyboard.GetPress("D"))
+            if (Globals.MyKeyboard.GetPress("D") || Globals.MyKeyboard.GetPress("Right"))
             {
                 HSpeed += MovSpeed;
             }
 
-            if (Globals.MyKeyboard.GetNewPress("Space") && OnGround)
+            if (Globals.MyKeyboard.GetPress("Space") && !_hasJumped && OnGround) {
+                _jumpTimer.UpdateTimer();
+                if (_jumpTimer.Test())
+                {
+                    _hasJumped = true;
+                    VSpeed = -JumpSpeed;
+                    _jumpTimer.Reset();
+                }
+            }
+            if (!Globals.MyKeyboard.GetPress("Space"))
             {
-                VSpeed = -JumpSpeed;
+                if (_jumpTimer.Timer > 0 && !_hasJumped && OnGround)
+                {
+                    _hasJumped = true;
+                    VSpeed = -JumpSpeed * ((float)_jumpTimer.Timer / (float)_jumpTimer.MSec);
+                    _jumpTimer.Reset();
+                }
+                else
+                {
+                    _hasJumped = false;
+                    _jumpTimer.Reset();
+                }
             }
 
             _staminaTimer.UpdateTimer();

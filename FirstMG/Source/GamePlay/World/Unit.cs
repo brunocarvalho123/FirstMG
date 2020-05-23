@@ -122,14 +122,13 @@ namespace FirstMG.Source.GamePlay
 
             float offsetXPos = Position.X - Dimension.X / 2 + 4;
             float offsetXSlotPos = a_slotLeft.Position.X + a_grid.SlotDimensions.X;
-            
-            
 
             if (a_slotLeft.Impassible)
             {
                 if (offsetXPos + HSpeed < offsetXSlotPos)
                 {
                     HSpeed = -(offsetXPos - offsetXSlotPos);
+                    if (VSpeed < 0) VSpeed = 0;
                 }
                 else if (offsetXPos + HSpeed == offsetXSlotPos)
                 {
@@ -154,12 +153,12 @@ namespace FirstMG.Source.GamePlay
             float offsetXPos = Position.X + Dimension.X / 2 - 4;
             float offsetXSlotPos = a_slotRight.Position.X;
 
-
             if (a_slotRight.Impassible)
             {
                 if (offsetXPos + HSpeed > offsetXSlotPos)
                 {
                     HSpeed = offsetXSlotPos - offsetXPos;
+                    if (VSpeed < 0) VSpeed = 0;
                 }
                 else if (offsetXPos + HSpeed == offsetXSlotPos)
                 {
@@ -170,18 +169,18 @@ namespace FirstMG.Source.GamePlay
             HSpeed = Math.Min(HSpeed, GameGlobals.maxHSpeed);
         }
 
-        public virtual void Jump(SquareGrid a_grid, GridLocation a_slotAbove)
+        public virtual void Jump(SquareGrid a_grid, GridLocation a_slotAboveLeft, GridLocation a_slotAboveRight)
         {
-            if (a_slotAbove == null)
+            if (a_slotAboveLeft == null || a_slotAboveRight == null)
             {
                 VSpeed = 0;
                 return;
             }
 
             float offsetedYPos = Position.Y - Dimension.Y / 2;
-            float offsetedSlotYPos = a_slotAbove.Position.Y + a_grid.SlotDimensions.Y;
+            float offsetedSlotYPos = a_slotAboveLeft.Position.Y + a_grid.SlotDimensions.Y;
 
-            if (a_slotAbove != null && a_slotAbove.Impassible && (offsetedYPos + VSpeed < offsetedSlotYPos))
+            if ((a_slotAboveLeft.Impassible || a_slotAboveRight.Impassible) && (offsetedYPos + VSpeed < offsetedSlotYPos))
             {
                 VSpeed = offsetedSlotYPos - offsetedYPos;
             }
@@ -247,8 +246,9 @@ namespace FirstMG.Source.GamePlay
 
             if (VSpeed < 0)
             {
-                GridLocation slotAbove = a_grid.GetSlotAbove(a_grid.GetLocationFromPixel(Position + new Vector2(0, -Dimension.Y / 2), Vector2.Zero));
-                Jump(a_grid, slotAbove);
+                GridLocation slotAboveLeft = a_grid.GetSlotAbove(a_grid.GetLocationFromPixel(Position + new Vector2(-(Dimension.X / 2 - 5), -Dimension.Y / 2), Vector2.Zero));
+                GridLocation slotAboveRight = a_grid.GetSlotAbove(a_grid.GetLocationFromPixel(Position + new Vector2(Dimension.X / 2 - 5, -Dimension.Y / 2), Vector2.Zero));
+                Jump(a_grid, slotAboveLeft, slotAboveRight);
             }
 
             GravityEffect(a_grid, slotBelowLeft, slotBelowRight);
