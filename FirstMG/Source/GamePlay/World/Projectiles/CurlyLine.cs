@@ -14,6 +14,7 @@ namespace FirstMG.Source.GamePlay
             : base("Assets\\curly_line", a_position, new Vector2 (20,50), a_owner, a_target)
         {
             Speed = 5.0f;
+            ProjectileTimer = new Engine.MyTimer(1000);
         }
 
         public override void Update(Vector2 a_offset, List<Unit> a_units)

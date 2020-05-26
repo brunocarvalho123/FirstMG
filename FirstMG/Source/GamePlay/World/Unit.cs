@@ -27,6 +27,9 @@ namespace FirstMG.Source.GamePlay
         private bool _dead;
         private bool _onGround;
 
+        private float _maxVSpeed; 
+        private float _maxHSpeed;
+
         public Unit(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames, Color.White)
         {
             _health     = 1.0f;
@@ -34,6 +37,9 @@ namespace FirstMG.Source.GamePlay
             _stamina    = 0;
             _staminaMax = _stamina;
             _hitDist    = 50.0f;
+
+            _maxVSpeed  = 49.9f;
+            _maxHSpeed  = 6.0f;
 
             _dead        = false;
             _onGround    = false;
@@ -73,6 +79,16 @@ namespace FirstMG.Source.GamePlay
         {
             get { return _vSpeed; }
             protected set { _vSpeed = value; }
+        }
+        public float MaxHSpeed
+        {
+            get { return _maxHSpeed; }
+            protected set { _maxHSpeed = value; }
+        }
+        public float MaxVSpeed
+        {
+            get { return _maxVSpeed; }
+            protected set { _maxVSpeed = value; }
         }
         public float MovSpeed
         {
@@ -128,7 +144,6 @@ namespace FirstMG.Source.GamePlay
                 if (offsetXPos + HSpeed < offsetXSlotPos)
                 {
                     HSpeed = -(offsetXPos - offsetXSlotPos);
-                    if (VSpeed < 0) VSpeed = 0;
                 }
                 else if (offsetXPos + HSpeed == offsetXSlotPos)
                 {
@@ -136,7 +151,7 @@ namespace FirstMG.Source.GamePlay
                 }
             }
 
-            HSpeed = Math.Max(HSpeed, -GameGlobals.maxHSpeed);
+            HSpeed = Math.Max(HSpeed, -MaxHSpeed);
         }
 
         public virtual void MoveRight(SquareGrid a_grid, GridLocation a_slotRight)
@@ -158,7 +173,6 @@ namespace FirstMG.Source.GamePlay
                 if (offsetXPos + HSpeed > offsetXSlotPos)
                 {
                     HSpeed = offsetXSlotPos - offsetXPos;
-                    if (VSpeed < 0) VSpeed = 0;
                 }
                 else if (offsetXPos + HSpeed == offsetXSlotPos)
                 {
@@ -166,7 +180,7 @@ namespace FirstMG.Source.GamePlay
                 }
             }
 
-            HSpeed = Math.Min(HSpeed, GameGlobals.maxHSpeed);
+            HSpeed = Math.Min(HSpeed, MaxHSpeed);
         }
 
         public virtual void Jump(SquareGrid a_grid, GridLocation a_slotAboveLeft, GridLocation a_slotAboveRight)
@@ -235,7 +249,7 @@ namespace FirstMG.Source.GamePlay
                 }
             }
 
-            VSpeed = Math.Min(VSpeed, GameGlobals.maxVSpeed);
+            VSpeed = Math.Min(VSpeed, MaxVSpeed);
         }
 
         public virtual void Update(Vector2 a_offset, SquareGrid a_grid)

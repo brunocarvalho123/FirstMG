@@ -15,7 +15,8 @@ namespace FirstMG.Source.GamePlay
     {
         private Vector2 _offset;
         private UI _ui;
-        private List<Projectile> _projectiles = new List<Projectile>();
+        private List<Projectile> _projectiles      = new List<Projectile>();
+        private List<Projectile> _enemyProjectiles = new List<Projectile>();
         private List<Npc> _npcs = new List<Npc>();
 
         private SquareGrid _grid;
@@ -49,7 +50,7 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void AddProjectile(object a_projectile)
         {
-            _projectiles.Add((Projectile)a_projectile);
+            _enemyProjectiles.Add((Projectile)a_projectile);
         }
 
         public virtual void AddNpc(object a_npc)
@@ -76,6 +77,8 @@ namespace FirstMG.Source.GamePlay
             {
                 _offset = new Vector2(_offset.X, _offset.Y - MainCharacter.VSpeed);
             }
+
+            //_offset = new Vector2((float)Math.Floor(_offset.X), (float)Math.Floor(_offset.Y));
         }
 
         public virtual void LoadData(int a_level)
@@ -98,6 +101,8 @@ namespace FirstMG.Source.GamePlay
                 }
             }
             MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(49, 49), /* frames */ new Vector2(1,1));
+
+            AddNpc(new EvilOnion(new Vector2(400, 200), new Vector2(1, 1)));
 
             _grid = new SquareGrid(new Vector2(50, 50), new Vector2(0, 0), new Vector2(Globals.ScreenWidth + 200, Globals.ScreenHeight + 200), xml.Element("Root").Element("GridItem"));
         }
@@ -128,6 +133,18 @@ namespace FirstMG.Source.GamePlay
                     }
                 }
 
+                List<Unit> mainCharList = new List<Unit>();
+                mainCharList.Add(MainCharacter);
+                for (int idx = 0; idx < _enemyProjectiles.Count(); idx++)
+                {
+                    _enemyProjectiles[idx].Update(_offset, mainCharList);
+                    if (_enemyProjectiles[idx].Done)
+                    {
+                        _enemyProjectiles.RemoveAt(idx);
+                        idx--;
+                    }
+                }
+
                 for (int idx = 0; idx < _npcs.Count(); idx++)
                 {
                     _npcs[idx].Update(_offset, MainCharacter, _grid);
@@ -135,6 +152,7 @@ namespace FirstMG.Source.GamePlay
                     {
                         GridLocation location = _grid.GetSlotFromPixel(_npcs[idx].Position, Vector2.Zero);
                         location.Filled = false;
+                        location.Impassible = false;
 
                         _nKilled++;
                         _npcs.RemoveAt(idx);
@@ -177,6 +195,11 @@ namespace FirstMG.Source.GamePlay
             MainCharacter.Draw(_offset);
 
             foreach (Projectile proj in _projectiles)
+            {
+                proj.Draw(_offset);
+            }
+
+            foreach (Projectile proj in _enemyProjectiles)
             {
                 proj.Draw(_offset);
             }

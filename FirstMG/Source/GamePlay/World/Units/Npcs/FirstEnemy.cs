@@ -21,7 +21,7 @@ namespace FirstMG.Source.GamePlay
 
         public override void Update(Vector2 a_offset, MainChar a_mainChar, SquareGrid a_grid)
         {
-            base.Update(a_offset, a_mainChar, a_grid);
+            base.Update(a_offset);
         }
 
         public override void Draw(Vector2 a_offset)

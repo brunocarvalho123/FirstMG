@@ -34,7 +34,7 @@ namespace FirstMG.Source.GamePlay
         {
             //AI(a_mainChar);
 
-            base.Update(a_offset);
+            base.Update(a_offset, a_grid);
         }
 
         public override void Draw(Vector2 a_offset)

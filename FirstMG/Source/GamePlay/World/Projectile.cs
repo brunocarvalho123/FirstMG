@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
@@ -30,6 +31,11 @@ namespace FirstMG.Source.GamePlay
             _timer = new Engine.MyTimer(2000);
         }
 
+        protected Engine.MyTimer ProjectileTimer
+        {
+            get { return _timer; }
+            set { _timer = value; }
+        }
         public bool Done
         {
             get { return _done; }
