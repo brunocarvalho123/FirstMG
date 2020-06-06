@@ -30,6 +30,8 @@ namespace FirstMG.Source.GamePlay
         private float _maxVSpeed; 
         private float _maxHSpeed;
 
+        private Vector2 _hitBoxDims;
+
         public Unit(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames, Color.White)
         {
             _health     = 1.0f;
@@ -43,6 +45,8 @@ namespace FirstMG.Source.GamePlay
 
             _dead        = false;
             _onGround    = false;
+
+            _hitBoxDims = new Vector2(32,32);
         }
 
         public float Health
@@ -113,6 +117,10 @@ namespace FirstMG.Source.GamePlay
         public float PositionYOffseted
         {
             get { return Position.Y + Dimension.Y/2; }
+        }
+        public Rectangle HitBox
+        {
+            get { return new Rectangle((int)Position.X, (int)Position.Y, (int)_hitBoxDims.X, (int)_hitBoxDims.Y); }
         }
 
 
@@ -292,20 +300,14 @@ namespace FirstMG.Source.GamePlay
 
         public override void Draw(Vector2 a_offset)
         {
-            Globals.NormalEffect.Parameters["xSize"].SetValue((float)Asset.Bounds.Width);
-            Globals.NormalEffect.Parameters["ySize"].SetValue((float)Asset.Bounds.Height);
-            Globals.NormalEffect.Parameters["xDraw"].SetValue((float)((int)Dimension.X));
-            Globals.NormalEffect.Parameters["yDraw"].SetValue((float)((int)Dimension.Y));
-            Globals.NormalEffect.Parameters["filterColor"].SetValue(Color.White.ToVector4());
-            Globals.NormalEffect.CurrentTechnique.Passes[0].Apply();
+            //Globals.NormalEffect.Parameters["xSize"].SetValue((float)Asset.Bounds.Width);
+            //Globals.NormalEffect.Parameters["ySize"].SetValue((float)Asset.Bounds.Height);
+            //Globals.NormalEffect.Parameters["xDraw"].SetValue((float)((int)Dimension.X));
+            //Globals.NormalEffect.Parameters["yDraw"].SetValue((float)((int)Dimension.Y));
+            //Globals.NormalEffect.Parameters["filterColor"].SetValue(Color.White.ToVector4());
+            //Globals.NormalEffect.CurrentTechnique.Passes[0].Apply();
 
-            if (Dead)
-            {
-                base.Draw(a_offset, Color.Red);
-            } else
-            {
-                base.Draw(a_offset);
-            }
+            base.Draw(a_offset);
         }
     }
 }

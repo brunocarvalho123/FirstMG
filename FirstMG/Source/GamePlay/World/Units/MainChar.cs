@@ -12,9 +12,10 @@ namespace FirstMG.Source.GamePlay
 {
     class MainChar : Unit
     {
-        private Engine.MyTimer _jumpTimer = new Engine.MyTimer(100);
+        private TimeSpan _jumpTimer = TimeSpan.FromMilliseconds(151);
         private Engine.MyTimer _staminaTimer = new Engine.MyTimer(1000);
-        private bool _hasJumped = false;
+        private bool _wasOnGround = false;
+        private TimeSpan _extraGroundTimer = TimeSpan.FromMilliseconds(76);
 
         public MainChar(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames)
         {
@@ -26,20 +27,23 @@ namespace FirstMG.Source.GamePlay
             MovSpeed  = 1.1f;
             JumpSpeed = 15.0f;
 
-            FrameAnimations = false;
-            //CurrentAnimation = 0;
-            //FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 0), 4, 66, 0, "Walk"));
-            //FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 0), 1, 66, 0, "Stand"));
+
+            FrameAnimations = true;
+            CurrentAnimation = 0;
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 0), 1, 20, 0, "Idle"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 1), 6, 128, 0, "Run"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 3), 3, 64, 0, "Jump"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 2), 3, 64, 0, "Fall"));
         }
 
 
         public void NormalAttack(Vector2 a_offset)
         {
-            if (Stamina > 0)
-            {
-                Stamina--;
-                GameGlobals.PassProjectile(new CurlyLine(new Vector2(Position.X, Position.Y - (Dimension.Y / 2)), this, new Vector2(Globals.MyMouse.NewMousePos.X, Globals.MyMouse.NewMousePos.Y + (Dimension.Y / 2)) - a_offset));
-            }
+            //if (Stamina > 0)
+            //{
+            //    Stamina--;
+            //    GameGlobals.PassProjectile(new CurlyLine(new Vector2(Position.X, Position.Y - (Dimension.Y / 2)), this, new Vector2(Globals.MyMouse.NewMousePos.X, Globals.MyMouse.NewMousePos.Y + (Dimension.Y / 2)) - a_offset));
+            //}
         }
 
         public void RechargeStamina (float a_value)
@@ -60,6 +64,7 @@ namespace FirstMG.Source.GamePlay
         {
             bool checkScroll = false;
             a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = false;
+            bool pressedSpace = Globals.MyKeyboard.GetPress("Space");
 
             if (VSpeed != 0)
             {
@@ -76,28 +81,26 @@ namespace FirstMG.Source.GamePlay
                 HSpeed += MovSpeed;
             }
 
-            if (Globals.MyKeyboard.GetPress("Space") && !_hasJumped && OnGround) {
-                _jumpTimer.UpdateTimer();
-                if (_jumpTimer.Test())
-                {
-                    _hasJumped = true;
-                    VSpeed = -JumpSpeed;
-                    _jumpTimer.Reset();
-                }
-            }
-            if (!Globals.MyKeyboard.GetPress("Space"))
+
+            if (Globals.MyKeyboard.GetNewPress("Space"))
             {
-                if (_jumpTimer.Timer > 0 && !_hasJumped && OnGround)
-                {
-                    _hasJumped = true;
-                    VSpeed = -JumpSpeed * ((float)_jumpTimer.Timer / (float)_jumpTimer.MSec);
-                    _jumpTimer.Reset();
-                }
-                else
-                {
-                    _hasJumped = false;
-                    _jumpTimer.Reset();
-                }
+                _jumpTimer = TimeSpan.FromMilliseconds(0);
+            }
+            if (!pressedSpace && _wasOnGround && !OnGround)
+            {
+                _extraGroundTimer = TimeSpan.FromMilliseconds(0);
+            }
+
+            _jumpTimer        += Globals.GlobalGameTime.ElapsedGameTime;
+            _extraGroundTimer += Globals.GlobalGameTime.ElapsedGameTime;
+
+            if (_jumpTimer.TotalMilliseconds < 150 && (_extraGroundTimer.TotalMilliseconds < 75 || OnGround)) 
+            {
+                VSpeed = -JumpSpeed;
+            }
+            if (!pressedSpace && VSpeed < 0 && !OnGround)
+            {
+                VSpeed *= 0.8f;
             }
 
             _staminaTimer.UpdateTimer();
@@ -107,14 +110,22 @@ namespace FirstMG.Source.GamePlay
                 _staminaTimer.Reset();
             }
 
-            if (HSpeed != 0)
+            if (OnGround && HSpeed == 0)
+            {
+                SetAnimationByName("Idle");
+            }
+            else if (OnGround && HSpeed != 0)
             {
                 checkScroll = true;
-                SetAnimationByName("Stand");
+                SetAnimationByName("Run");
             }
-            else
+            else if (VSpeed > 0)
             {
-                SetAnimationByName("Stand");
+                SetAnimationByName("Fall");
+            }
+            else if (VSpeed < 0)
+            {
+                SetAnimationByName("Jump");
             }
 
             if (Globals.MyMouse.LeftClick())
@@ -138,6 +149,8 @@ namespace FirstMG.Source.GamePlay
                     GameGlobals.PassNpc(tmpEnemy);
                 }
             }
+
+            _wasOnGround = OnGround;
 
             base.Update(a_offset, a_grid);
             

@@ -80,7 +80,7 @@ namespace FirstMG.Source.Engine
         }
         public string Name
         {
-            get { return Name; }
+            get { return _name; }
         }
         #endregion
 

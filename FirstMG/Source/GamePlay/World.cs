@@ -86,7 +86,7 @@ namespace FirstMG.Source.GamePlay
             XDocument xml = XDocument.Load("XML\\Levels\\Level" + a_level + ".xml");
 
             // Load MainChar
-            String mcAsset = "Assets\\nice_sprite";
+            String mcAsset = "Assets\\MainChar\\full_animation";
             Vector2 mcPosition = new Vector2(Engine.Globals.ScreenWidth / 2, Engine.Globals.ScreenHeight / 2);
             XElement mainCharXML = xml.Element("Root").Element("Unit").Element("MainChar");
             if (mainCharXML != null)
@@ -100,11 +100,11 @@ namespace FirstMG.Source.GamePlay
                     mcPosition = new Vector2(Convert.ToInt32(mainCharXML.Element("position").Value), Engine.Globals.ScreenHeight / 2);
                 }
             }
-            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(49, 49), /* frames */ new Vector2(1,1));
+            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(62, 80), /* frames */ new Vector2(6,4));
 
-            AddNpc(new EvilOnion(new Vector2(400, 200), new Vector2(1, 1)));
+            //AddNpc(new EvilOnion(new Vector2(400, 200), new Vector2(1, 1)));
 
-            _grid = new SquareGrid(new Vector2(50, 50), new Vector2(0, 0), new Vector2(Globals.ScreenWidth + 200, Globals.ScreenHeight + 200), xml.Element("Root").Element("GridItem"));
+            _grid = new SquareGrid(new Vector2(32, 32), new Vector2(0, 0), new Vector2(Globals.ScreenWidth + 200, Globals.ScreenHeight + 200), xml.Element("Root").Element("GridItem"));
         }
 
         public virtual void Update()

@@ -2,7 +2,7 @@
 <Root>
   <Unit>
     <MainChar>
-      <asset>Assets\nice_sprite</asset>
+      <asset>Assets\MainChar\full_animation_big</asset>
       <position>800</position>
     </MainChar>
     <Npc>
@@ -12,15 +12,15 @@
     <DirtRow>
       <Position>
         <starting_x>0</starting_x>
-        <final_x>20</final_x>
-        <y>15</y>
+        <final_x>50</final_x>
+        <y>20</y>
       </Position>
     </DirtRow>
     <DirtRow>
       <Position>
         <starting_x>5</starting_x>
         <final_x>10</final_x>
-        <y>13</y>
+        <y>16</y>
       </Position>
     </DirtRow>
   </GridItem>
