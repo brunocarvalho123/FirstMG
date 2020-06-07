@@ -30,8 +30,6 @@ namespace FirstMG.Source.GamePlay
         private float _maxVSpeed; 
         private float _maxHSpeed;
 
-        private Vector2 _hitBoxDims;
-
         public Unit(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames, Color.White)
         {
             _health     = 1.0f;
@@ -45,8 +43,6 @@ namespace FirstMG.Source.GamePlay
 
             _dead        = false;
             _onGround    = false;
-
-            _hitBoxDims = new Vector2(32,32);
         }
 
         public float Health
@@ -114,15 +110,10 @@ namespace FirstMG.Source.GamePlay
             get { return _staminaMax; }
             protected set { _staminaMax = value; }
         }
-        public float PositionYOffseted
+        public float BottomPosition
         {
             get { return Position.Y + Dimension.Y/2; }
         }
-        public Rectangle HitBox
-        {
-            get { return new Rectangle((int)Position.X, (int)Position.Y, (int)_hitBoxDims.X, (int)_hitBoxDims.Y); }
-        }
-
 
         public virtual void GetHit(float a_damage)
         {
@@ -133,127 +124,101 @@ namespace FirstMG.Source.GamePlay
             }
         }
 
-        public virtual void MoveLeft(SquareGrid a_grid, GridLocation a_slotLeft)
+        public virtual void MoveLeft(SquareGrid a_grid, Vector4 a_boundingBox, List<GridLocation> a_leftSlots)
         {
             if (OnGround) HSpeed = Math.Min(0, HSpeed + a_grid.Friction);
             else HSpeed = Math.Min(0, HSpeed + a_grid.Friction / 2);
 
-            if (a_slotLeft == null)
-            {
-                HSpeed = 0;
-                return;
-            }
 
-            float offsetXPos = Position.X - Dimension.X / 2 + 4;
-            float offsetXSlotPos = a_slotLeft.Position.X + a_grid.SlotDimensions.X;
-
-            if (a_slotLeft.Impassible)
+            foreach (GridLocation leftSlot in a_leftSlots)
             {
-                if (offsetXPos + HSpeed < offsetXSlotPos)
+                if (leftSlot != null && leftSlot.Impassible)
                 {
-                    HSpeed = -(offsetXPos - offsetXSlotPos);
-                }
-                else if (offsetXPos + HSpeed == offsetXSlotPos)
-                {
-                    HSpeed = -4;
+                    float slotLeftPos = leftSlot.Position.X + a_grid.SlotDimensions.X;
+                    if (a_boundingBox.X + HSpeed < slotLeftPos)
+                    {
+                        HSpeed = -(a_boundingBox.X - slotLeftPos);
+                        HSpeed = Math.Min(HSpeed, 0);
+                        break;
+                    }
                 }
             }
 
             HSpeed = Math.Max(HSpeed, -MaxHSpeed);
         }
 
-        public virtual void MoveRight(SquareGrid a_grid, GridLocation a_slotRight)
+        public virtual void MoveRight(SquareGrid a_grid, Vector4 a_boundingBox, List<GridLocation> a_rightSlots)
         {
             if (OnGround) HSpeed = Math.Max(0, HSpeed - a_grid.Friction);
-            else HSpeed = Math.Max(0, HSpeed - a_grid.Friction/2);
+            else HSpeed = Math.Max(0, HSpeed - a_grid.Friction / 2);
 
-            if (a_slotRight == null)
+
+            foreach (GridLocation rightSlot in a_rightSlots)
             {
-                HSpeed = 0;
-                return;
-            }
-
-            float offsetXPos = Position.X + Dimension.X / 2 - 4;
-            float offsetXSlotPos = a_slotRight.Position.X;
-
-            if (a_slotRight.Impassible)
-            {
-                if (offsetXPos + HSpeed > offsetXSlotPos)
+                if (rightSlot != null && rightSlot.Impassible)
                 {
-                    HSpeed = offsetXSlotPos - offsetXPos;
-                }
-                else if (offsetXPos + HSpeed == offsetXSlotPos)
-                {
-                    HSpeed = 4;
+                    float slotRightPos = rightSlot.Position.X;
+                    if (a_boundingBox.Y + HSpeed - slotRightPos > 0)
+                    {
+                        HSpeed = slotRightPos - a_boundingBox.Y;
+                        HSpeed = Math.Max(HSpeed, 0);
+                        break;
+                    }
                 }
             }
+
 
             HSpeed = Math.Min(HSpeed, MaxHSpeed);
         }
 
-        public virtual void Jump(SquareGrid a_grid, GridLocation a_slotAboveLeft, GridLocation a_slotAboveRight)
+        public virtual void Jump(SquareGrid a_grid, Vector4 a_boundingBox, List<GridLocation> a_topSlots)
         {
-            if (a_slotAboveLeft == null || a_slotAboveRight == null)
+            foreach (GridLocation topSlot in a_topSlots)
             {
-                VSpeed = 0;
-                return;
-            }
-
-            float offsetedYPos = Position.Y - Dimension.Y / 2;
-            float offsetedSlotYPos = a_slotAboveLeft.Position.Y + a_grid.SlotDimensions.Y;
-
-            if ((a_slotAboveLeft.Impassible || a_slotAboveRight.Impassible) && (offsetedYPos + VSpeed < offsetedSlotYPos))
-            {
-                VSpeed = offsetedSlotYPos - offsetedYPos;
+                if (topSlot != null && topSlot.Impassible)
+                {
+                    float topSlotPos = topSlot.Position.Y + a_grid.SlotDimensions.Y;
+                    if (a_boundingBox.Z + VSpeed <= topSlotPos)
+                    {
+                        VSpeed = topSlotPos - a_boundingBox.Z;
+                        return;
+                    }
+                }
             }
         }
 
-        public virtual bool IsOnGround(SquareGrid a_grid, GridLocation a_slotBelowLeft, GridLocation a_slotBelowRight)
+        public virtual bool IsOnGround(SquareGrid a_grid, List<GridLocation> a_botSlots)
         {
-            bool impassibleLeft = false;
-            if(a_slotBelowLeft == null)
+            foreach (GridLocation botSlot in a_botSlots)
             {
-                impassibleLeft = false;
-            } 
-            else if (Math.Abs(a_slotBelowLeft.Position.Y - PositionYOffseted) > 0.11f)
-            {
-                impassibleLeft = false;
+                if (botSlot != null &&
+                    botSlot.Impassible &&
+                    Math.Abs(botSlot.Position.Y - BottomPosition) < 0.11f)
+                {
+                    return true;
+                }
             }
-            else
-            {
-                impassibleLeft = a_slotBelowLeft.Impassible;
-            }
-
-            bool impassibleRight = false;
-            if (a_slotBelowRight == null)
-            {
-                impassibleRight = false;
-            }
-            else if (Math.Abs(a_slotBelowRight.Position.Y - PositionYOffseted) > 0.11f)
-            {
-                impassibleRight = false;
-            }
-            else
-            {
-                impassibleRight = a_slotBelowRight.Impassible;
-            }
-
-            return impassibleLeft || impassibleRight;
+            return false;
         }
 
-        public virtual void GravityEffect(SquareGrid a_grid, GridLocation a_slotBelowLeft, GridLocation a_slotBelowRight)
+        public virtual void GravityEffect(SquareGrid a_grid, List<GridLocation> a_botSlots)
         {
             if (OnGround && VSpeed > 0)
             {
                 VSpeed = 0;
                 return;
             }
-            else
+            VSpeed += a_grid.Gravity;
+
+
+            foreach (GridLocation botSlot in a_botSlots)
             {
-                VSpeed += a_grid.Gravity;
-                if (a_slotBelowLeft != null && (a_slotBelowLeft.Impassible || a_slotBelowRight.Impassible) && a_slotBelowLeft.Position.Y - (PositionYOffseted + VSpeed) < 0)
+                if (botSlot != null &&
+                    botSlot.Impassible &&
+                    botSlot.Position.Y - (BottomPosition + VSpeed) < 0)
                 {
-                    VSpeed = Math.Abs(a_slotBelowLeft.Position.Y - PositionYOffseted) - 0.1f;
+                    VSpeed = Math.Abs(botSlot.Position.Y - BottomPosition) - 0.1f;
+                    break;
                 }
             }
 
@@ -262,38 +227,68 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void Update(Vector2 a_offset, SquareGrid a_grid)
         {
-            GridLocation slotBelowLeft = a_grid.GetSlotBelow(a_grid.GetLocationFromPixel(Position + new Vector2(-(Dimension.X/2 - 5), Dimension.Y/2 - 5), Vector2.Zero));
-            GridLocation slotBelowRight = a_grid.GetSlotBelow(a_grid.GetLocationFromPixel(Position + new Vector2(Dimension.X/2 - 5, Dimension.Y/2 - 5), Vector2.Zero));
-            OnGround = IsOnGround(a_grid, slotBelowLeft, slotBelowRight);
+            Vector4 boundingBox = new Vector4(/* Left  X */ Position.X - (Dimension.X / 2) , 
+                                              /* Right Y */ Position.X + (Dimension.X / 2) , 
+                                              /* Top   Z */ Position.Y - (Dimension.Y / 2) , 
+                                              /* Bot   W */ Position.Y + (Dimension.Y / 2));
+            
+            List<GridLocation> botSlots   = a_grid.GetBotSlots(boundingBox);
 
+            OnGround = IsOnGround(a_grid, botSlots);
+
+            List<GridLocation> topSlots = a_grid.GetTopSlots(boundingBox);
             if (VSpeed < 0)
             {
-                GridLocation slotAboveLeft = a_grid.GetSlotAbove(a_grid.GetLocationFromPixel(Position + new Vector2(-(Dimension.X / 2 - 5), -Dimension.Y / 2), Vector2.Zero));
-                GridLocation slotAboveRight = a_grid.GetSlotAbove(a_grid.GetLocationFromPixel(Position + new Vector2(Dimension.X / 2 - 5, -Dimension.Y / 2), Vector2.Zero));
-                Jump(a_grid, slotAboveLeft, slotAboveRight);
+                
+                Jump(a_grid, boundingBox, topSlots);
             }
 
-            GravityEffect(a_grid, slotBelowLeft, slotBelowRight);
+            GravityEffect(a_grid, botSlots);
 
             Position = new Vector2(Position.X, Position.Y + VSpeed);
 
+            boundingBox.Z = Position.Y - (Dimension.Y / 2) ;
+            boundingBox.W = Position.Y + (Dimension.Y / 2);
+
+
+            List<GridLocation> leftSlots = a_grid.GetLeftSlots(boundingBox);
+            List<GridLocation> rightSlots = a_grid.GetRightSlots(boundingBox);
             if (HSpeed < 0)
             {
-                GridLocation slotLeft = a_grid.GetSlotLeft(a_grid.GetLocationFromPixel(Position + new Vector2(0, Dimension.Y / 2), Vector2.Zero));
-                MoveLeft(a_grid, slotLeft);
+                
+                MoveLeft(a_grid, boundingBox, leftSlots);
             }
             else if (HSpeed > 0)
             {
-                GridLocation slotRight = a_grid.GetSlotRight(a_grid.GetLocationFromPixel(Position + new Vector2(0, Dimension.Y / 2), Vector2.Zero));
-                MoveRight(a_grid, slotRight);
+                
+                MoveRight(a_grid, boundingBox, rightSlots);
             }
-
 
             Position = new Vector2(Position.X + HSpeed, Position.Y);
             if (Position.Y >= Globals.ScreenHeight)
             {
                 Dead = true;
             }
+
+            //foreach (GridLocation botSlot in botSlots)
+            //{
+            //    botSlot.Filled = true;
+            //}
+
+            //foreach (GridLocation botSlot in topSlots)
+            //{
+            //    botSlot.Filled = true;
+            //}
+
+            //foreach (GridLocation botSlot in leftSlots)
+            //{
+            //   botSlot.Filled = true;
+            //}
+
+            //foreach (GridLocation botSlot in rightSlots)
+            //{
+            //   botSlot.Filled = true;
+            //}
 
             base.Update(a_offset);
         }

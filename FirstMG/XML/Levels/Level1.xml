@@ -2,7 +2,7 @@
 <Root>
   <Unit>
     <MainChar>
-      <asset>Assets\MainChar\full_animation_big</asset>
+      <asset>Assets\MainChar\block</asset>
       <position>800</position>
     </MainChar>
     <Npc>

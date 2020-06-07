@@ -97,44 +97,63 @@ namespace FirstMG.Source.Engine
             return null;
         }
 
-        public virtual GridLocation GetSlotLeft(Vector2 a_loc)
+        public virtual List<GridLocation> GetTopSlots(Vector4 a_boundingBox)
         {
-            if (a_loc.X - 1 >= 0 && a_loc.Y >= 0 && a_loc.X - 1 < _slots.Count && a_loc.Y < _slots[(int)a_loc.X -1].Count)
-            {
-                return _slots[(int)a_loc.X - 1][(int)a_loc.Y];
-            }
+            List<GridLocation> topSlots = new List<GridLocation>();
 
-            return null;
+            for (float i = a_boundingBox.X; i <= a_boundingBox.Y; i += SlotDimensions.X)
+            {
+                topSlots.Add(GetSlotFromPixel(new Vector2(i, a_boundingBox.Z), Vector2.Zero));
+            }
+            GridLocation lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.Y, a_boundingBox.Z), Vector2.Zero);
+
+            if (topSlots.Last() != lastSlot) topSlots.Add(lastSlot);
+
+            return topSlots;
         }
-        public virtual GridLocation GetSlotRight(Vector2 a_loc)
+        public virtual List<GridLocation> GetBotSlots(Vector4 a_boundingBox) 
         {
-            if (a_loc.X + 1 >= 0 && a_loc.Y >= 0 && a_loc.X + 1 < _slots.Count && a_loc.Y < _slots[(int)a_loc.X + 1].Count)
+            List<GridLocation> botSlots = new List<GridLocation>();
+
+            for (float i = a_boundingBox.X; i <= a_boundingBox.Y; i += SlotDimensions.X)
             {
-                return _slots[(int)a_loc.X + 1][(int)a_loc.Y];
+                botSlots.Add(GetSlotFromPixel(new Vector2(i, a_boundingBox.W + SlotDimensions.Y), Vector2.Zero));
             }
+            GridLocation lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.Y, a_boundingBox.W + SlotDimensions.Y), Vector2.Zero);
 
-            return null;
+            if (botSlots.Last() != lastSlot) botSlots.Add(lastSlot);
+
+            return botSlots;
         }
-
-        public virtual GridLocation GetSlotAbove(Vector2 a_loc)
+        public virtual List<GridLocation> GetLeftSlots(Vector4 a_boundingBox) 
         {
-            if (a_loc.X >= 0 && a_loc.Y - 1 >= 0 && a_loc.X < _slots.Count && a_loc.Y - 1 < _slots[(int)a_loc.X].Count)
-            {
-                return _slots[(int)a_loc.X][(int)a_loc.Y - 1];
-            }
+            List<GridLocation> leftSlots = new List<GridLocation>();
 
-            return null;
+            for (float i = a_boundingBox.Z; i <= a_boundingBox.W; i += SlotDimensions.Y)
+            {
+                leftSlots.Add(GetSlotFromPixel(new Vector2(a_boundingBox.X, i), Vector2.Zero));
+            }
+            GridLocation lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.X, a_boundingBox.W), Vector2.Zero);
+
+            if (leftSlots.Last() != lastSlot) leftSlots.Add(lastSlot);
+
+            return leftSlots;
         }
-        
-        public virtual GridLocation GetSlotBelow(Vector2 a_loc)
+        public virtual List<GridLocation>GetRightSlots(Vector4 a_boundingBox) 
         {
-            if (a_loc.X >= 0 && a_loc.Y + 1 >= 0 && a_loc.X < _slots.Count && a_loc.Y + 1 < _slots[(int)a_loc.X].Count)
-            {
-                return _slots[(int)a_loc.X][(int)a_loc.Y+1];
-            }
+            List<GridLocation> rightSlots = new List<GridLocation>();
 
-            return null;
+            for (float i = a_boundingBox.Z; i <= a_boundingBox.W; i += SlotDimensions.Y)
+            {
+                rightSlots.Add(GetSlotFromPixel(new Vector2(a_boundingBox.Y, i), Vector2.Zero));
+            }
+            GridLocation lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.Y, a_boundingBox.W), Vector2.Zero);
+
+            if (rightSlots.Last() != lastSlot) rightSlots.Add(lastSlot);
+
+            return rightSlots;
         }
+
 
         public virtual GridLocation GetSlotFromPixel(Vector2 a_pixel, Vector2 a_offset)
         {

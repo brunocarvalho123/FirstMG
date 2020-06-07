@@ -28,12 +28,12 @@ namespace FirstMG.Source.GamePlay
             JumpSpeed = 15.0f;
 
 
-            FrameAnimations = true;
+            FrameAnimations = false;
             CurrentAnimation = 0;
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 0), 1, 20, 0, "Idle"));
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 1), 6, 128, 0, "Run"));
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 3), 3, 64, 0, "Jump"));
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 2), 3, 64, 0, "Fall"));
+            //FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 1), 6, 128, 0, "Run"));
+            //FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 3), 3, 64, 0, "Jump"));
+            //FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 2), 3, 64, 0, "Fall"));
         }
 
 
@@ -63,7 +63,7 @@ namespace FirstMG.Source.GamePlay
         public override void Update(Vector2 a_offset, SquareGrid a_grid)
         {
             bool checkScroll = false;
-            a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = false;
+            //a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = false;
             bool pressedSpace = Globals.MyKeyboard.GetPress("Space");
 
             if (VSpeed != 0)
@@ -112,20 +112,20 @@ namespace FirstMG.Source.GamePlay
 
             if (OnGround && HSpeed == 0)
             {
-                SetAnimationByName("Idle");
+                //SetAnimationByName("Idle");
             }
             else if (OnGround && HSpeed != 0)
             {
                 checkScroll = true;
-                SetAnimationByName("Run");
+                //SetAnimationByName("Run");
             }
             else if (VSpeed > 0)
             {
-                SetAnimationByName("Fall");
+                //SetAnimationByName("Fall");
             }
             else if (VSpeed < 0)
             {
-                SetAnimationByName("Jump");
+                //SetAnimationByName("Jump");
             }
 
             if (Globals.MyMouse.LeftClick())
@@ -158,7 +158,7 @@ namespace FirstMG.Source.GamePlay
             {
                 GameGlobals.CheckScroll(Position);
             }
-            a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = true;
+            //a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = true;
         }
 
         public override void Draw(Vector2 a_offset)
