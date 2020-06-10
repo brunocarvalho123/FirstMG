@@ -227,68 +227,43 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void Update(Vector2 a_offset, SquareGrid a_grid)
         {
-            Vector4 boundingBox = new Vector4(/* Left  X */ Position.X - (Dimension.X / 2) , 
-                                              /* Right Y */ Position.X + (Dimension.X / 2) , 
-                                              /* Top   Z */ Position.Y - (Dimension.Y / 2) , 
+            Vector4 boundingBox = new Vector4(/* Left  X */ Position.X - (Dimension.X / 2) * 0.75f, 
+                                              /* Right Y */ Position.X + (Dimension.X / 2) * 0.75f, 
+                                              /* Top   Z */ Position.Y - (Dimension.Y / 2) * 0.8f, 
                                               /* Bot   W */ Position.Y + (Dimension.Y / 2));
             
             List<GridLocation> botSlots   = a_grid.GetBotSlots(boundingBox);
 
             OnGround = IsOnGround(a_grid, botSlots);
 
-            List<GridLocation> topSlots = a_grid.GetTopSlots(boundingBox);
             if (VSpeed < 0)
             {
-                
+                List<GridLocation> topSlots = a_grid.GetTopSlots(boundingBox);
                 Jump(a_grid, boundingBox, topSlots);
             }
-
             GravityEffect(a_grid, botSlots);
 
             Position = new Vector2(Position.X, Position.Y + VSpeed);
 
             boundingBox.Z = Position.Y - (Dimension.Y / 2) ;
             boundingBox.W = Position.Y + (Dimension.Y / 2);
-
-
-            List<GridLocation> leftSlots = a_grid.GetLeftSlots(boundingBox);
-            List<GridLocation> rightSlots = a_grid.GetRightSlots(boundingBox);
             if (HSpeed < 0)
             {
-                
+                List<GridLocation> leftSlots = a_grid.GetLeftSlots(boundingBox);
                 MoveLeft(a_grid, boundingBox, leftSlots);
             }
             else if (HSpeed > 0)
             {
-                
+                List<GridLocation> rightSlots = a_grid.GetRightSlots(boundingBox);
                 MoveRight(a_grid, boundingBox, rightSlots);
             }
 
             Position = new Vector2(Position.X + HSpeed, Position.Y);
+
             if (Position.Y >= Globals.ScreenHeight)
             {
                 Dead = true;
             }
-
-            //foreach (GridLocation botSlot in botSlots)
-            //{
-            //    botSlot.Filled = true;
-            //}
-
-            //foreach (GridLocation botSlot in topSlots)
-            //{
-            //    botSlot.Filled = true;
-            //}
-
-            //foreach (GridLocation botSlot in leftSlots)
-            //{
-            //   botSlot.Filled = true;
-            //}
-
-            //foreach (GridLocation botSlot in rightSlots)
-            //{
-            //   botSlot.Filled = true;
-            //}
 
             base.Update(a_offset);
         }

@@ -97,6 +97,7 @@ namespace FirstMG.Source.GamePlay
             if (_jumpTimer.TotalMilliseconds < 150 && (_extraGroundTimer.TotalMilliseconds < 75 || OnGround)) 
             {
                 VSpeed = -JumpSpeed;
+                _jumpTimer = TimeSpan.FromMilliseconds(151);
             }
             if (!pressedSpace && VSpeed < 0 && !OnGround)
             {

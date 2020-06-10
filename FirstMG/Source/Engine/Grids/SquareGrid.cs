@@ -101,12 +101,20 @@ namespace FirstMG.Source.Engine
         {
             List<GridLocation> topSlots = new List<GridLocation>();
 
+            // Slots above bounding box
+            for (float i = a_boundingBox.X; i <= a_boundingBox.Y; i += SlotDimensions.X)
+            {
+                topSlots.Add(GetSlotFromPixel(new Vector2(i, a_boundingBox.Z - SlotDimensions.Y), Vector2.Zero));
+            }
+            GridLocation lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.Y, a_boundingBox.Z - SlotDimensions.Y), Vector2.Zero);
+            if (topSlots.Last() != lastSlot) topSlots.Add(lastSlot);
+
+            // Slots intersecting bounding box
             for (float i = a_boundingBox.X; i <= a_boundingBox.Y; i += SlotDimensions.X)
             {
                 topSlots.Add(GetSlotFromPixel(new Vector2(i, a_boundingBox.Z), Vector2.Zero));
             }
-            GridLocation lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.Y, a_boundingBox.Z), Vector2.Zero);
-
+            lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.Y, a_boundingBox.Z), Vector2.Zero);
             if (topSlots.Last() != lastSlot) topSlots.Add(lastSlot);
 
             return topSlots;
@@ -115,6 +123,7 @@ namespace FirstMG.Source.Engine
         {
             List<GridLocation> botSlots = new List<GridLocation>();
 
+            // Slots below bounding box
             for (float i = a_boundingBox.X; i <= a_boundingBox.Y; i += SlotDimensions.X)
             {
                 botSlots.Add(GetSlotFromPixel(new Vector2(i, a_boundingBox.W + SlotDimensions.Y), Vector2.Zero));
@@ -129,12 +138,20 @@ namespace FirstMG.Source.Engine
         {
             List<GridLocation> leftSlots = new List<GridLocation>();
 
+            // Slots to the left of bounding box
+            for (float i = a_boundingBox.Z; i <= a_boundingBox.W; i += SlotDimensions.Y)
+            {
+                leftSlots.Add(GetSlotFromPixel(new Vector2(a_boundingBox.X - SlotDimensions.X, i), Vector2.Zero));
+            }
+            GridLocation lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.X - SlotDimensions.X, a_boundingBox.W), Vector2.Zero);
+            if (leftSlots.Last() != lastSlot) leftSlots.Add(lastSlot);
+
+            // Slots intersecting the bounding box
             for (float i = a_boundingBox.Z; i <= a_boundingBox.W; i += SlotDimensions.Y)
             {
                 leftSlots.Add(GetSlotFromPixel(new Vector2(a_boundingBox.X, i), Vector2.Zero));
             }
-            GridLocation lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.X, a_boundingBox.W), Vector2.Zero);
-
+            lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.X, a_boundingBox.W), Vector2.Zero);
             if (leftSlots.Last() != lastSlot) leftSlots.Add(lastSlot);
 
             return leftSlots;
@@ -143,12 +160,20 @@ namespace FirstMG.Source.Engine
         {
             List<GridLocation> rightSlots = new List<GridLocation>();
 
+            // Slots to the right of bounding box
+            for (float i = a_boundingBox.Z; i <= a_boundingBox.W; i += SlotDimensions.Y)
+            {
+                rightSlots.Add(GetSlotFromPixel(new Vector2(a_boundingBox.Y + SlotDimensions.X, i), Vector2.Zero));
+            }
+            GridLocation lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.Y + SlotDimensions.X, a_boundingBox.W), Vector2.Zero);
+            if (rightSlots.Last() != lastSlot) rightSlots.Add(lastSlot);
+
+            // Slots intersecting the bounding box
             for (float i = a_boundingBox.Z; i <= a_boundingBox.W; i += SlotDimensions.Y)
             {
                 rightSlots.Add(GetSlotFromPixel(new Vector2(a_boundingBox.Y, i), Vector2.Zero));
             }
-            GridLocation lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.Y, a_boundingBox.W), Vector2.Zero);
-
+            lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.Y, a_boundingBox.W), Vector2.Zero);
             if (rightSlots.Last() != lastSlot) rightSlots.Add(lastSlot);
 
             return rightSlots;
