@@ -61,19 +61,19 @@ namespace FirstMG.Source.GamePlay
         public virtual void CheckScroll(object a_position)
         {
             Vector2 tmpPos = (Vector2)a_position;
-            if ((tmpPos.X < (-_offset.X + (Engine.Globals.ScreenWidth * .3f))) )
+            if ((tmpPos.X < (-_offset.X + (Engine.Globals.ScreenWidth * .1f))) )
             {
                 _offset = new Vector2(_offset.X - MainCharacter.HSpeed, _offset.Y);
             }
-            if (tmpPos.X > (-_offset.X + (Engine.Globals.ScreenWidth * .7f)) )
+            if (tmpPos.X > (-_offset.X + (Engine.Globals.ScreenWidth * .9f)) )
             {
                 _offset = new Vector2(_offset.X - MainCharacter.HSpeed, _offset.Y);
             }
-            if (tmpPos.Y < (-_offset.Y + (Engine.Globals.ScreenHeight * .3f)))
+            if (tmpPos.Y < (-_offset.Y + (Engine.Globals.ScreenHeight * .1f)))
             {
                 _offset = new Vector2(_offset.X, _offset.Y - MainCharacter.VSpeed);
             }
-            if (tmpPos.Y > (-_offset.Y + (Engine.Globals.ScreenHeight * .7f)))
+            if (tmpPos.Y > (-_offset.Y + (Engine.Globals.ScreenHeight * .9f)))
             {
                 _offset = new Vector2(_offset.X, _offset.Y - MainCharacter.VSpeed);
             }
@@ -97,13 +97,15 @@ namespace FirstMG.Source.GamePlay
                 }
                 if (mainCharXML.Element("position") != null)
                 {
-                    mcPosition = new Vector2(Convert.ToInt32(mainCharXML.Element("position").Value), Engine.Globals.ScreenHeight / 2);
+                    mcPosition = new Vector2(Convert.ToInt32(mainCharXML.Element("position").Value), 400);
                 }
             }
             MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(50, 80), /* frames */ new Vector2(1,1));
 
-            AddNpc(new EvilOnion(new Vector2(200, 200), new Vector2(1, 1)));
+            AddNpc(new EvilOnion(new Vector2(1300, 200), new Vector2(1, 1)));
 
+
+            // Load map
             XElement map = XDocument.Load("XML\\Maps\\fst_map.xml").Element("map");
             Vector2 mapSize = new Vector2(Convert.ToInt32(map.Attribute("width").Value), Convert.ToInt32(map.Attribute("height").Value));
             Vector2 tileDims = new Vector2(Convert.ToInt32(map.Attribute("tilewidth").Value), Convert.ToInt32(map.Attribute("tileheight").Value));

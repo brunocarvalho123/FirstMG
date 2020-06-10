@@ -132,14 +132,22 @@ namespace FirstMG.Source.GamePlay
 
             foreach (GridLocation leftSlot in a_leftSlots)
             {
-                if (leftSlot != null && leftSlot.Impassible)
+                if (leftSlot != null)
                 {
                     float slotLeftPos = leftSlot.Position.X + a_grid.SlotDimensions.X;
                     if (a_boundingBox.X + HSpeed < slotLeftPos)
                     {
-                        HSpeed = -(a_boundingBox.X - slotLeftPos);
-                        HSpeed = Math.Min(HSpeed, 0);
-                        break;
+                        if (leftSlot.Impassible)
+                        {
+                            HSpeed = -(a_boundingBox.X - slotLeftPos);
+                            HSpeed = Math.Min(HSpeed, 0);
+                            break;
+                        }
+                        else if (leftSlot.Deadly)
+                        {
+                            Dead = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -155,14 +163,22 @@ namespace FirstMG.Source.GamePlay
 
             foreach (GridLocation rightSlot in a_rightSlots)
             {
-                if (rightSlot != null && rightSlot.Impassible)
+                if (rightSlot != null)
                 {
                     float slotRightPos = rightSlot.Position.X;
                     if (a_boundingBox.Y + HSpeed - slotRightPos > 0)
                     {
-                        HSpeed = slotRightPos - a_boundingBox.Y;
-                        HSpeed = Math.Max(HSpeed, 0);
-                        break;
+                        if (rightSlot.Impassible)
+                        {
+                            HSpeed = slotRightPos - a_boundingBox.Y;
+                            HSpeed = Math.Max(HSpeed, 0);
+                            break;
+                        }
+                        else if (rightSlot.Deadly)
+                        {
+                            Dead = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -175,13 +191,21 @@ namespace FirstMG.Source.GamePlay
         {
             foreach (GridLocation topSlot in a_topSlots)
             {
-                if (topSlot != null && topSlot.Impassible)
+                if (topSlot != null)
                 {
                     float topSlotPos = topSlot.Position.Y + a_grid.SlotDimensions.Y;
                     if (a_boundingBox.Z + VSpeed <= topSlotPos)
                     {
-                        VSpeed = topSlotPos - a_boundingBox.Z;
-                        return;
+                        if (topSlot.Impassible)
+                        {
+                            VSpeed = topSlotPos - a_boundingBox.Z;
+                            return;
+                        }
+                        else if (topSlot.Deadly)
+                        {
+                            Dead = true;
+                            return;
+                        }
                     }
                 }
             }
@@ -214,11 +238,19 @@ namespace FirstMG.Source.GamePlay
             foreach (GridLocation botSlot in a_botSlots)
             {
                 if (botSlot != null &&
-                    botSlot.Impassible &&
                     botSlot.Position.Y - (BottomPosition + VSpeed) < 0)
                 {
-                    VSpeed = Math.Abs(botSlot.Position.Y - BottomPosition) - 0.1f;
-                    break;
+                    if (botSlot.Impassible)
+                    {
+                        VSpeed = Math.Abs(botSlot.Position.Y - BottomPosition) - 0.1f;
+                        break;
+                    }
+                    else if (botSlot.Deadly)
+                    {
+                        Dead = true;
+                        break;
+                    }
+                    
                 }
             }
 

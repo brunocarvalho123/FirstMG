@@ -3,7 +3,7 @@
   <Unit>
     <MainChar>
       <asset>Assets\MainChar\block</asset>
-      <position>800</position>
+      <position>350</position>
     </MainChar>
     <Npc>
     </Npc>

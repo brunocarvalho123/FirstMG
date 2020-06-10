@@ -201,9 +201,12 @@ namespace FirstMG.Source.Engine
                                         /* Frames      */ new Vector2(1,1)));
 
             GridLocation slot = GetSlotFromLocation(a_location);
-            slot.SetToFilled(/* impasssible */ true);
-            // TODO
-            slot.Deadly = true;
+
+            bool isImpassible = Convert.ToBoolean(a_tile.Element("properties").Descendants().Where(elem => (string)elem.Attribute("name") == "impassible").FirstOrDefault().Attribute("value").Value);
+            bool isDeadly = Convert.ToBoolean(a_tile.Element("properties").Descendants().Where(elem => (string)elem.Attribute("name") == "deadly").FirstOrDefault().Attribute("value").Value);
+            
+            slot.SetToFilled(isImpassible);
+            slot.Deadly = isDeadly;
         }
 
         public virtual void LoadData(XElement a_map)
