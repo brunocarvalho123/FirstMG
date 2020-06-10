@@ -102,9 +102,13 @@ namespace FirstMG.Source.GamePlay
             }
             MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(50, 80), /* frames */ new Vector2(1,1));
 
-            //AddNpc(new EvilOnion(new Vector2(400, 200), new Vector2(1, 1)));
+            AddNpc(new EvilOnion(new Vector2(200, 200), new Vector2(1, 1)));
 
-            _grid = new SquareGrid(new Vector2(32, 32), new Vector2(0, 0), new Vector2(Globals.ScreenWidth + 200, Globals.ScreenHeight + 200), xml.Element("Root").Element("GridItem"));
+            XElement map = XDocument.Load("XML\\Maps\\fst_map.xml").Element("map");
+            Vector2 mapSize = new Vector2(Convert.ToInt32(map.Attribute("width").Value), Convert.ToInt32(map.Attribute("height").Value));
+            Vector2 tileDims = new Vector2(Convert.ToInt32(map.Attribute("tilewidth").Value), Convert.ToInt32(map.Attribute("tileheight").Value));
+
+            _grid = new SquareGrid(tileDims, new Vector2(0, 0), mapSize, map);
         }
 
         public virtual void Update()

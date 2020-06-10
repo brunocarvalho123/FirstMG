@@ -29,7 +29,7 @@ namespace FirstMG.Source.Engine
         private List<List<GridLocation>> _slots = new List<List<GridLocation>>();
 
 
-        public SquareGrid(Vector2 a_slotDims, Vector2 a_startPos, Vector2 a_totalDims, XElement a_data, float a_gravity = .8f, float a_friction = .5f)
+        public SquareGrid(Vector2 a_slotDims, Vector2 a_startPos, Vector2 a_gridDims, XElement a_map, float a_gravity = .8f, float a_friction = .5f)
         {
             _gravity  = a_gravity;
             _friction = a_friction;
@@ -37,9 +37,10 @@ namespace FirstMG.Source.Engine
             _showGrid = false;
 
             _slotDims = a_slotDims;
+            _gridDims = a_gridDims;
 
             _physicalStartPos = new Vector2((int)a_startPos.X, (int)a_startPos.Y);
-            _totalPhysicalDims = new Vector2((int)a_totalDims.X, (int)a_totalDims.Y);
+            _totalPhysicalDims = new Vector2((int)_gridDims.X * a_slotDims.X, (int)_gridDims.Y * a_slotDims.Y);
 
             _currentHoverSlot = new Vector2(-1, -1);
 
@@ -47,7 +48,7 @@ namespace FirstMG.Source.Engine
             
             _gridImg = new Asset2D("Assets\\UI\\shade", _slotDims/2, new Vector2(_slotDims.X-2, _slotDims.Y-2));
 
-            LoadData(a_data);
+            LoadData(a_map);
         }
 
         public bool ShowGrid
@@ -192,35 +193,49 @@ namespace FirstMG.Source.Engine
         }
 
 
-        public virtual void AddGridItem(string a_path, Vector2 a_location)
+        public virtual void AddGridItem(XElement a_tile, Vector2 a_location)
         {
-            _gridItems.Add(new GridItem(/* Path       */ a_path,
+            _gridItems.Add(new GridItem(/* Path       */ a_tile.Element("image").Attribute("source").Value,
                                         /* Position   */ GetPositionFromLocation(a_location) + SlotDimensions/2,
                                         /* Dimensions */ Globals.NewVector(SlotDimensions),
                                         /* Frames      */ new Vector2(1,1)));
 
-            GetSlotFromLocation(a_location).SetToFilled(/* impasssible */ true);
+            GridLocation slot = GetSlotFromLocation(a_location);
+            slot.SetToFilled(/* impasssible */ true);
+            // TODO
+            slot.Deadly = true;
         }
 
-        public virtual void LoadData(XElement a_data)
+        public virtual void LoadData(XElement a_map)
         {
-            if (a_data != null)
+            if (a_map != null)
             {
-                List<XElement> dirtRows = (from t in a_data.Descendants("DirtRow") select t).ToList<XElement>();
+                string tilesetSource = a_map.Element("tileset").Attribute("source").Value;
+                XElement tileset = XDocument.Load("XML\\Tilesets\\" + tilesetSource).Element("tileset");
 
-                // Load Terrain
-                foreach (XElement dirtRow in dirtRows)
+                string layerData = a_map.Element("layer").Value;
+
+                string[] tileArray = layerData.Split(',','\n');
+
+                int x = 0;
+                int y = 0;
+                foreach (string tile in tileArray)
                 {
-                    int yVal = Convert.ToInt32(dirtRow.Element("Position").Element("y").Value);
-                    int startingXVal = Convert.ToInt32(dirtRow.Element("Position").Element("starting_x").Value);
-                    int finalXVal = Convert.ToInt32(dirtRow.Element("Position").Element("final_x").Value);
-
-                    AddGridItem("Assets\\dirt_big_left", new Vector2(startingXVal, yVal));
-                    for (int i = startingXVal + 1; i < finalXVal; i++)
+                    if (tile != "")
                     {
-                        AddGridItem("Assets\\dirt_big_mid", new Vector2(i, yVal));
+                        if (x == _gridDims.X)
+                        {
+                            x = 0;
+                            y += 1;
+                        }
+                        if (tile != "0")
+                        {
+                            int tileId = Convert.ToInt32(tile) - 1;
+                            XElement tileElement = tileset.Descendants().Where(elem => (string) elem.Attribute("id") == tileId.ToString()).FirstOrDefault();
+                            AddGridItem(tileElement, new Vector2(x, y));
+                        }
+                        x += 1;
                     }
-                    AddGridItem("Assets\\dirt_big_right", new Vector2(finalXVal, yVal));
                 }
             }
         }
@@ -228,8 +243,6 @@ namespace FirstMG.Source.Engine
 
         public virtual void SetBaseGrid()
         {
-            _gridDims = new Vector2((int)(_totalPhysicalDims.X/_slotDims.X), (int)(_totalPhysicalDims.Y/_slotDims.Y));
-
             _slots.Clear();
             for(int i=0; i<_gridDims.X; i++)
             {

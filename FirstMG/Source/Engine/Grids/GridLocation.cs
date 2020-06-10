@@ -14,6 +14,7 @@ namespace FirstMG.Source.Engine
         private bool _filled;
         private bool _impassible;
         private bool _unpathable;
+        private bool _deadly;
 
         private float _fScore;
         private float _cost;
@@ -29,6 +30,7 @@ namespace FirstMG.Source.Engine
 
             _unpathable = false;
             _impassible = false;
+            _deadly = false;
 
             _position = a_position;
         }
@@ -42,6 +44,11 @@ namespace FirstMG.Source.Engine
         {
             get { return _filled; }
             set { _filled = value; }
+        }
+        public bool Deadly
+        {
+            get { return _deadly; }
+            set { _deadly = value; }
         }
         public Vector2 Position
         {
