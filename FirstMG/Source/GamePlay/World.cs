@@ -61,21 +61,29 @@ namespace FirstMG.Source.GamePlay
         public virtual void CheckScroll(object a_position)
         {
             Vector2 tmpPos = (Vector2)a_position;
-            if ((tmpPos.X < (-_offset.X + (Engine.Globals.ScreenWidth * .1f))) )
+            float diff = 0;
+            float maxHSpeed = 8.0f;
+            float maxVSpeed = 20.0f;
+
+            if ((tmpPos.X < (-_offset.X + (Engine.Globals.ScreenWidth * .25f))) )
             {
-                _offset = new Vector2(_offset.X - MainCharacter.HSpeed, _offset.Y);
+                diff = -_offset.X + (Engine.Globals.ScreenWidth * .25f) - tmpPos.X;
+                _offset = new Vector2(_offset.X + Math.Min(diff, maxHSpeed), _offset.Y);
             }
-            if (tmpPos.X > (-_offset.X + (Engine.Globals.ScreenWidth * .9f)) )
+            if (tmpPos.X > (-_offset.X + (Engine.Globals.ScreenWidth * .75f)) )
             {
-                _offset = new Vector2(_offset.X - MainCharacter.HSpeed, _offset.Y);
+                diff = tmpPos.X - (-_offset.X + Engine.Globals.ScreenWidth * .75f);
+                _offset = new Vector2(_offset.X - Math.Min(maxHSpeed, diff), _offset.Y);
             }
-            if (tmpPos.Y < (-_offset.Y + (Engine.Globals.ScreenHeight * .1f)))
+            if (tmpPos.Y < (-_offset.Y + (Engine.Globals.ScreenHeight * .40f)))
             {
-                _offset = new Vector2(_offset.X, _offset.Y - MainCharacter.VSpeed);
+                diff = -_offset.Y + (Engine.Globals.ScreenHeight * .40f) - tmpPos.Y;
+                _offset = new Vector2(_offset.X, _offset.Y + Math.Min(maxVSpeed, diff));
             }
-            if (tmpPos.Y > (-_offset.Y + (Engine.Globals.ScreenHeight * .9f)))
+            if (tmpPos.Y > (-_offset.Y + (Engine.Globals.ScreenHeight * .60f)))
             {
-                _offset = new Vector2(_offset.X, _offset.Y - MainCharacter.VSpeed);
+                diff = tmpPos.Y - (-_offset.Y + Engine.Globals.ScreenHeight * .60f);
+                _offset = new Vector2(_offset.X, _offset.Y - Math.Min(maxVSpeed, diff));
             }
 
             //_offset = new Vector2((float)Math.Floor(_offset.X), (float)Math.Floor(_offset.Y));
