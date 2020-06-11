@@ -2,8 +2,8 @@
 <Root>
   <Unit>
     <MainChar>
-      <asset>Assets\MainChar\block</asset>
-      <position>350</position>
+      <asset>Assets\MainChar\animacao_adventurer_big</asset>
+      <position>150</position>
     </MainChar>
     <Npc>
     </Npc>

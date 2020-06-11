@@ -108,7 +108,7 @@ namespace FirstMG.Source.GamePlay
                     mcPosition = new Vector2(Convert.ToInt32(mainCharXML.Element("position").Value), 400);
                 }
             }
-            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(50, 80), /* frames */ new Vector2(1,1));
+            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(48, 64), /* frames */ new Vector2(6,8));
 
             AddNpc(new EvilOnion(new Vector2(1300, 200), new Vector2(1, 1)));
 

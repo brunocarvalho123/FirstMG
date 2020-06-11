@@ -17,6 +17,8 @@ namespace FirstMG.Source.GamePlay
         private bool _wasOnGround = false;
         private TimeSpan _extraGroundTimer = TimeSpan.FromMilliseconds(76);
 
+        private string _orientation = "right";
+
         public MainChar(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames)
         {
             Health     = 5.0f;
@@ -28,12 +30,16 @@ namespace FirstMG.Source.GamePlay
             JumpSpeed = 15.0f;
 
 
-            FrameAnimations = false;
+            FrameAnimations = true;
             CurrentAnimation = 0;
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 0), 1, 20, 0, "Idle"));
-            //FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 1), 6, 128, 0, "Run"));
-            //FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 3), 3, 64, 0, "Jump"));
-            //FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 2), 3, 64, 0, "Fall"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 0), 3, 256, 0, "IdleR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 1), 3, 256, 0, "IdleL"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 2), 6, 128, 0, "RunR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 3), 6, 128, 0, "RunL"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 4), 4, 128, 1, "JumpR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 5), 4, 128, 1, "JumpL"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 6), 2, 128, 0, "FallR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 7), 2, 128, 0, "FallL"));
         }
 
 
@@ -113,20 +119,48 @@ namespace FirstMG.Source.GamePlay
 
             if (OnGround && HSpeed == 0)
             {
-                //SetAnimationByName("Idle");
+                if (_orientation == "right")
+                {
+                    SetAnimationByName("IdleR");
+                }
+                else
+                {
+                    SetAnimationByName("IdleL");
+                }
             }
             else if (OnGround && HSpeed != 0)
             {
                 checkScroll = true;
-                //SetAnimationByName("Run");
+                if (_orientation == "right")
+                {
+                    SetAnimationByName("RunR");
+                }
+                else
+                {
+                    SetAnimationByName("RunL");
+                }
             }
             else if (VSpeed > 0)
             {
-                //SetAnimationByName("Fall");
+                if (_orientation == "right")
+                {
+                    SetAnimationByName("FallR");
+                }
+                else
+                {
+                    SetAnimationByName("FallL");
+                }
             }
             else if (VSpeed < 0)
             {
-                //SetAnimationByName("Jump");
+                if (_orientation == "right")
+                {
+                    SetAnimationByName("JumpR");
+                }
+                else
+                {
+                    SetAnimationByName("JumpL");
+                }
             }
 
             if (Globals.MyMouse.LeftClick())
@@ -152,6 +186,15 @@ namespace FirstMG.Source.GamePlay
             }
 
             _wasOnGround = OnGround;
+
+            if (HSpeed > 0)
+            {
+                _orientation = "right";
+            }
+            else if (HSpeed < 0)
+            {
+                _orientation = "left";
+            }
 
             base.Update(a_offset, a_grid);
             
