@@ -259,9 +259,9 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void Update(Vector2 a_offset, SquareGrid a_grid)
         {
-            Vector4 boundingBox = new Vector4(/* Left  X */ Position.X - (Dimension.X / 2) * 0.75f, 
-                                              /* Right Y */ Position.X + (Dimension.X / 2) * 0.75f, 
-                                              /* Top   Z */ Position.Y - (Dimension.Y / 2) * 0.8f, 
+            Vector4 boundingBox = new Vector4(/* Left  X */ Position.X - (Dimension.X / 2) * .25f, 
+                                              /* Right Y */ Position.X + (Dimension.X / 2) * .25f, 
+                                              /* Top   Z */ Position.Y - (Dimension.Y / 2) * .6f, 
                                               /* Bot   W */ Position.Y + (Dimension.Y / 2));
             
             List<GridLocation> botSlots   = a_grid.GetBotSlots(boundingBox);
@@ -290,9 +290,12 @@ namespace FirstMG.Source.GamePlay
                 MoveRight(a_grid, boundingBox, rightSlots);
             }
 
-            Position = new Vector2(Position.X + HSpeed, Position.Y);
+            if (Position.X + HSpeed < a_grid.TotalPhysicalDims.X && Position.X + HSpeed > a_grid.StartingPhysicalPos.X)
+            {
+                Position = new Vector2(Position.X + HSpeed, Position.Y);
+            }
 
-            if (Position.Y >= Globals.ScreenHeight)
+            if (Position.Y >= a_grid.TotalPhysicalDims.Y)
             {
                 Dead = true;
             }

@@ -18,6 +18,8 @@ namespace FirstMG.Source.Engine
         private Vector2 _physicalStartPos;
         private Vector2 _totalPhysicalDims;
         private Vector2 _currentHoverSlot;
+        private Vector2 _topLeft;
+        private Vector2 _botRight;
 
         private float   _gravity;
         private float   _friction;
@@ -42,6 +44,9 @@ namespace FirstMG.Source.Engine
             _physicalStartPos = new Vector2((int)a_startPos.X, (int)a_startPos.Y);
             _totalPhysicalDims = new Vector2((int)_gridDims.X * a_slotDims.X, (int)_gridDims.Y * a_slotDims.Y);
 
+            _topLeft = Vector2.Zero;
+            _botRight = new Vector2(_totalPhysicalDims.X, _totalPhysicalDims.Y);
+
             _currentHoverSlot = new Vector2(-1, -1);
 
             SetBaseGrid();
@@ -63,6 +68,10 @@ namespace FirstMG.Source.Engine
         public Vector2 TotalPhysicalDims
         {
             get { return _totalPhysicalDims; }
+        }
+        public Vector2 StartingPhysicalPos
+        {
+            get { return _physicalStartPos; }
         }
         public float Gravity
         {
@@ -145,7 +154,7 @@ namespace FirstMG.Source.Engine
                 leftSlots.Add(GetSlotFromPixel(new Vector2(a_boundingBox.X - SlotDimensions.X, i), Vector2.Zero));
             }
             GridLocation lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.X - SlotDimensions.X, a_boundingBox.W), Vector2.Zero);
-            if (leftSlots.Last() != lastSlot) leftSlots.Add(lastSlot);
+            if (leftSlots.Count == 0 || leftSlots.Last() != lastSlot) leftSlots.Add(lastSlot);
 
             // Slots intersecting the bounding box
             for (float i = a_boundingBox.Z + SlotDimensions.Y; i <= a_boundingBox.W; i += SlotDimensions.Y)
@@ -167,7 +176,7 @@ namespace FirstMG.Source.Engine
                 rightSlots.Add(GetSlotFromPixel(new Vector2(a_boundingBox.Y + SlotDimensions.X, i), Vector2.Zero));
             }
             GridLocation lastSlot = GetSlotFromPixel(new Vector2(a_boundingBox.Y + SlotDimensions.X, a_boundingBox.W), Vector2.Zero);
-            if (rightSlots.Last() != lastSlot) rightSlots.Add(lastSlot);
+            if (rightSlots.Count == 0 || rightSlots.Last() != lastSlot) rightSlots.Add(lastSlot);
 
             // Slots intersecting the bounding box
             for (float i = a_boundingBox.Z + SlotDimensions.Y; i <= a_boundingBox.W; i += SlotDimensions.Y)
@@ -195,10 +204,14 @@ namespace FirstMG.Source.Engine
 
         public virtual void AddGridItem(XElement a_tile, Vector2 a_location)
         {
-            _gridItems.Add(new GridItem(/* Path       */ a_tile.Element("image").Attribute("source").Value,
-                                        /* Position   */ GetPositionFromLocation(a_location) + SlotDimensions/2,
-                                        /* Dimensions */ Globals.NewVector(SlotDimensions),
-                                        /* Frames      */ new Vector2(1,1)));
+            XElement image = a_tile.Element("image");
+            Vector2 tmpDims = new Vector2(Convert.ToInt32(image.Attribute("width").Value) * 2, Convert.ToInt32(image.Attribute("height").Value) * 2);
+            Vector2 offsetDims = new Vector2(tmpDims.X / 2, SlotDimensions.Y - tmpDims.Y / 2);
+
+            _gridItems.Add(new GridItem(/* Path       */ image.Attribute("source").Value,
+                                        /* Position   */ GetPositionFromLocation(a_location) + offsetDims,
+                                        /* Dimensions */ tmpDims,
+                                        /* Frames     */ new Vector2(1,1)));
 
             GridLocation slot = GetSlotFromLocation(a_location);
 
@@ -213,31 +226,50 @@ namespace FirstMG.Source.Engine
         {
             if (a_map != null)
             {
-                string tilesetSource = a_map.Element("tileset").Attribute("source").Value;
-                XElement tileset = XDocument.Load("XML\\Tilesets\\" + tilesetSource).Element("tileset");
-
-                string layerData = a_map.Element("layer").Value;
-
-                string[] tileArray = layerData.Split(',','\n');
-
-                int x = 0;
-                int y = 0;
-                foreach (string tile in tileArray)
+                List<Tuple<int, XElement>> tilesets = new List<Tuple<int, XElement>>();
+                foreach (XElement tileset in a_map.Elements("tileset"))
                 {
-                    if (tile != "")
+                    string tilesetSource = tileset.Attribute("source").Value;
+                    tilesets.Add(new Tuple<int, XElement>(Convert.ToInt32(tileset.Attribute("firstgid").Value), XDocument.Load("XML\\Tilesets\\" + tilesetSource).Element("tileset")));
+                }
+
+                foreach (XElement layer in a_map.Elements("layer"))
+                {
+                    string layerData = layer.Value;
+
+                    string[] tileArray = layerData.Split(',', '\n');
+
+                    int x = 0;
+                    int y = 0;
+                    foreach (string tile in tileArray)
                     {
-                        if (x == _gridDims.X)
+                        if (tile != "")
                         {
-                            x = 0;
-                            y += 1;
+                            if (x == _gridDims.X)
+                            {
+                                x = 0;
+                                y += 1;
+                            }
+                            if (tile != "0")
+                            {
+                                int tileId = Convert.ToInt32(tile);
+
+                                int bestMatch = 0;
+                                XElement bestMatchElement = null;
+                                foreach (Tuple<int, XElement> tileTuple in tilesets)
+                                {
+                                    if (tileId >= tileTuple.Item1 && tileId >= bestMatch)
+                                    {
+                                        bestMatch = tileTuple.Item1;
+                                        bestMatchElement = tileTuple.Item2;
+                                    }
+                                }
+
+                                XElement tileElement = bestMatchElement.Descendants().Where(elem => (string)elem.Attribute("id") == (tileId - bestMatch).ToString()).FirstOrDefault();
+                                AddGridItem(tileElement, new Vector2(x, y));
+                            }
+                            x += 1;
                         }
-                        if (tile != "0")
-                        {
-                            int tileId = Convert.ToInt32(tile) - 1;
-                            XElement tileElement = tileset.Descendants().Where(elem => (string) elem.Attribute("id") == tileId.ToString()).FirstOrDefault();
-                            AddGridItem(tileElement, new Vector2(x, y));
-                        }
-                        x += 1;
                     }
                 }
             }
@@ -269,15 +301,15 @@ namespace FirstMG.Source.Engine
             {
                 //Vector2 topLeft = GetLocationFromPixel((new Vector2(0, 0)) / Globals.zoom  - a_offset, Vector2.Zero);
                 //Vector2 botRight = GetLocationFromPixel((new Vector2(Globals.screenWidth, Globals.screenHeight)) / Globals.zoom  - a_offset, Vector2.Zero);
-                Vector2 topLeft = GetLocationFromPixel(new Vector2(0, 0), Vector2.Zero);
-                Vector2 botRight = GetLocationFromPixel(new Vector2(Globals.ScreenWidth, Globals.ScreenHeight), Vector2.Zero);
+                //Vector2 topLeft = GetLocationFromPixel(new Vector2(0, 0), Vector2.Zero);
+                //Vector2 botRight = GetLocationFromPixel(new Vector2(Globals.ScreenWidth, Globals.ScreenHeight), Vector2.Zero);
 
                 Globals.NormalEffect.Parameters["filterColor"].SetValue(Color.White.ToVector4());
                 Globals.NormalEffect.CurrentTechnique.Passes[0].Apply();
 
-                for(int j=(int)topLeft.X;j<=botRight.X && j<_slots.Count;j++)
+                for(int j=(int)_topLeft.X;j<=_botRight.X && j<_slots.Count;j++)
                 {
-                    for(int k=(int)topLeft.Y;k<=botRight.Y && k<_slots[0].Count;k++)
+                    for(int k=(int)_topLeft.Y;k<=_botRight.Y && k<_slots[0].Count;k++)
                     {
                         if(_currentHoverSlot.X == j && _currentHoverSlot.Y == k)
                         {

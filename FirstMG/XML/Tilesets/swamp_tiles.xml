@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tileset version="1.2" tiledversion="1.3.5" name="swamp_tiles" tilewidth="32" tileheight="32" tilecount="60" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_53"/>
+  </tile>
+  <tile id="1">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_54"/>
+  </tile>
+  <tile id="2">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_55"/>
+  </tile>
+  <tile id="3">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_56"/>
+  </tile>
+  <tile id="4">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_57"/>
+  </tile>
+  <tile id="5">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_58"/>
+  </tile>
+  <tile id="6">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_59"/>
+  </tile>
+  <tile id="7">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_60"/>
+  </tile>
+  <tile id="8">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_01"/>
+  </tile>
+  <tile id="9">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_02"/>
+  </tile>
+  <tile id="10">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_03"/>
+  </tile>
+  <tile id="11">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_04"/>
+  </tile>
+  <tile id="12">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_05"/>
+  </tile>
+  <tile id="13">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_06"/>
+  </tile>
+  <tile id="14">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_07"/>
+  </tile>
+  <tile id="15">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_08"/>
+  </tile>
+  <tile id="16">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_09"/>
+  </tile>
+  <tile id="17">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_10"/>
+  </tile>
+  <tile id="18">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_11"/>
+  </tile>
+  <tile id="19">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_12"/>
+  </tile>
+  <tile id="20">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_13"/>
+  </tile>
+  <tile id="21">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_14"/>
+  </tile>
+  <tile id="22">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_15"/>
+  </tile>
+  <tile id="23">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_16"/>
+  </tile>
+  <tile id="24">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_17"/>
+  </tile>
+  <tile id="25">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_18"/>
+  </tile>
+  <tile id="26">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_19"/>
+  </tile>
+  <tile id="27">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_20"/>
+  </tile>
+  <tile id="28">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_21"/>
+  </tile>
+  <tile id="29">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_22"/>
+  </tile>
+  <tile id="30">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_23"/>
+  </tile>
+  <tile id="31">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_24"/>
+  </tile>
+  <tile id="32">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_25"/>
+  </tile>
+  <tile id="33">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_26"/>
+  </tile>
+  <tile id="34">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_27"/>
+  </tile>
+  <tile id="35">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_28"/>
+  </tile>
+  <tile id="36">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_29"/>
+  </tile>
+  <tile id="37">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_30"/>
+  </tile>
+  <tile id="38">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_31"/>
+  </tile>
+  <tile id="39">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_32"/>
+  </tile>
+  <tile id="40">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_33"/>
+  </tile>
+  <tile id="41">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_34"/>
+  </tile>
+  <tile id="42">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_35"/>
+  </tile>
+  <tile id="43">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_36"/>
+  </tile>
+  <tile id="44">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_37"/>
+  </tile>
+  <tile id="45">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_38"/>
+  </tile>
+  <tile id="46">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_39"/>
+  </tile>
+  <tile id="47">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_40"/>
+  </tile>
+  <tile id="48">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_41"/>
+  </tile>
+  <tile id="49">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_42"/>
+  </tile>
+  <tile id="50">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_43"/>
+  </tile>
+  <tile id="51">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_44"/>
+  </tile>
+  <tile id="52">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_45"/>
+  </tile>
+  <tile id="53">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_46"/>
+  </tile>
+  <tile id="54">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_47"/>
+  </tile>
+  <tile id="55">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_48"/>
+  </tile>
+  <tile id="56">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_49"/>
+  </tile>
+  <tile id="57">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_50"/>
+  </tile>
+  <tile id="58">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_51"/>
+  </tile>
+  <tile id="59">
+    <properties>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\Swamp\Tiles\Tile_52"/>
+  </tile>
+</tileset>

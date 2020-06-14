@@ -45,7 +45,7 @@ namespace FirstMG.Source.GamePlay
             LoadData(1);
             
             _ui = new UI(ResetWorld, ChangeGameState);
-            _tiledBackground = new TiledBackground("Assets\\UI\\standard_snow", new Vector2(-100,-100), new Vector2(120,100), new Vector2(_grid.TotalPhysicalDims.X + 100, _grid.TotalPhysicalDims.Y + 100));
+            _tiledBackground = new TiledBackground("Assets\\UI\\swamp_background", new Vector2(0,0), new Vector2(1920,1080), new Vector2(_grid.TotalPhysicalDims.X, _grid.TotalPhysicalDims.Y));
         }
 
         public virtual void AddProjectile(object a_projectile)
@@ -62,31 +62,30 @@ namespace FirstMG.Source.GamePlay
         {
             Vector2 tmpPos = (Vector2)a_position;
             float diff = 0;
-            float maxHSpeed = 8.0f;
-            float maxVSpeed = 20.0f;
+            float maxHSpeed = 15.0f;
 
-            if ((tmpPos.X < (-_offset.X + (Engine.Globals.ScreenWidth * .25f))) )
+            if ((tmpPos.X < (-_offset.X + (Engine.Globals.ScreenWidth * .5f))) && (tmpPos.X - (Engine.Globals.ScreenWidth * .5f) > _grid.StartingPhysicalPos.X) )
             {
-                diff = -_offset.X + (Engine.Globals.ScreenWidth * .25f) - tmpPos.X;
+                diff = -_offset.X + (Engine.Globals.ScreenWidth * .5f) - tmpPos.X;
                 _offset = new Vector2(_offset.X + Math.Min(diff, maxHSpeed), _offset.Y);
             }
-            if (tmpPos.X > (-_offset.X + (Engine.Globals.ScreenWidth * .75f)) )
+            if (tmpPos.X > (-_offset.X + (Engine.Globals.ScreenWidth * .5f)) && (tmpPos.X + (Engine.Globals.ScreenWidth * .5f) < _grid.TotalPhysicalDims.X))
             {
-                diff = tmpPos.X - (-_offset.X + Engine.Globals.ScreenWidth * .75f);
+                diff = tmpPos.X - (-_offset.X + Engine.Globals.ScreenWidth * .5f);
                 _offset = new Vector2(_offset.X - Math.Min(maxHSpeed, diff), _offset.Y);
             }
-            if (tmpPos.Y < (-_offset.Y + (Engine.Globals.ScreenHeight * .40f)))
-            {
-                diff = -_offset.Y + (Engine.Globals.ScreenHeight * .40f) - tmpPos.Y;
-                _offset = new Vector2(_offset.X, _offset.Y + Math.Min(maxVSpeed, diff));
-            }
-            if (tmpPos.Y > (-_offset.Y + (Engine.Globals.ScreenHeight * .60f)))
-            {
-                diff = tmpPos.Y - (-_offset.Y + Engine.Globals.ScreenHeight * .60f);
-                _offset = new Vector2(_offset.X, _offset.Y - Math.Min(maxVSpeed, diff));
-            }
+            //if (tmpPos.Y < (-_offset.Y + (Engine.Globals.ScreenHeight * .5f)))
+            //{
+            //    diff = -_offset.Y + (Engine.Globals.ScreenHeight * .5f) - tmpPos.Y;
+            //    _offset = new Vector2(_offset.X, _offset.Y + Math.Min(maxVSpeed, diff));
+            //}
+            //if (tmpPos.Y > (-_offset.Y + (Engine.Globals.ScreenHeight * .5f)))
+            //{
+            //    diff = tmpPos.Y - (-_offset.Y + Engine.Globals.ScreenHeight * .5f);
+            //    _offset = new Vector2(_offset.X, _offset.Y - Math.Min(maxVSpeed, diff));
+            //}
 
-            //_offset = new Vector2((float)Math.Floor(_offset.X), (float)Math.Floor(_offset.Y));
+            _offset = new Vector2(_offset.X, 0);
         }
 
         public virtual void LoadData(int a_level)
@@ -108,17 +107,17 @@ namespace FirstMG.Source.GamePlay
                     mcPosition = new Vector2(Convert.ToInt32(mainCharXML.Element("position").Value), 400);
                 }
             }
-            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(48, 64), /* frames */ new Vector2(6,8));
+            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(76*2, 64*2), /* frames */ new Vector2(6,10));
 
-            AddNpc(new EvilOnion(new Vector2(1300, 200), new Vector2(1, 1)));
+            //AddNpc(new EvilOnion(new Vector2(1300, 200), new Vector2(1, 1)));
 
 
             // Load map
-            XElement map = XDocument.Load("XML\\Maps\\fst_map.xml").Element("map");
+            XElement map = XDocument.Load("XML\\Maps\\swamp.xml").Element("map");
             Vector2 mapSize = new Vector2(Convert.ToInt32(map.Attribute("width").Value), Convert.ToInt32(map.Attribute("height").Value));
-            Vector2 tileDims = new Vector2(Convert.ToInt32(map.Attribute("tilewidth").Value), Convert.ToInt32(map.Attribute("tileheight").Value));
+            Vector2 tileDims = new Vector2(Convert.ToInt32(map.Attribute("tilewidth").Value)*2, Convert.ToInt32(map.Attribute("tileheight").Value)*2);
 
-            _grid = new SquareGrid(tileDims, new Vector2(0, 0), mapSize, map);
+            _grid = new SquareGrid(tileDims, new Vector2(0, 0), mapSize, map, 1.1f);
         }
 
         public virtual void Update()
@@ -202,7 +201,7 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void Draw(Vector2 a_offset)
         {
-            _tiledBackground.Draw(_offset);
+            _tiledBackground.Draw(Vector2.Zero);
             _grid.DrawGrid(_offset);
 
 

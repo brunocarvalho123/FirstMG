@@ -18,6 +18,7 @@ namespace FirstMG.Source.GamePlay
         private TimeSpan _extraGroundTimer = TimeSpan.FromMilliseconds(76);
 
         private string _orientation = "right";
+        private bool _attacking = false;
 
         public MainChar(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames)
         {
@@ -27,24 +28,28 @@ namespace FirstMG.Source.GamePlay
             StaminaMax = Stamina;
 
             MovSpeed  = 1.1f;
-            JumpSpeed = 15.0f;
+            MaxHSpeed = 8.0f;
+            JumpSpeed = 28.0f;
 
 
             FrameAnimations = true;
             CurrentAnimation = 0;
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 0), 3, 256, 0, "IdleR"));
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 1), 3, 256, 0, "IdleL"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 0), 3, 384, 0, "IdleR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 1), 3, 384, 0, "IdleL"));
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 2), 6, 128, 0, "RunR"));
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 3), 6, 128, 0, "RunL"));
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 4), 4, 128, 1, "JumpR"));
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 5), 4, 128, 1, "JumpL"));
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 6), 2, 128, 0, "FallR"));
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 7), 2, 128, 0, "FallL"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 8), 5, 100, 1, "AttR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 9), 5, 100, 1, "AttL"));
         }
 
 
         public void NormalAttack(Vector2 a_offset)
         {
+            _attacking = true;
             //if (Stamina > 0)
             //{
             //    Stamina--;
@@ -121,11 +126,25 @@ namespace FirstMG.Source.GamePlay
             {
                 if (_orientation == "right")
                 {
-                    SetAnimationByName("IdleR");
+                    if (_attacking)
+                    {
+                        SetAnimationByName("AttR");
+                    }
+                    else
+                    {
+                        SetAnimationByName("IdleR");
+                    }
                 }
                 else
                 {
-                    SetAnimationByName("IdleL");
+                    if (_attacking)
+                    {
+                        SetAnimationByName("AttL");
+                    }
+                    else
+                    {
+                        SetAnimationByName("IdleL");
+                    }
                 }
             }
             else if (OnGround && HSpeed != 0)
