@@ -30,6 +30,8 @@ namespace FirstMG.Source.GamePlay
         private float _maxVSpeed; 
         private float _maxHSpeed;
 
+        private Vector4 _boundingBoxOffset;
+
         public Unit(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames, Color.White)
         {
             _health     = 1.0f;
@@ -40,6 +42,8 @@ namespace FirstMG.Source.GamePlay
 
             _maxVSpeed  = 49.9f;
             _maxHSpeed  = 6.0f;
+
+            _boundingBoxOffset = new Vector4(1, 1, 1, 1);
 
             _dead        = false;
             _onGround    = false;
@@ -113,6 +117,11 @@ namespace FirstMG.Source.GamePlay
         public float BottomPosition
         {
             get { return Position.Y + Dimension.Y/2; }
+        }
+        public Vector4 BoundingBoxOffset
+        {
+            get { return _boundingBoxOffset; }
+            protected set { _boundingBoxOffset = value; }
         }
 
         public virtual void GetHit(float a_damage)
@@ -259,10 +268,10 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void Update(Vector2 a_offset, SquareGrid a_grid)
         {
-            Vector4 boundingBox = new Vector4(/* Left  X */ Position.X - (Dimension.X / 2) * .25f, 
-                                              /* Right Y */ Position.X + (Dimension.X / 2) * .25f, 
-                                              /* Top   Z */ Position.Y - (Dimension.Y / 2) * .6f, 
-                                              /* Bot   W */ Position.Y + (Dimension.Y / 2));
+            Vector4 boundingBox = new Vector4(/* Left  X */ Position.X - (Dimension.X / 2) * BoundingBoxOffset.X, 
+                                              /* Right Y */ Position.X + (Dimension.X / 2) * BoundingBoxOffset.Y, 
+                                              /* Top   Z */ Position.Y - (Dimension.Y / 2) * BoundingBoxOffset.Z, 
+                                              /* Bot   W */ Position.Y + (Dimension.Y / 2) * BoundingBoxOffset.W);
             
             List<GridLocation> botSlots   = a_grid.GetBotSlots(boundingBox);
 

@@ -12,13 +12,26 @@ namespace FirstMG.Source.GamePlay
 {
     class MainChar : Unit
     {
-        private TimeSpan _jumpTimer = TimeSpan.FromMilliseconds(151);
-        private Engine.MyTimer _staminaTimer = new Engine.MyTimer(1000);
-        private bool _wasOnGround = false;
-        private TimeSpan _extraGroundTimer = TimeSpan.FromMilliseconds(76);
+        enum State
+        {
+            STANDING,
+            JUMPING,
+            RUNNING,
+            ATTACKING
+        }
+        enum Orientation
+        {
+            RIGHT,
+            LEFT
+        }
 
-        private string _orientation = "right";
-        private bool _attacking = false;
+        private TimeSpan _jumpTimer        = TimeSpan.FromMilliseconds(151);
+        private TimeSpan _extraGroundTimer = TimeSpan.FromMilliseconds(76);
+        private MyTimer  _staminaTimer     = new MyTimer(1000);
+        private bool     _wasOnGround      = false;
+
+        private State       _state       = State.STANDING;
+        private Orientation _orientation = Orientation.RIGHT;
 
         public MainChar(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames)
         {
@@ -31,6 +44,7 @@ namespace FirstMG.Source.GamePlay
             MaxHSpeed = 8.0f;
             JumpSpeed = 28.0f;
 
+            BoundingBoxOffset = new Vector4(.25f, .25f, .6f, 1);
 
             FrameAnimations = true;
             CurrentAnimation = 0;
@@ -42,19 +56,17 @@ namespace FirstMG.Source.GamePlay
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 5), 4, 128, 1, "JumpL"));
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 6), 2, 128, 0, "FallR"));
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 7), 2, 128, 0, "FallL"));
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 8), 5, 100, 1, "AttR"));
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 9), 5, 100, 1, "AttL"));
+
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 8), 5, 150, 1, 3, NormalAttack, "AttR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 9), 5, 150, 1, 3, NormalAttack, "AttL"));
         }
 
-
-        public void NormalAttack(Vector2 a_offset)
+        public void NormalAttack(object a_obj)
         {
-            _attacking = true;
-            //if (Stamina > 0)
-            //{
-            //    Stamina--;
-            //    GameGlobals.PassProjectile(new CurlyLine(new Vector2(Position.X, Position.Y - (Dimension.Y / 2)), this, new Vector2(Globals.MyMouse.NewMousePos.X, Globals.MyMouse.NewMousePos.Y + (Dimension.Y / 2)) - a_offset));
-            //}
+            if (Stamina > 0)
+            {
+                Stamina--;
+            }
         }
 
         public void RechargeStamina (float a_value)
@@ -71,120 +83,56 @@ namespace FirstMG.Source.GamePlay
             }
         }
 
-        public override void Update(Vector2 a_offset, SquareGrid a_grid)
+        public void HandleInput(Vector2 a_offset, SquareGrid a_grid)
         {
-            bool checkScroll = false;
-            //a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = false;
             bool pressedSpace = Globals.MyKeyboard.GetPress("Space");
 
-            if (VSpeed != 0)
+            if (OnGround && HSpeed == 0 && _state != State.ATTACKING) _state = State.STANDING;
+            if (_state != State.ATTACKING)
             {
-                checkScroll = true;
-            }
-
-            if (Globals.MyKeyboard.GetPress("A") || Globals.MyKeyboard.GetPress("Left"))
-            {
-                HSpeed -= MovSpeed;
-            }
-
-            if (Globals.MyKeyboard.GetPress("D") || Globals.MyKeyboard.GetPress("Right"))
-            {
-                HSpeed += MovSpeed;
-            }
-
-
-            if (Globals.MyKeyboard.GetNewPress("Space"))
-            {
-                _jumpTimer = TimeSpan.FromMilliseconds(0);
-            }
-            if (!pressedSpace && _wasOnGround && !OnGround)
-            {
-                _extraGroundTimer = TimeSpan.FromMilliseconds(0);
-            }
-
-            _jumpTimer        += Globals.GlobalGameTime.ElapsedGameTime;
-            _extraGroundTimer += Globals.GlobalGameTime.ElapsedGameTime;
-
-            if (_jumpTimer.TotalMilliseconds < 150 && (_extraGroundTimer.TotalMilliseconds < 75 || OnGround)) 
-            {
-                VSpeed = -JumpSpeed;
-                _jumpTimer = TimeSpan.FromMilliseconds(151);
-            }
-            if (!pressedSpace && VSpeed < 0 && !OnGround)
-            {
-                VSpeed *= 0.8f;
-            }
-
-            _staminaTimer.UpdateTimer();
-            if (_staminaTimer.Test())
-            {
-                RechargeStamina(1);
-                _staminaTimer.Reset();
-            }
-
-            if (OnGround && HSpeed == 0)
-            {
-                if (_orientation == "right")
+                // Runing stuff
+                if (Globals.MyKeyboard.GetPress("A") || Globals.MyKeyboard.GetPress("Left"))
                 {
-                    if (_attacking)
+                    HSpeed -= MovSpeed;
+                    _state = State.RUNNING;
+                }
+                if (Globals.MyKeyboard.GetPress("D") || Globals.MyKeyboard.GetPress("Right"))
+                {
+                    HSpeed += MovSpeed;
+                    _state = State.RUNNING;
+                }
+
+                // Jumping stuff
+                if (Globals.MyKeyboard.GetNewPress("Space"))
+                {
+                    _jumpTimer = TimeSpan.FromMilliseconds(0);
+                }
+                if (!pressedSpace && _wasOnGround && !OnGround)
+                {
+                    _extraGroundTimer = TimeSpan.FromMilliseconds(0);
+                }
+
+                _jumpTimer += Globals.GlobalGameTime.ElapsedGameTime;
+                _extraGroundTimer += Globals.GlobalGameTime.ElapsedGameTime;
+
+                if (_jumpTimer.TotalMilliseconds < 150 && (_extraGroundTimer.TotalMilliseconds < 75 || OnGround))
+                {
+                    VSpeed = -JumpSpeed;
+                    _jumpTimer = TimeSpan.FromMilliseconds(151);
+                    _state = State.JUMPING;
+                }
+                if (!pressedSpace && VSpeed < 0 && !OnGround)
+                {
+                    VSpeed *= 0.8f;
+                }
+
+                if (Globals.MyMouse.LeftClick())
+                {
+                    if (OnGround)
                     {
-                        SetAnimationByName("AttR");
-                    }
-                    else
-                    {
-                        SetAnimationByName("IdleR");
+                        _state = State.ATTACKING;
                     }
                 }
-                else
-                {
-                    if (_attacking)
-                    {
-                        SetAnimationByName("AttL");
-                    }
-                    else
-                    {
-                        SetAnimationByName("IdleL");
-                    }
-                }
-            }
-            else if (OnGround && HSpeed != 0)
-            {
-                checkScroll = true;
-                if (_orientation == "right")
-                {
-                    SetAnimationByName("RunR");
-                }
-                else
-                {
-                    SetAnimationByName("RunL");
-                }
-            }
-            else if (VSpeed > 0)
-            {
-                if (_orientation == "right")
-                {
-                    SetAnimationByName("FallR");
-                }
-                else
-                {
-                    SetAnimationByName("FallL");
-                }
-            }
-            else if (VSpeed < 0)
-            {
-                if (_orientation == "right")
-                {
-                    SetAnimationByName("JumpR");
-                }
-                else
-                {
-                    SetAnimationByName("JumpL");
-                }
-            }
-
-            if (Globals.MyMouse.LeftClick())
-            {
-                NormalAttack(a_offset);
             }
 
             if (Globals.MyMouse.RightClick())
@@ -198,21 +146,74 @@ namespace FirstMG.Source.GamePlay
                     location.SetToFilled(true);
                     FirstEnemy tmpEnemy = new FirstEnemy(Vector2.Zero, new Vector2(1, 1));
 
-                    tmpEnemy.Position = location.Position + tmpEnemy.Dimension/2;
+                    tmpEnemy.Position = location.Position + tmpEnemy.Dimension / 2;
 
                     GameGlobals.PassNpc(tmpEnemy);
                 }
+            }
+        }
+
+        public void StartAnimation()
+        {
+            string ori = "R";
+            if (_orientation == Orientation.LEFT) ori = "L";
+
+            if (VSpeed > 0 && !OnGround)
+            {
+                SetAnimationByName("Fall" + ori);
+                return;
+            }
+            else if (VSpeed < 0 && !OnGround)
+            {
+                SetAnimationByName("Jump" + ori);
+                return;
+            }
+
+            switch (_state)
+            {
+                case State.ATTACKING:
+                    SetAnimationByName("Att" + ori);
+                    if (FrameAnimationList[CurrentAnimation].IsAtEnd()) _state = State.STANDING;
+                    break;
+                case State.RUNNING:
+                    SetAnimationByName("Run" + ori);
+                    break;
+                case State.STANDING:
+                    SetAnimationByName("Idle" + ori);
+                    break;
+                default:
+                    SetAnimationByName("Idle" + ori);
+                    break;
+            }
+        }
+
+        public override void Update(Vector2 a_offset, SquareGrid a_grid)
+        {
+            //a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = false;
+
+            bool checkScroll = false;
+
+            HandleInput(a_offset, a_grid);
+            StartAnimation();
+
+            _staminaTimer.UpdateTimer();
+            if (_staminaTimer.Test())
+            {
+                RechargeStamina(1);
+                _staminaTimer.Reset();
             }
 
             _wasOnGround = OnGround;
 
             if (HSpeed > 0)
             {
-                _orientation = "right";
+                _orientation = Orientation.RIGHT;
+                checkScroll = true;
             }
             else if (HSpeed < 0)
             {
-                _orientation = "left";
+                _orientation = Orientation.LEFT;
+                checkScroll = true;
             }
 
             base.Update(a_offset, a_grid);
@@ -221,6 +222,7 @@ namespace FirstMG.Source.GamePlay
             {
                 GameGlobals.CheckScroll(Position);
             }
+
             //a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = true;
         }
 
