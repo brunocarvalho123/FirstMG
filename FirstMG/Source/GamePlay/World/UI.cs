@@ -43,7 +43,6 @@ namespace FirstMG.Source.GamePlay
             {
                 _mainMenuButton.Update(new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2 + 300));
             }
-
         }
 
         public void Draw(World a_world)
@@ -55,21 +54,21 @@ namespace FirstMG.Source.GamePlay
             Globals.NormalEffect.Parameters["filterColor"].SetValue(Color.White.ToVector4());
             Globals.NormalEffect.CurrentTechnique.Passes[0].Apply();
 
-            string displayLine = $"Shreks killed: {a_world._nKilled}";
+            string displayLine = $"Enemies slain: {a_world._nKilled}";
             Vector2 stringDimension = _font.MeasureString(displayLine);
-            Globals.MySpriteBatch.DrawString(_font, displayLine, new Vector2(Globals.ScreenWidth / 2 - (stringDimension.X/2), Globals.ScreenHeight-100), Color.Black );
+            Globals.MySpriteBatch.DrawString(_font, displayLine, new Vector2(Globals.ScreenWidth - 300, 100), Color.Black );
 
             if (a_world.MainCharacter.Dead)
             {
-                displayLine = "You ded brah... Press Enter to restart!";
+                displayLine = "You died... Press Enter to restart!";
                 stringDimension = _font.MeasureString(displayLine);
                 Globals.MySpriteBatch.DrawString(_font, displayLine, new Vector2(Globals.ScreenWidth / 2 - (stringDimension.X / 2), Globals.ScreenHeight/2), Color.Black);
 
                 _resetButton.Draw(new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2 + 100));
             }
 
-            _healthBar.Draw(new Vector2(100, Globals.ScreenHeight - 100));
-            _staminaBar.Draw(new Vector2(Globals.ScreenWidth - 300, Globals.ScreenHeight - 100));
+            _healthBar.Draw(new Vector2(100, 100));
+            _staminaBar.Draw(new Vector2(300, 100));
 
             if (GameGlobals.paused)
             {
