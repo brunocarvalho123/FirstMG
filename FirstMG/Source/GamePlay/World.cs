@@ -37,6 +37,7 @@ namespace FirstMG.Source.GamePlay
             GameGlobals.PassProjectile = AddProjectile;
             GameGlobals.PassNpc        = AddNpc;
             GameGlobals.CheckScroll    = CheckScroll;
+            GameGlobals.ExecuteAttack  = ExecuteAttack;
             GameGlobals.paused         = false;
 
             _nKilled = 0;
@@ -56,6 +57,20 @@ namespace FirstMG.Source.GamePlay
         public virtual void AddNpc(object a_npc)
         {
             _npcs.Add((Npc)a_npc);
+        }
+
+        public virtual void ExecuteAttack(object a_attack)
+        {
+            Attack attack = (Attack)a_attack;
+            foreach (Npc npc in _npcs)
+            {
+                if (Globals.GetDistance(attack.Position, npc.Position) < attack.Range)
+                {
+                    npc.GetHit(attack.Power);
+                    attack.LandedHit = true;
+                    return;
+                }
+            }
         }
 
         public virtual void CheckScroll(object a_position)
@@ -107,9 +122,17 @@ namespace FirstMG.Source.GamePlay
                     mcPosition = new Vector2(Convert.ToInt32(mainCharXML.Element("position").Value), 400);
                 }
             }
-            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(76*2, 64*2), /* frames */ new Vector2(6,10));
+            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(76*2, 64*2), /* frames */ new Vector2(6,14));
 
-            //AddNpc(new EvilOnion(new Vector2(1300, 200), new Vector2(1, 1)));
+            AddNpc(new EvilOnion(new Vector2(1300, 200), new Vector2(1, 1)));
+
+            AddNpc(new EvilOnion(new Vector2(1700, 200), new Vector2(1, 1)));
+
+            AddNpc(new EvilOnion(new Vector2(3000, 200), new Vector2(1, 1)));
+
+            AddNpc(new EvilOnion(new Vector2(2000, 200), new Vector2(1, 1)));
+
+            AddNpc(new EvilOnion(new Vector2(2400, 200), new Vector2(1, 1)));
 
 
             // Load map
@@ -117,7 +140,7 @@ namespace FirstMG.Source.GamePlay
             Vector2 mapSize = new Vector2(Convert.ToInt32(map.Attribute("width").Value), Convert.ToInt32(map.Attribute("height").Value));
             Vector2 tileDims = new Vector2(Convert.ToInt32(map.Attribute("tilewidth").Value)*2, Convert.ToInt32(map.Attribute("tileheight").Value)*2);
 
-            _grid = new SquareGrid(tileDims, new Vector2(0, 0), mapSize, map, 1.1f);
+            _grid = new SquareGrid(tileDims, new Vector2(0, 0), mapSize, map, 0.99f);
         }
 
         public virtual void Update()
@@ -202,8 +225,8 @@ namespace FirstMG.Source.GamePlay
         public virtual void Draw(Vector2 a_offset)
         {
             _tiledBackground.Draw(Vector2.Zero);
-            _grid.DrawGrid(_offset);
 
+            _grid.DrawGrid(_offset, "BackgroundLayer");
 
             MainCharacter.Draw(_offset);
 
@@ -221,6 +244,8 @@ namespace FirstMG.Source.GamePlay
             {
                 npc.Draw(_offset);
             }
+
+            _grid.DrawGrid(_offset, "TileLayer");
 
             _ui.Draw(this);
         }

@@ -17,7 +17,9 @@ namespace FirstMG.Source.GamePlay
             STANDING,
             JUMPING,
             RUNNING,
-            ATTACKING
+            ATTACKING,
+            JUMP_ATTACKING,
+            DASHING
         }
         enum Orientation
         {
@@ -25,10 +27,12 @@ namespace FirstMG.Source.GamePlay
             LEFT
         }
 
-        private TimeSpan _jumpTimer        = TimeSpan.FromMilliseconds(151);
-        private TimeSpan _extraGroundTimer = TimeSpan.FromMilliseconds(76);
-        private MyTimer  _staminaTimer     = new MyTimer(1000);
-        private bool     _wasOnGround      = false;
+        private TimeSpan _jumpTimer         = TimeSpan.FromMilliseconds(151);
+        private TimeSpan _extraGroundTimer  = TimeSpan.FromMilliseconds(76);
+        private MyTimer  _staminaTimer      = new MyTimer(250);
+        private MyTimer  _invulnerableTimer = new MyTimer(1500);
+        private bool     _wasOnGround       = false;
+        private bool     _invulnerable      = false;
 
         private State       _state       = State.STANDING;
         private Orientation _orientation = Orientation.RIGHT;
@@ -37,12 +41,12 @@ namespace FirstMG.Source.GamePlay
         {
             Health     = 5.0f;
             HealthMax  = Health;
-            Stamina    = 10.0f;
+            Stamina    = 5.0f;
             StaminaMax = Stamina;
 
             MovSpeed  = 1.1f;
-            MaxHSpeed = 8.0f;
-            JumpSpeed = 28.0f;
+            MaxHSpeed = 7.5f;
+            JumpSpeed = 26.1f;
 
             BoundingBoxOffset = new Vector4(.25f, .25f, .6f, 1);
 
@@ -57,15 +61,41 @@ namespace FirstMG.Source.GamePlay
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 6), 2, 128, 0, "FallR"));
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 7), 2, 128, 0, "FallL"));
 
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 8), 6, 150, 1, 3, NormalAttack, "AttR"));
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 9), 6, 150, 1, 3, NormalAttack, "AttL"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 8), 6, 64, 1, 4, NormalAttack, "AttR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 9), 6, 64, 1, 4, NormalAttack, "AttL"));
+
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 10), 2, 100, 0, "JattR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 11), 2, 100, 0, "JattL"));
+
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 12), 4, 45, 1, 4, StopDashing, "DashR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 13), 4, 45, 1, 4, StopDashing, "DashL"));
         }
 
         public void NormalAttack(object a_obj)
         {
-            if (Stamina > 0)
+            if (Stamina >= 1)
             {
+                GameGlobals.ExecuteAttack(new Attack(Position, 120, 1));
                 Stamina--;
+            }
+        }
+
+        public void StopDashing(object a_obj)
+        {
+            _state = State.STANDING;
+            IgnoringPhysics = false;
+        }
+
+        public override void GetHit(float a_damage)
+        {
+            if (!_invulnerable && _state != State.DASHING)
+            {
+                base.GetHit(a_damage);
+                //VSpeed = -50;
+                //HSpeed = -50;
+                // TODO: Make a decente knockback system
+                _invulnerable = true;
+                _invulnerableTimer.Reset();
             }
         }
 
@@ -87,19 +117,18 @@ namespace FirstMG.Source.GamePlay
         {
             bool pressedSpace = Globals.MyKeyboard.GetPress("Space");
 
-            if (OnGround && HSpeed == 0 && _state != State.ATTACKING) _state = State.STANDING;
-            if (_state != State.ATTACKING)
+            if (OnGround && HSpeed == 0 && _state != State.ATTACKING && _state != State.JUMP_ATTACKING) _state = State.STANDING;
+
+            if (_state != State.ATTACKING && _state != State.JUMP_ATTACKING)
             {
                 // Runing stuff
                 if (Globals.MyKeyboard.GetPress("A") || Globals.MyKeyboard.GetPress("Left"))
                 {
                     HSpeed -= MovSpeed;
-                    _state = State.RUNNING;
                 }
                 if (Globals.MyKeyboard.GetPress("D") || Globals.MyKeyboard.GetPress("Right"))
                 {
                     HSpeed += MovSpeed;
-                    _state = State.RUNNING;
                 }
 
                 // Jumping stuff
@@ -128,35 +157,76 @@ namespace FirstMG.Source.GamePlay
 
                 if (Globals.MyMouse.LeftClick())
                 {
-                    if (OnGround)
+                    if (OnGround && Stamina >= 1)
                     {
                         _state = State.ATTACKING;
                     }
                 }
-            }
 
-            if (Globals.MyMouse.RightClick())
-            {
-                Vector2 tmpLocation = a_grid.GetLocationFromPixel(Globals.NewVector(Globals.MyMouse.NewMousePos) - a_offset, Vector2.Zero);
-
-                GridLocation location = a_grid.GetSlotFromLocation(tmpLocation);
-
-                if (location != null && !location.Filled && !location.Impassible)
+                if (!OnGround && Stamina >= 1 && (Globals.MyKeyboard.GetPress("S") || Globals.MyKeyboard.GetPress("Down")))
                 {
-                    location.SetToFilled(true);
-                    FirstEnemy tmpEnemy = new FirstEnemy(Vector2.Zero, new Vector2(1, 1));
-
-                    tmpEnemy.Position = location.Position + tmpEnemy.Dimension / 2;
-
-                    GameGlobals.PassNpc(tmpEnemy);
+                    if (VSpeed < 0) VSpeed = -0.1f;
+                    Stamina--;
+                    _state = State.JUMP_ATTACKING;
                 }
             }
+            else if (_state == State.JUMP_ATTACKING) 
+            {
+                if (Globals.MyKeyboard.GetPress("A") || Globals.MyKeyboard.GetPress("Left"))
+                {
+                    HSpeed -= MovSpeed;
+                }
+                if (Globals.MyKeyboard.GetPress("D") || Globals.MyKeyboard.GetPress("Right"))
+                {
+                    HSpeed += MovSpeed;
+                }
+                if (Globals.MyMouse.LeftClick())
+                {
+                    _state = State.JUMPING;
+                }
+            }
+
+            if (Globals.MyMouse.RightClick() && _state != State.DASHING && Stamina >= 3)
+            {
+                //Vector2 tmpLocation = a_grid.GetLocationFromPixel(Globals.NewVector(Globals.MyMouse.NewMousePos) - a_offset, Vector2.Zero);
+
+                //GridLocation location = a_grid.GetSlotFromLocation(tmpLocation);
+
+                //if (location != null && !location.Filled && !location.Impassible)
+                //{
+                //    location.SetToFilled(true);
+                //    FirstEnemy tmpEnemy = new FirstEnemy(Vector2.Zero, new Vector2(1, 1));
+
+                //    tmpEnemy.Position = location.Position + tmpEnemy.Dimension / 2;
+
+                //    GameGlobals.PassNpc(tmpEnemy);
+                //}
+
+                _state = State.DASHING;
+                IgnoringPhysics = true;
+                VSpeed = 0;
+                Stamina -= 3;
+            }
+
+            if(_state == State.STANDING && HSpeed != 0) _state = State.RUNNING;
         }
 
         public void StartAnimation()
         {
             string ori = "R";
             if (_orientation == Orientation.LEFT) ori = "L";
+
+            if (_state == State.DASHING)
+            {
+                SetAnimationByName("Dash" + ori);
+                return;
+            }
+
+            if (_state == State.JUMP_ATTACKING && !OnGround)
+            {
+                SetAnimationByName("Jatt" + ori);
+                return;
+            }
 
             if (VSpeed > 0 && !OnGround)
             {
@@ -182,6 +252,7 @@ namespace FirstMG.Source.GamePlay
                     SetAnimationByName("Idle" + ori);
                     break;
                 default:
+                    _state = State.STANDING;
                     SetAnimationByName("Idle" + ori);
                     break;
             }
@@ -193,14 +264,46 @@ namespace FirstMG.Source.GamePlay
 
             bool checkScroll = false;
 
-            HandleInput(a_offset, a_grid);
+            if (_state == State.DASHING)
+            {
+                if (_orientation == Orientation.LEFT)
+                {
+                    HSpeed = -20.0f;
+                }
+                else
+                {
+                    HSpeed = 20.0f;
+                }
+            }
+            else
+            {
+                HandleInput(a_offset, a_grid);
+            }
+
+
+            if (_state == State.JUMP_ATTACKING)
+            {
+                Attack jumpAttack = new Attack(Position, 100, 1);
+                GameGlobals.ExecuteAttack(jumpAttack);
+                if (jumpAttack.LandedHit) VSpeed = -JumpSpeed;
+            }
+
             StartAnimation();
 
             _staminaTimer.UpdateTimer();
             if (_staminaTimer.Test())
             {
-                RechargeStamina(1);
+                RechargeStamina(0.2f);
                 _staminaTimer.Reset();
+            }
+
+            if (_invulnerable)
+            {
+                _invulnerableTimer.UpdateTimer();
+                if (_invulnerableTimer.Test())
+                {
+                    _invulnerable = false;
+                }
             }
 
             _wasOnGround = OnGround;
@@ -228,6 +331,15 @@ namespace FirstMG.Source.GamePlay
 
         public override void Draw(Vector2 a_offset)
         {
+            if (_invulnerable)
+            {
+                //Globals.NormalEffect.Parameters["xSize"].SetValue((float)Asset.Bounds.Width);
+                //Globals.NormalEffect.Parameters["ySize"].SetValue((float)Asset.Bounds.Height);
+                //Globals.NormalEffect.Parameters["xDraw"].SetValue((float)((int)Dimension.X));
+                //Globals.NormalEffect.Parameters["yDraw"].SetValue((float)((int)Dimension.Y));
+                Globals.NormalEffect.Parameters["filterColor"].SetValue(Color.Yellow.ToVector4());
+                Globals.NormalEffect.CurrentTechnique.Passes[0].Apply();
+            }
             base.Draw(a_offset);
         }
     }

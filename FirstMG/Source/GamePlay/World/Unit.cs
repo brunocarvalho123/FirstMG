@@ -26,6 +26,7 @@ namespace FirstMG.Source.GamePlay
         /* Booleans */
         private bool _dead;
         private bool _onGround;
+        private bool _ignoringPhysics;
 
         private float _maxVSpeed; 
         private float _maxHSpeed;
@@ -45,8 +46,9 @@ namespace FirstMG.Source.GamePlay
 
             _boundingBoxOffset = new Vector4(1, 1, 1, 1);
 
-            _dead        = false;
-            _onGround    = false;
+            _dead            = false;
+            _onGround        = false;
+            _ignoringPhysics = false;
         }
 
         public float Health
@@ -73,6 +75,11 @@ namespace FirstMG.Source.GamePlay
         {
             get { return _onGround; }
             protected set { _onGround = value; }
+        }
+        public bool IgnoringPhysics
+        {
+            get { return _ignoringPhysics; }
+            protected set { _ignoringPhysics = value; }
         }
         public float HSpeed
         {
@@ -107,7 +114,7 @@ namespace FirstMG.Source.GamePlay
         public float Stamina
         {
             get { return _stamina; }
-            set { _stamina = value; }
+            set { _stamina = Math.Max(value,0); }
         }
         public float StaminaMax
         {
@@ -135,9 +142,11 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void MoveLeft(SquareGrid a_grid, Vector4 a_boundingBox, List<GridLocation> a_leftSlots)
         {
-            if (OnGround) HSpeed = Math.Min(0, HSpeed + a_grid.Friction);
-            else HSpeed = Math.Min(0, HSpeed + a_grid.Friction / 2);
-
+            if (!IgnoringPhysics)
+            {
+                if (OnGround) HSpeed = Math.Min(0, HSpeed + a_grid.Friction);
+                else HSpeed = Math.Min(0, HSpeed + a_grid.Friction / 2);
+            }
 
             foreach (GridLocation leftSlot in a_leftSlots)
             {
@@ -161,14 +170,16 @@ namespace FirstMG.Source.GamePlay
                 }
             }
 
-            HSpeed = Math.Max(HSpeed, -MaxHSpeed);
+            if (!IgnoringPhysics) HSpeed = Math.Max(HSpeed, -MaxHSpeed);
         }
 
         public virtual void MoveRight(SquareGrid a_grid, Vector4 a_boundingBox, List<GridLocation> a_rightSlots)
         {
-            if (OnGround) HSpeed = Math.Max(0, HSpeed - a_grid.Friction);
-            else HSpeed = Math.Max(0, HSpeed - a_grid.Friction / 2);
-
+            if (!IgnoringPhysics)
+            {
+                if (OnGround) HSpeed = Math.Max(0, HSpeed - a_grid.Friction);
+                else HSpeed = Math.Max(0, HSpeed - a_grid.Friction * 0.8f);
+            }
 
             foreach (GridLocation rightSlot in a_rightSlots)
             {
@@ -192,8 +203,7 @@ namespace FirstMG.Source.GamePlay
                 }
             }
 
-
-            HSpeed = Math.Min(HSpeed, MaxHSpeed);
+            if (!IgnoringPhysics) HSpeed = Math.Min(HSpeed, MaxHSpeed);
         }
 
         public virtual void Jump(SquareGrid a_grid, Vector4 a_boundingBox, List<GridLocation> a_topSlots)
@@ -282,7 +292,7 @@ namespace FirstMG.Source.GamePlay
                 List<GridLocation> topSlots = a_grid.GetTopSlots(boundingBox);
                 Jump(a_grid, boundingBox, topSlots);
             }
-            GravityEffect(a_grid, botSlots);
+            if (!IgnoringPhysics) GravityEffect(a_grid, botSlots);
 
             Position = new Vector2(Position.X, Position.Y + VSpeed);
 

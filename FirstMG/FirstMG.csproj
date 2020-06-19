@@ -76,6 +76,7 @@
     <Compile Include="Source\GamePlay\GameGlobals.cs" />
     <Compile Include="Source\GamePlay\GamePlay.cs" />
     <Compile Include="Source\GamePlay\MainMenu.cs" />
+    <Compile Include="Source\GamePlay\World\Attack.cs" />
     <Compile Include="Source\GamePlay\World\Projectile.cs" />
     <Compile Include="Source\GamePlay\World\Projectiles\CurlyLine.cs" />
     <Compile Include="Source\GamePlay\World\UI.cs" />

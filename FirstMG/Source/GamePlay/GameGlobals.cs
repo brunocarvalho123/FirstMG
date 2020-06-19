@@ -11,6 +11,7 @@ namespace FirstMG.Source.GamePlay
         public static Engine.PassObject PassProjectile;
         public static Engine.PassObject PassNpc;
         public static Engine.PassObject CheckScroll;
+        public static Engine.PassObject ExecuteAttack;
 
         public static bool paused     = false;
     }

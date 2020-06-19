@@ -202,7 +202,7 @@ namespace FirstMG.Source.Engine
         }
 
 
-        public virtual void AddGridItem(XElement a_tile, Vector2 a_location)
+        public virtual void AddGridItem(XElement a_tile, Vector2 a_location, string a_layer)
         {
             XElement image = a_tile.Element("image");
             Vector2 tmpDims = new Vector2(Convert.ToInt32(image.Attribute("width").Value) * 2, Convert.ToInt32(image.Attribute("height").Value) * 2);
@@ -211,7 +211,8 @@ namespace FirstMG.Source.Engine
             _gridItems.Add(new GridItem(/* Path       */ image.Attribute("source").Value,
                                         /* Position   */ GetPositionFromLocation(a_location) + offsetDims,
                                         /* Dimensions */ tmpDims,
-                                        /* Frames     */ new Vector2(1,1)));
+                                        /* Frames     */ new Vector2(1,1),
+                                        /* Layer      */ a_layer));
 
             GridLocation slot = GetSlotFromLocation(a_location);
 
@@ -266,7 +267,7 @@ namespace FirstMG.Source.Engine
                                 }
 
                                 XElement tileElement = bestMatchElement.Descendants().Where(elem => (string)elem.Attribute("id") == (tileId - bestMatch).ToString()).FirstOrDefault();
-                                AddGridItem(tileElement, new Vector2(x, y));
+                                AddGridItem(tileElement, new Vector2(x, y), layer.Attribute("name").Value);
                             }
                             x += 1;
                         }
@@ -295,17 +296,17 @@ namespace FirstMG.Source.Engine
             _currentHoverSlot = GetLocationFromPixel(new Vector2(Globals.MyMouse.NewMousePos.X, Globals.MyMouse.NewMousePos.Y), -a_offset);
         }
 
-        public virtual void DrawGrid(Vector2 a_offset)
+        public virtual void DrawGrid(Vector2 a_offset, string a_layer)
         {
-            if(_showGrid)
+            Globals.NormalEffect.Parameters["filterColor"].SetValue(Color.White.ToVector4());
+            Globals.NormalEffect.CurrentTechnique.Passes[0].Apply();
+
+            if (_showGrid && a_layer == "BackgroundLayer")
             {
                 //Vector2 topLeft = GetLocationFromPixel((new Vector2(0, 0)) / Globals.zoom  - a_offset, Vector2.Zero);
                 //Vector2 botRight = GetLocationFromPixel((new Vector2(Globals.screenWidth, Globals.screenHeight)) / Globals.zoom  - a_offset, Vector2.Zero);
                 //Vector2 topLeft = GetLocationFromPixel(new Vector2(0, 0), Vector2.Zero);
                 //Vector2 botRight = GetLocationFromPixel(new Vector2(Globals.ScreenWidth, Globals.ScreenHeight), Vector2.Zero);
-
-                Globals.NormalEffect.Parameters["filterColor"].SetValue(Color.White.ToVector4());
-                Globals.NormalEffect.CurrentTechnique.Passes[0].Apply();
 
                 for(int j=(int)_topLeft.X;j<=_botRight.X && j<_slots.Count;j++)
                 {
@@ -331,8 +332,7 @@ namespace FirstMG.Source.Engine
                     }
                 }
             }
-
-            foreach (GridItem item in _gridItems)
+            foreach (GridItem item in _gridItems.Where(gItem => (string)gItem.Layer == a_layer))
             {
                 item.Draw(a_offset);
             }
