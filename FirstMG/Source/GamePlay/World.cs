@@ -38,6 +38,7 @@ namespace FirstMG.Source.GamePlay
             GameGlobals.PassNpc        = AddNpc;
             GameGlobals.CheckScroll    = CheckScroll;
             GameGlobals.ExecuteAttack  = ExecuteAttack;
+            GameGlobals.GetClosestNpc  = GetClosestNpc;
             GameGlobals.paused         = false;
 
             _nKilled = 0;
@@ -72,6 +73,24 @@ namespace FirstMG.Source.GamePlay
                 }
             }
         }
+
+        public virtual object GetClosestNpc(object a_unit)
+        {
+            Unit unit = (Unit)a_unit;
+
+            Npc closestNpc = null;
+            float bestDist = Int32.MaxValue;
+            foreach (Npc npc in _npcs)
+            {
+                float distDiff = Globals.GetDistance(unit.Position, npc.Position);
+                if (distDiff <= bestDist)
+                {
+                    closestNpc = npc;
+                    bestDist = distDiff;
+                }
+            }
+            return closestNpc;
+        } 
 
         public virtual void CheckScroll(object a_position)
         {

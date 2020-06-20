@@ -99,6 +99,19 @@ namespace FirstMG.Source.GamePlay
             }
         }
 
+        public void SwampPositionWithClosestEnemy()
+        {
+            Npc closestEnemy = (Npc)GameGlobals.GetClosestNpc(this);
+
+            if (closestEnemy != null && Math.Abs(closestEnemy.Position.X - Position.X) < 1000)
+            {
+                Vector2 tmpPos = Position;
+                Position = closestEnemy.Position;
+                closestEnemy.Position = tmpPos;
+                Stamina -= 3;
+            }
+        }
+
         public void RechargeStamina (float a_value)
         {
             if (Stamina >= StaminaMax) return;
@@ -169,6 +182,11 @@ namespace FirstMG.Source.GamePlay
                     Stamina--;
                     _state = State.JUMP_ATTACKING;
                 }
+
+                if (Stamina >= 3 && (Globals.MyKeyboard.GetPress("R")))
+                {
+                    SwampPositionWithClosestEnemy();
+                }
             }
             else if (_state == State.JUMP_ATTACKING) 
             {
@@ -186,22 +204,25 @@ namespace FirstMG.Source.GamePlay
                 }
             }
 
-            if (Globals.MyMouse.RightClick() && _state != State.DASHING && Stamina >= 3)
+            if (Globals.MyMouse.RightClick())
             {
-                //Vector2 tmpLocation = a_grid.GetLocationFromPixel(Globals.NewVector(Globals.MyMouse.NewMousePos) - a_offset, Vector2.Zero);
+                Vector2 tmpLocation = a_grid.GetLocationFromPixel(Globals.NewVector(Globals.MyMouse.NewMousePos) - a_offset, Vector2.Zero);
 
-                //GridLocation location = a_grid.GetSlotFromLocation(tmpLocation);
+                GridLocation location = a_grid.GetSlotFromLocation(tmpLocation);
 
-                //if (location != null && !location.Filled && !location.Impassible)
-                //{
-                //    location.SetToFilled(true);
-                //    FirstEnemy tmpEnemy = new FirstEnemy(Vector2.Zero, new Vector2(1, 1));
+                if (location != null && !location.Filled && !location.Impassible)
+                {
+                    location.SetToFilled(true);
+                    FirstEnemy tmpEnemy = new FirstEnemy(Vector2.Zero, new Vector2(1, 1));
 
-                //    tmpEnemy.Position = location.Position + tmpEnemy.Dimension / 2;
+                    tmpEnemy.Position = location.Position + tmpEnemy.Dimension / 2;
 
-                //    GameGlobals.PassNpc(tmpEnemy);
-                //}
+                    GameGlobals.PassNpc(tmpEnemy);
+                }
+            }
 
+            if (Globals.MyKeyboard.GetPress("LeftShift") && _state != State.DASHING && Stamina >= 3)
+            {
                 _state = State.DASHING;
                 IgnoringPhysics = true;
                 VSpeed = 0;
@@ -262,7 +283,7 @@ namespace FirstMG.Source.GamePlay
         {
             //a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = false;
 
-            bool checkScroll = false;
+            Vector2 originalPosition = Position;
 
             if (_state == State.DASHING)
             {
@@ -285,7 +306,7 @@ namespace FirstMG.Source.GamePlay
             {
                 Attack jumpAttack = new Attack(Position, 100, 1);
                 GameGlobals.ExecuteAttack(jumpAttack);
-                if (jumpAttack.LandedHit) VSpeed = -JumpSpeed;
+                if (jumpAttack.LandedHit) VSpeed = -JumpSpeed*0.8f;
             }
 
             StartAnimation();
@@ -311,17 +332,15 @@ namespace FirstMG.Source.GamePlay
             if (HSpeed > 0)
             {
                 _orientation = Orientation.RIGHT;
-                checkScroll = true;
             }
             else if (HSpeed < 0)
             {
                 _orientation = Orientation.LEFT;
-                checkScroll = true;
             }
 
             base.Update(a_offset, a_grid);
             
-            if (checkScroll)
+            if (Position.X != originalPosition.X)
             {
                 GameGlobals.CheckScroll(Position);
             }

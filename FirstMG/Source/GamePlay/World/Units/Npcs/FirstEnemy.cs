@@ -14,7 +14,7 @@ namespace FirstMG.Source.GamePlay
     {
 
         public FirstEnemy(Vector2 a_position, Vector2 a_frames) 
-            : base("Assets\\dirt_big", a_position, new Vector2(32,32), a_frames)
+            : base("Assets\\dirt_big", a_position, new Vector2(32*2,32*2), a_frames)
         {
             MovSpeed = 4.2f;
         }

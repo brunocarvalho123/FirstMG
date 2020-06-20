@@ -13,6 +13,8 @@ namespace FirstMG.Source.GamePlay
         public static Engine.PassObject CheckScroll;
         public static Engine.PassObject ExecuteAttack;
 
+        public static Engine.PassObjectAndReturn GetClosestNpc;
+
         public static bool paused     = false;
     }
 }

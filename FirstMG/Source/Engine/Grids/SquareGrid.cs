@@ -157,7 +157,7 @@ namespace FirstMG.Source.Engine
             if (leftSlots.Count == 0 || leftSlots.Last() != lastSlot) leftSlots.Add(lastSlot);
 
             // Slots intersecting the bounding box
-            for (float i = a_boundingBox.Z + SlotDimensions.Y; i <= a_boundingBox.W; i += SlotDimensions.Y)
+            for (float i = a_boundingBox.Z; i <= a_boundingBox.W; i += SlotDimensions.Y)
             {
                 leftSlots.Add(GetSlotFromPixel(new Vector2(a_boundingBox.X, i), Vector2.Zero));
             }
@@ -179,7 +179,7 @@ namespace FirstMG.Source.Engine
             if (rightSlots.Count == 0 || rightSlots.Last() != lastSlot) rightSlots.Add(lastSlot);
 
             // Slots intersecting the bounding box
-            for (float i = a_boundingBox.Z + SlotDimensions.Y; i <= a_boundingBox.W; i += SlotDimensions.Y)
+            for (float i = a_boundingBox.Z; i <= a_boundingBox.W; i += SlotDimensions.Y)
             {
                 rightSlots.Add(GetSlotFromPixel(new Vector2(a_boundingBox.Y, i), Vector2.Zero));
             }

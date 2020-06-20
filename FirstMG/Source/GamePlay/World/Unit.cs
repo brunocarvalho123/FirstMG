@@ -217,7 +217,7 @@ namespace FirstMG.Source.GamePlay
                     {
                         if (topSlot.Impassible)
                         {
-                            VSpeed = topSlotPos - a_boundingBox.Z;
+                            VSpeed = Math.Min(0,(topSlotPos - a_boundingBox.Z));
                             return;
                         }
                         else if (topSlot.Deadly)
@@ -296,8 +296,8 @@ namespace FirstMG.Source.GamePlay
 
             Position = new Vector2(Position.X, Position.Y + VSpeed);
 
-            boundingBox.Z = Position.Y - (Dimension.Y / 2) ;
-            boundingBox.W = Position.Y + (Dimension.Y / 2);
+            boundingBox.Z = Position.Y - (Dimension.Y / 2) * BoundingBoxOffset.Z;
+            boundingBox.W = Position.Y + (Dimension.Y / 2) * BoundingBoxOffset.W;
             if (HSpeed < 0)
             {
                 List<GridLocation> leftSlots = a_grid.GetLeftSlots(boundingBox);
