@@ -106,8 +106,9 @@ namespace FirstMG.Source.GamePlay
             if (closestEnemy != null && Math.Abs(closestEnemy.Position.X - Position.X) < 1000)
             {
                 Vector2 tmpPos = Position;
-                Position = closestEnemy.Position;
-                closestEnemy.Position = tmpPos;
+                Position = closestEnemy.Position + new Vector2(0, closestEnemy.Dimension.Y/2 - Dimension.Y/2);
+                closestEnemy.Position = tmpPos + new Vector2(0, Dimension.Y/2 - closestEnemy.Dimension.Y/2);
+                GameGlobals.ResetScroll(Position);
                 Stamina -= 3;
             }
         }

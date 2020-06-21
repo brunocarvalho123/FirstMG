@@ -37,6 +37,7 @@ namespace FirstMG.Source.GamePlay
             GameGlobals.PassProjectile = AddProjectile;
             GameGlobals.PassNpc        = AddNpc;
             GameGlobals.CheckScroll    = CheckScroll;
+            GameGlobals.ResetScroll    = ResetScroll;
             GameGlobals.ExecuteAttack  = ExecuteAttack;
             GameGlobals.GetClosestNpc  = GetClosestNpc;
             GameGlobals.paused         = false;
@@ -90,7 +91,27 @@ namespace FirstMG.Source.GamePlay
                 }
             }
             return closestNpc;
-        } 
+        }
+
+        public virtual void ResetScroll(object a_position)
+        {
+            Vector2 tmpPos = (Vector2)a_position;
+            float diff = 0;
+
+            if (tmpPos.X + (Engine.Globals.ScreenWidth * .5f) < _grid.TotalPhysicalDims.X && tmpPos.X - (Engine.Globals.ScreenWidth * .5f) > _grid.StartingPhysicalPos.X)
+            {
+                diff = tmpPos.X - (-_offset.X + Engine.Globals.ScreenWidth * .5f);
+                _offset = new Vector2(_offset.X - diff, _offset.Y);
+            }
+            else if (tmpPos.X + (Engine.Globals.ScreenWidth * .5f) >= _grid.TotalPhysicalDims.X && tmpPos.X - (Engine.Globals.ScreenWidth * .5f) > _grid.StartingPhysicalPos.X)
+            {
+                _offset = new Vector2(-_grid.TotalPhysicalDims.X + (Engine.Globals.ScreenWidth), _offset.Y);
+            }
+            else if (tmpPos.X - (Engine.Globals.ScreenWidth * .5f) <= _grid.StartingPhysicalPos.X)
+            {
+                _offset = new Vector2(_grid.StartingPhysicalPos.X, _offset.Y);
+            }
+        }
 
         public virtual void CheckScroll(object a_position)
         {
