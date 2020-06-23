@@ -10,6 +10,12 @@ namespace FirstMG.Source.GamePlay
 {
     class Unit : Animated2D
     {
+        public enum Orientation
+        {
+            RIGHT,
+            LEFT
+        }
+
         /* Floats */
         private float _health;
         private float _healthMax;
@@ -32,6 +38,8 @@ namespace FirstMG.Source.GamePlay
         private float _maxHSpeed;
 
         private Vector4 _boundingBoxOffset;
+
+        private Orientation _orientation = Orientation.RIGHT;
 
         public Unit(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames, Color.White)
         {
@@ -129,6 +137,11 @@ namespace FirstMG.Source.GamePlay
         {
             get { return _boundingBoxOffset; }
             protected set { _boundingBoxOffset = value; }
+        }
+        public Orientation Ori
+        {
+            get { return _orientation; }
+            protected set { _orientation = value; }
         }
 
         public virtual void GetHit(float a_damage)
@@ -278,6 +291,15 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void Update(Vector2 a_offset, SquareGrid a_grid)
         {
+            if (HSpeed > 0)
+            {
+                Ori = Orientation.RIGHT;
+            }
+            else if (HSpeed < 0)
+            {
+                Ori = Orientation.LEFT;
+            }
+
             Vector4 boundingBox = new Vector4(/* Left  X */ Position.X - (Dimension.X / 2) * BoundingBoxOffset.X, 
                                               /* Right Y */ Position.X + (Dimension.X / 2) * BoundingBoxOffset.Y, 
                                               /* Top   Z */ Position.Y - (Dimension.Y / 2) * BoundingBoxOffset.Z, 

@@ -34,13 +34,14 @@ namespace FirstMG.Source.GamePlay
             ResetWorld = a_resetWorld;
             ChangeGameState = a_changeGameState;
 
-            GameGlobals.PassProjectile = AddProjectile;
-            GameGlobals.PassNpc        = AddNpc;
-            GameGlobals.CheckScroll    = CheckScroll;
-            GameGlobals.ResetScroll    = ResetScroll;
-            GameGlobals.ExecuteAttack  = ExecuteAttack;
-            GameGlobals.GetClosestNpc  = GetClosestNpc;
-            GameGlobals.paused         = false;
+            GameGlobals.PassProjectile     = AddProjectile;
+            GameGlobals.PassNpc            = AddNpc;
+            GameGlobals.CheckScroll        = CheckScroll;
+            GameGlobals.ResetScroll        = ResetScroll;
+            GameGlobals.ExecuteAttack      = ExecuteAttack;
+            GameGlobals.ExecuteEnemyAttack = ExecuteEnemyAttack;
+            GameGlobals.GetClosestNpc      = GetClosestNpc;
+            GameGlobals.paused             = false;
 
             _nKilled = 0;
             _offset  = new Vector2(0, 0);
@@ -72,6 +73,17 @@ namespace FirstMG.Source.GamePlay
                     attack.LandedHit = true;
                     return;
                 }
+            }
+        }
+
+        public virtual void ExecuteEnemyAttack(object a_attack)
+        {
+            Attack attack = (Attack)a_attack;
+            if (Globals.GetDistance(attack.Position, MainCharacter.Position) < attack.Range)
+            {
+                MainCharacter.GetHit(attack.Power);
+                attack.LandedHit = true;
+                return;
             }
         }
 
@@ -164,15 +176,17 @@ namespace FirstMG.Source.GamePlay
             }
             MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(76*2, 64*2), /* frames */ new Vector2(6,14));
 
-            AddNpc(new EvilOnion(new Vector2(1300, 200), new Vector2(1, 1)));
+            AddNpc(new Slime(new Vector2(2000, 200), new Vector2(76 * 2, 64 * 2), new Vector2(5, 6)));
 
-            AddNpc(new EvilOnion(new Vector2(1700, 200), new Vector2(1, 1)));
+            //AddNpc(new EvilOnion(new Vector2(1300, 200), new Vector2(1, 1)));
 
-            AddNpc(new EvilOnion(new Vector2(3000, 200), new Vector2(1, 1)));
+            //AddNpc(new EvilOnion(new Vector2(1700, 200), new Vector2(1, 1)));
 
-            AddNpc(new EvilOnion(new Vector2(2000, 200), new Vector2(1, 1)));
+            //AddNpc(new EvilOnion(new Vector2(3000, 200), new Vector2(1, 1)));
 
-            AddNpc(new EvilOnion(new Vector2(2400, 200), new Vector2(1, 1)));
+            //AddNpc(new EvilOnion(new Vector2(2000, 200), new Vector2(1, 1)));
+
+            //AddNpc(new EvilOnion(new Vector2(2400, 200), new Vector2(1, 1)));
 
 
             // Load map

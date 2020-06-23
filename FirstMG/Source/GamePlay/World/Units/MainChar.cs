@@ -21,21 +21,19 @@ namespace FirstMG.Source.GamePlay
             JUMP_ATTACKING,
             DASHING
         }
-        enum Orientation
-        {
-            RIGHT,
-            LEFT
-        }
 
         private TimeSpan _jumpTimer         = TimeSpan.FromMilliseconds(151);
         private TimeSpan _extraGroundTimer  = TimeSpan.FromMilliseconds(76);
         private MyTimer  _staminaTimer      = new MyTimer(250);
         private MyTimer  _invulnerableTimer = new MyTimer(1500);
+        private MyTimer  _swapTimer         = new MyTimer(3000);
+
         private bool     _wasOnGround       = false;
         private bool     _invulnerable      = false;
 
         private State       _state       = State.STANDING;
-        private Orientation _orientation = Orientation.RIGHT;
+
+        Npc _swappedEnemy = null;
 
         public MainChar(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames)
         {
@@ -47,6 +45,8 @@ namespace FirstMG.Source.GamePlay
             MovSpeed  = 1.1f;
             MaxHSpeed = 7.5f;
             JumpSpeed = 26.1f;
+
+            Ori = Orientation.RIGHT;
 
             BoundingBoxOffset = new Vector4(.25f, .25f, .6f, 1);
 
@@ -99,7 +99,7 @@ namespace FirstMG.Source.GamePlay
             }
         }
 
-        public void SwampPositionWithClosestEnemy()
+        public void SwapPositionWithClosestEnemy()
         {
             Npc closestEnemy = (Npc)GameGlobals.GetClosestNpc(this);
 
@@ -110,6 +110,21 @@ namespace FirstMG.Source.GamePlay
                 closestEnemy.Position = tmpPos + new Vector2(0, Dimension.Y/2 - closestEnemy.Dimension.Y/2);
                 GameGlobals.ResetScroll(Position);
                 Stamina -= 3;
+                _swapTimer.ResetToZero();
+                _swappedEnemy = closestEnemy;
+            }
+        }
+
+        public void SwapBack()
+        {
+            if (_swappedEnemy != null && !_swappedEnemy.Dead)
+            {
+                Vector2 tmpPos = Position;
+                Position = _swappedEnemy.Position + new Vector2(0, _swappedEnemy.Dimension.Y / 2 - Dimension.Y / 2);
+                _swappedEnemy.Position = tmpPos + new Vector2(0, Dimension.Y / 2 - _swappedEnemy.Dimension.Y / 2);
+                GameGlobals.ResetScroll(Position);
+                _swapTimer.ResetToZero();
+                _swappedEnemy = null;
             }
         }
 
@@ -186,7 +201,7 @@ namespace FirstMG.Source.GamePlay
 
                 if (Stamina >= 3 && (Globals.MyKeyboard.GetPress("R")))
                 {
-                    SwampPositionWithClosestEnemy();
+                    SwapPositionWithClosestEnemy();
                 }
             }
             else if (_state == State.JUMP_ATTACKING) 
@@ -236,7 +251,7 @@ namespace FirstMG.Source.GamePlay
         public void StartAnimation()
         {
             string ori = "R";
-            if (_orientation == Orientation.LEFT) ori = "L";
+            if (Ori == Orientation.LEFT) ori = "L";
 
             if (_state == State.DASHING)
             {
@@ -280,6 +295,34 @@ namespace FirstMG.Source.GamePlay
             }
         }
 
+        public void UpdateTimers()
+        {
+            if (_swappedEnemy != null && !_swappedEnemy.Dead)
+            {
+                _swapTimer.UpdateTimer();
+                if (_swapTimer.Test())
+                {
+                    SwapBack();
+                }
+            }
+
+            _staminaTimer.UpdateTimer();
+            if (_staminaTimer.Test())
+            {
+                RechargeStamina(0.2f);
+                _staminaTimer.Reset();
+            }
+
+            if (_invulnerable)
+            {
+                _invulnerableTimer.UpdateTimer();
+                if (_invulnerableTimer.Test())
+                {
+                    _invulnerable = false;
+                }
+            }
+        }
+
         public override void Update(Vector2 a_offset, SquareGrid a_grid)
         {
             //a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = false;
@@ -288,7 +331,7 @@ namespace FirstMG.Source.GamePlay
 
             if (_state == State.DASHING)
             {
-                if (_orientation == Orientation.LEFT)
+                if (Ori == Orientation.LEFT)
                 {
                     HSpeed = -20.0f;
                 }
@@ -312,32 +355,9 @@ namespace FirstMG.Source.GamePlay
 
             StartAnimation();
 
-            _staminaTimer.UpdateTimer();
-            if (_staminaTimer.Test())
-            {
-                RechargeStamina(0.2f);
-                _staminaTimer.Reset();
-            }
-
-            if (_invulnerable)
-            {
-                _invulnerableTimer.UpdateTimer();
-                if (_invulnerableTimer.Test())
-                {
-                    _invulnerable = false;
-                }
-            }
+            UpdateTimers();
 
             _wasOnGround = OnGround;
-
-            if (HSpeed > 0)
-            {
-                _orientation = Orientation.RIGHT;
-            }
-            else if (HSpeed < 0)
-            {
-                _orientation = Orientation.LEFT;
-            }
 
             base.Update(a_offset, a_grid);
             
