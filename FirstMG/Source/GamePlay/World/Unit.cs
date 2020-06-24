@@ -10,12 +10,6 @@ namespace FirstMG.Source.GamePlay
 {
     class Unit : Animated2D
     {
-        public enum Orientation
-        {
-            RIGHT,
-            LEFT
-        }
-
         /* Floats */
         private float _health;
         private float _healthMax;
@@ -39,7 +33,7 @@ namespace FirstMG.Source.GamePlay
 
         private Vector4 _boundingBoxOffset;
 
-        private Orientation _orientation = Orientation.RIGHT;
+        private GameGlobals.Orientation _orientation = GameGlobals.Orientation.RIGHT;
 
         public Unit(string a_path, Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) : base(a_path, a_position, a_dimension, a_frames, Color.White)
         {
@@ -133,12 +127,21 @@ namespace FirstMG.Source.GamePlay
         {
             get { return Position.Y + Dimension.Y/2; }
         }
+        public Vector4 BoundingBox
+        {
+            get {
+                    return new Vector4(/* Left  X */ Position.X - (Dimension.X / 2) * BoundingBoxOffset.X,
+                                       /* Right Y */ Position.X + (Dimension.X / 2) * BoundingBoxOffset.Y,
+                                       /* Top   Z */ Position.Y - (Dimension.Y / 2) * BoundingBoxOffset.Z,
+                                       /* Bot   W */ Position.Y + (Dimension.Y / 2) * BoundingBoxOffset.W);
+            }
+        }
         public Vector4 BoundingBoxOffset
         {
             get { return _boundingBoxOffset; }
             protected set { _boundingBoxOffset = value; }
         }
-        public Orientation Ori
+        public GameGlobals.Orientation Ori
         {
             get { return _orientation; }
             protected set { _orientation = value; }
@@ -243,13 +246,13 @@ namespace FirstMG.Source.GamePlay
             }
         }
 
-        public virtual bool IsOnGround(SquareGrid a_grid, List<GridLocation> a_botSlots)
+        public virtual bool IsOnGround(SquareGrid a_grid, Vector4 a_boundingBox, List<GridLocation> a_botSlots)
         {
             foreach (GridLocation botSlot in a_botSlots)
             {
                 if (botSlot != null &&
                     botSlot.Impassible &&
-                    Math.Abs(botSlot.Position.Y - BottomPosition) < 0.11f)
+                    Math.Abs(botSlot.Position.Y - a_boundingBox.W) < 0.11f)
                 {
                     return true;
                 }
@@ -257,7 +260,7 @@ namespace FirstMG.Source.GamePlay
             return false;
         }
 
-        public virtual void GravityEffect(SquareGrid a_grid, List<GridLocation> a_botSlots)
+        public virtual void GravityEffect(SquareGrid a_grid, Vector4 a_boundingBox, List<GridLocation> a_botSlots)
         {
             if (OnGround && VSpeed > 0)
             {
@@ -270,11 +273,11 @@ namespace FirstMG.Source.GamePlay
             foreach (GridLocation botSlot in a_botSlots)
             {
                 if (botSlot != null &&
-                    botSlot.Position.Y - (BottomPosition + VSpeed) < 0)
+                    botSlot.Position.Y - (a_boundingBox.W + VSpeed) < 0)
                 {
                     if (botSlot.Impassible)
                     {
-                        VSpeed = Math.Abs(botSlot.Position.Y - BottomPosition) - 0.1f;
+                        VSpeed = Math.Abs(botSlot.Position.Y - a_boundingBox.W) - 0.1f;
                         break;
                     }
                     else if (botSlot.Deadly)
@@ -293,28 +296,25 @@ namespace FirstMG.Source.GamePlay
         {
             if (HSpeed > 0)
             {
-                Ori = Orientation.RIGHT;
+                Ori = GameGlobals.Orientation.RIGHT;
             }
             else if (HSpeed < 0)
             {
-                Ori = Orientation.LEFT;
+                Ori = GameGlobals.Orientation.LEFT;
             }
 
-            Vector4 boundingBox = new Vector4(/* Left  X */ Position.X - (Dimension.X / 2) * BoundingBoxOffset.X, 
-                                              /* Right Y */ Position.X + (Dimension.X / 2) * BoundingBoxOffset.Y, 
-                                              /* Top   Z */ Position.Y - (Dimension.Y / 2) * BoundingBoxOffset.Z, 
-                                              /* Bot   W */ Position.Y + (Dimension.Y / 2) * BoundingBoxOffset.W);
-            
+            Vector4 boundingBox = BoundingBox;
+
             List<GridLocation> botSlots   = a_grid.GetBotSlots(boundingBox);
 
-            OnGround = IsOnGround(a_grid, botSlots);
+            OnGround = IsOnGround(a_grid, boundingBox, botSlots);
 
             if (VSpeed < 0)
             {
                 List<GridLocation> topSlots = a_grid.GetTopSlots(boundingBox);
                 Jump(a_grid, boundingBox, topSlots);
             }
-            if (!IgnoringPhysics) GravityEffect(a_grid, botSlots);
+            if (!IgnoringPhysics) GravityEffect(a_grid, boundingBox, botSlots);
 
             Position = new Vector2(Position.X, Position.Y + VSpeed);
 

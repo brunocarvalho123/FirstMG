@@ -17,7 +17,9 @@ namespace FirstMG.Source.GamePlay
             STANDING,
             JUMPING,
             RUNNING,
-            ATTACKING
+            ATTACKING,
+            DYING,
+            HURTING
         }
 
         protected State _state = State.STANDING;

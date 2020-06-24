@@ -62,12 +62,65 @@ namespace FirstMG.Source.GamePlay
             _npcs.Add((Npc)a_npc);
         }
 
+        public virtual bool LandAttack(Attack a_attack, Unit a_target)
+        {
+            Vector4 ownerBB  = a_attack.Owner.BoundingBox;
+            Vector4 targetBB = a_target.BoundingBox;
+            switch (a_attack.Ori)
+            {
+                case GameGlobals.Orientation.LEFT:
+                    float maxAttX = ownerBB.X - a_attack.Range;
+                    if (targetBB.Y >= maxAttX &&
+                        a_attack.Owner.Position.X >= targetBB.Y &&
+                        ownerBB.Z <= targetBB.W &&
+                        ownerBB.W >= targetBB.Z)
+                    {
+                        return true;
+                    }
+                    break;
+                case GameGlobals.Orientation.RIGHT:
+                    float maxAttY = ownerBB.Y + a_attack.Range;
+                    if (targetBB.X <= maxAttY &&
+                        a_attack.Owner.Position.X <= targetBB.X &&
+                        ownerBB.Z <= targetBB.W &&
+                        ownerBB.W >= targetBB.Z)
+                    {
+                        return true;
+                    }
+                    break;
+                case GameGlobals.Orientation.BOT:
+                    float maxAttW = ownerBB.W + a_attack.Range;
+                    if (targetBB.Z <= maxAttW &&
+                        a_attack.Owner.Position.Y <= targetBB.Z &&
+                        ownerBB.X <= targetBB.Y &&
+                        ownerBB.Y >= targetBB.X)
+                    {
+                        return true;
+                    }
+                    break;
+                case GameGlobals.Orientation.TOP:
+                    float maxAttZ = ownerBB.Z - a_attack.Range;
+                    if (targetBB.W >= maxAttZ &&
+                        a_attack.Owner.Position.Y >= targetBB.W &&
+                        ownerBB.X <= targetBB.Y &&
+                        ownerBB.Y >= targetBB.X)
+                    {
+                        return true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            return false;
+        }
+
         public virtual void ExecuteAttack(object a_attack)
         {
             Attack attack = (Attack)a_attack;
             foreach (Npc npc in _npcs)
             {
-                if (Globals.GetDistance(attack.Position, npc.Position) < attack.Range)
+                if (LandAttack(attack, npc))
                 {
                     npc.GetHit(attack.Power);
                     attack.LandedHit = true;
@@ -79,7 +132,7 @@ namespace FirstMG.Source.GamePlay
         public virtual void ExecuteEnemyAttack(object a_attack)
         {
             Attack attack = (Attack)a_attack;
-            if (Globals.GetDistance(attack.Position, MainCharacter.Position) < attack.Range)
+            if (LandAttack(attack, MainCharacter))
             {
                 MainCharacter.GetHit(attack.Power);
                 attack.LandedHit = true;
@@ -176,7 +229,7 @@ namespace FirstMG.Source.GamePlay
             }
             MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(76*2, 64*2), /* frames */ new Vector2(6,14));
 
-            AddNpc(new Slime(new Vector2(2000, 200), new Vector2(76 * 2, 64 * 2), new Vector2(5, 6)));
+            AddNpc(new Slime(new Vector2(2000, 200), new Vector2(76f * 1.75f, 64f * 1.75f), new Vector2(5, 10)));
 
             //AddNpc(new EvilOnion(new Vector2(1300, 200), new Vector2(1, 1)));
 

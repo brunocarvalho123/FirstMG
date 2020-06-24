@@ -8,6 +8,14 @@ namespace FirstMG.Source.GamePlay
 {
     class GameGlobals
     {
+        public enum Orientation
+        {
+            RIGHT,
+            LEFT,
+            BOT,
+            TOP
+        }
+
         public static Engine.PassObject PassProjectile;
         public static Engine.PassObject PassNpc;
         public static Engine.PassObject CheckScroll;

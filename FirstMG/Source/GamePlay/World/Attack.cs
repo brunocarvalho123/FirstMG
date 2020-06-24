@@ -4,24 +4,28 @@ namespace FirstMG.Source.GamePlay
 {
     class Attack
     {
-        private Vector2 _position;
+        private Unit _owner;
         private float _range;
         private float _power;
 
         private bool _landedHit;
 
-        public Attack(Vector2 a_position, float a_range, float a_power) 
+        GameGlobals.Orientation _orientation;
+
+        public Attack(Unit a_owner, float a_range, float a_power, GameGlobals.Orientation a_orientation) 
         {
-            _position = a_position;
-            _range    = a_range;
-            _power    = a_power;
+            _owner = a_owner;
+            _range = a_range;
+            _power = a_power;
+
+            _orientation = a_orientation;
 
             _landedHit = false;
         }
 
-        public Vector2 Position
+        public Unit Owner
         {
-            get { return _position; }
+            get { return _owner; }
         }
         public float Range
         {
@@ -35,6 +39,10 @@ namespace FirstMG.Source.GamePlay
         {
             get { return _landedHit; }
             set { _landedHit = value; }
+        }
+        public GameGlobals.Orientation Ori
+        {
+            get { return _orientation; }
         }
     }
 }

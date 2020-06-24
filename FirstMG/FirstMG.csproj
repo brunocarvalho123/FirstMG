@@ -631,10 +631,10 @@
     <Content Include="Content\Assets\UI\swamp_background.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Assets\MainChar\animacao_adventurer.xnb">
+    <Content Include="Content\Assets\Enemies\animacao_slime.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Assets\Enemies\animacao_slime.xnb">
+    <Content Include="Content\Assets\MainChar\animacao_adventurer.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -16,6 +16,8 @@ namespace FirstMG.Source.GamePlay
         public FirstEnemy(Vector2 a_position, Vector2 a_frames) 
             : base("Assets\\Tiles\\dirt_big", a_position, new Vector2(32*2,32*2), a_frames)
         {
+            Health = 4.0f;
+            HealthMax = Health;
             MovSpeed = 4.2f;
         }
 

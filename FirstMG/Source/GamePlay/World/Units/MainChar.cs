@@ -46,9 +46,9 @@ namespace FirstMG.Source.GamePlay
             MaxHSpeed = 7.5f;
             JumpSpeed = 26.1f;
 
-            Ori = Orientation.RIGHT;
+            Ori = GameGlobals.Orientation.RIGHT;
 
-            BoundingBoxOffset = new Vector4(.25f, .25f, .6f, 1);
+            BoundingBoxOffset = new Vector4(.25f, .25f, .6f, .9f);
 
             FrameAnimations = true;
             CurrentAnimation = 0;
@@ -75,7 +75,7 @@ namespace FirstMG.Source.GamePlay
         {
             if (Stamina >= 1)
             {
-                GameGlobals.ExecuteAttack(new Attack(Position, 120, 1));
+                GameGlobals.ExecuteAttack(new Attack(this, 60, 1, Ori));
                 Stamina--;
             }
         }
@@ -228,7 +228,7 @@ namespace FirstMG.Source.GamePlay
 
                 if (location != null && !location.Filled && !location.Impassible)
                 {
-                    location.SetToFilled(true);
+                    //location.SetToFilled(true);
                     FirstEnemy tmpEnemy = new FirstEnemy(Vector2.Zero, new Vector2(1, 1));
 
                     tmpEnemy.Position = location.Position + tmpEnemy.Dimension / 2;
@@ -251,7 +251,7 @@ namespace FirstMG.Source.GamePlay
         public void StartAnimation()
         {
             string ori = "R";
-            if (Ori == Orientation.LEFT) ori = "L";
+            if (Ori == GameGlobals.Orientation.LEFT) ori = "L";
 
             if (_state == State.DASHING)
             {
@@ -331,7 +331,7 @@ namespace FirstMG.Source.GamePlay
 
             if (_state == State.DASHING)
             {
-                if (Ori == Orientation.LEFT)
+                if (Ori == GameGlobals.Orientation.LEFT)
                 {
                     HSpeed = -20.0f;
                 }
@@ -348,7 +348,7 @@ namespace FirstMG.Source.GamePlay
 
             if (_state == State.JUMP_ATTACKING)
             {
-                Attack jumpAttack = new Attack(Position, 100, 1);
+                Attack jumpAttack = new Attack(this, 0, 1, GameGlobals.Orientation.BOT);
                 GameGlobals.ExecuteAttack(jumpAttack);
                 if (jumpAttack.LandedHit) VSpeed = -JumpSpeed*0.8f;
             }
