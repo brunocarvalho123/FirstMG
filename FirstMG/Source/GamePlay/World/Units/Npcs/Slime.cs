@@ -15,8 +15,8 @@ namespace FirstMG.Source.GamePlay
 
         float _originalXPos;
 
-        public Slime(Vector2 a_position, Vector2 a_dimension, Vector2 a_frames) 
-            : base("Assets\\Enemies\\animacao_slime", a_position, a_dimension, a_frames)
+        public Slime(Vector2 a_position, Vector2 a_dimension) 
+            : base("Assets\\Enemies\\animacao_slime", a_position, a_dimension, new Vector2(5, 10))
         {
             Health = 4.0f;
             HealthMax = Health;

@@ -210,6 +210,7 @@ namespace FirstMG.Source.GamePlay
 
         public virtual void LoadData(int a_level)
         {
+            int scale = 2;
             XDocument xml = XDocument.Load("XML\\Levels\\Level" + a_level + ".xml");
 
             // Load MainChar
@@ -227,26 +228,28 @@ namespace FirstMG.Source.GamePlay
                     mcPosition = new Vector2(Convert.ToInt32(mainCharXML.Element("position").Value), 400);
                 }
             }
-            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(76*2, 64*2), /* frames */ new Vector2(6,14));
-
-            AddNpc(new Slime(new Vector2(2000, 200), new Vector2(76f * 1.75f, 64f * 1.75f), new Vector2(5, 10)));
-
-            //AddNpc(new EvilOnion(new Vector2(1300, 200), new Vector2(1, 1)));
-
-            //AddNpc(new EvilOnion(new Vector2(1700, 200), new Vector2(1, 1)));
-
-            //AddNpc(new EvilOnion(new Vector2(3000, 200), new Vector2(1, 1)));
-
-            //AddNpc(new EvilOnion(new Vector2(2000, 200), new Vector2(1, 1)));
-
-            //AddNpc(new EvilOnion(new Vector2(2400, 200), new Vector2(1, 1)));
-
+            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(76 * scale, 64 * scale), /* frames */ new Vector2(6,14));
 
             // Load map
             XElement map = XDocument.Load("XML\\Maps\\swamp.xml").Element("map");
-            Vector2 mapSize = new Vector2(Convert.ToInt32(map.Attribute("width").Value), Convert.ToInt32(map.Attribute("height").Value));
-            Vector2 tileDims = new Vector2(Convert.ToInt32(map.Attribute("tilewidth").Value)*2, Convert.ToInt32(map.Attribute("tileheight").Value)*2);
 
+            XElement enemies = map.Elements("objectgroup").Where(elem => (string)elem.Attribute("name") == "EnemyLayer").First();
+            foreach (XElement enemy in enemies.Elements("object"))
+            {
+                float posX = (float)Convert.ToDouble(enemy.Attribute("x").Value);
+                float posY = (float)Convert.ToDouble(enemy.Attribute("y").Value);
+                float enemyWidth = (float)Convert.ToDouble(enemy.Attribute("width").Value);
+                float enemyHeight = (float)Convert.ToDouble(enemy.Attribute("height").Value);
+                Type enemyType = Type.GetType("FirstMG.Source.GamePlay." + enemy.Attribute("type").Value);
+
+                if (enemyType != null)
+                {
+                    AddNpc((Npc)(Activator.CreateInstance(enemyType, new Vector2(posX * scale, posY * scale), new Vector2(enemyWidth * scale, enemyHeight * scale))));
+                }
+            }
+
+            Vector2 mapSize = new Vector2(Convert.ToInt32(map.Attribute("width").Value), Convert.ToInt32(map.Attribute("height").Value));
+            Vector2 tileDims = new Vector2(Convert.ToInt32(map.Attribute("tilewidth").Value) * scale, Convert.ToInt32(map.Attribute("tileheight").Value) * scale);
             _grid = new SquareGrid(tileDims, new Vector2(0, 0), mapSize, map, 0.99f);
         }
 

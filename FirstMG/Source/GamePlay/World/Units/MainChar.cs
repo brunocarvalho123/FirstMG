@@ -106,8 +106,9 @@ namespace FirstMG.Source.GamePlay
             if (closestEnemy != null && Math.Abs(closestEnemy.Position.X - Position.X) < 1000)
             {
                 Vector2 tmpPos = Position;
-                Position = closestEnemy.Position + new Vector2(0, closestEnemy.Dimension.Y/2 - Dimension.Y/2);
-                closestEnemy.Position = tmpPos + new Vector2(0, Dimension.Y/2 - closestEnemy.Dimension.Y/2);
+
+                Position = closestEnemy.Position + new Vector2(0, closestEnemy.Dimension.Y/2 * closestEnemy.BoundingBoxOffset.W - Dimension.Y/2);
+                closestEnemy.Position = tmpPos + new Vector2(0, Dimension.Y/2 * BoundingBoxOffset.W - closestEnemy.Dimension.Y/2);
                 GameGlobals.ResetScroll(Position);
                 Stamina -= 3;
                 _swapTimer.ResetToZero();
@@ -120,8 +121,8 @@ namespace FirstMG.Source.GamePlay
             if (_swappedEnemy != null && !_swappedEnemy.Dead)
             {
                 Vector2 tmpPos = Position;
-                Position = _swappedEnemy.Position + new Vector2(0, _swappedEnemy.Dimension.Y / 2 - Dimension.Y / 2);
-                _swappedEnemy.Position = tmpPos + new Vector2(0, Dimension.Y / 2 - _swappedEnemy.Dimension.Y / 2);
+                Position = _swappedEnemy.Position + new Vector2(0, _swappedEnemy.Dimension.Y / 2 * _swappedEnemy.BoundingBoxOffset.W - Dimension.Y / 2);
+                _swappedEnemy.Position = tmpPos + new Vector2(0, Dimension.Y / 2 * BoundingBoxOffset.W - _swappedEnemy.Dimension.Y / 2);
                 GameGlobals.ResetScroll(Position);
                 _swapTimer.ResetToZero();
                 _swappedEnemy = null;

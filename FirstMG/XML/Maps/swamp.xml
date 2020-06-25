@@ -27,6 +27,17 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="6" name="EnemyLayer">
+  <properties>
+   <property name="AboveMainChar" type="bool" value="true"/>
+  </properties>
+  <object id="17" type="Slime" gid="115" x="1010" y="288.333" width="56" height="43.75"/>
+  <object id="18" type="Slime" gid="115" x="770" y="283.458" width="56" height="43.75"/>
+  <object id="19" type="Slime" gid="115" x="790.667" y="438.792" width="56" height="43.75"/>
+  <object id="20" type="Slime" gid="115" x="1296" y="436.125" width="56" height="43.75"/>
+  <object id="21" type="Slime" gid="115" x="1956" y="356.792" width="56" height="43.75"/>
+  <object id="22" type="Slime" gid="115" x="1537.33" y="353.458" width="56" height="43.75"/>
+ </objectgroup>
  <layer id="1" name="TileLayer" width="63" height="17">
   <properties>
    <property name="AboveMainChar" type="bool" value="true"/>
