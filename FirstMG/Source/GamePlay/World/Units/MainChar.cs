@@ -118,6 +118,10 @@ namespace FirstMG.Source.GamePlay
 
                 Position = closestEnemy.Position + new Vector2(0, closestEnemy.Dimension.Y/2 * closestEnemy.BoundingBoxOffset.W - Dimension.Y/2);
                 closestEnemy.Position = tmpPos + new Vector2(0, Dimension.Y/2 * BoundingBoxOffset.W - closestEnemy.Dimension.Y/2);
+
+                GameGlobals.PassEffect(new WindEffect(this, new Vector2(Dimension.Y * 1.5f, Dimension.Y * 1.5f)));
+                GameGlobals.PassEffect(new WindEffect(closestEnemy, new Vector2(Dimension.Y * 1.5f, Dimension.Y * 1.5f)));
+
                 Stamina -= 3;
                 SwapTimer.ResetToZero();
                 _swappedEnemy = closestEnemy;
@@ -131,6 +135,10 @@ namespace FirstMG.Source.GamePlay
                 Vector2 tmpPos = Position;
                 Position = _swappedEnemy.Position + new Vector2(0, _swappedEnemy.Dimension.Y / 2 * _swappedEnemy.BoundingBoxOffset.W - Dimension.Y / 2);
                 _swappedEnemy.Position = tmpPos + new Vector2(0, Dimension.Y / 2 * BoundingBoxOffset.W - _swappedEnemy.Dimension.Y / 2);
+
+                GameGlobals.PassEffect(new WindEffect(this, new Vector2(Dimension.Y * 1.5f, Dimension.Y * 1.5f)));
+                GameGlobals.PassEffect(new WindEffect(_swappedEnemy, new Vector2(Dimension.Y * 1.5f, Dimension.Y * 1.5f)));
+
                 SwapTimer.ResetToZero();
                 _swappedEnemy = null;
             }

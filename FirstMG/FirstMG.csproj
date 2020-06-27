@@ -77,6 +77,8 @@
     <Compile Include="Source\GamePlay\GamePlay.cs" />
     <Compile Include="Source\GamePlay\MainMenu.cs" />
     <Compile Include="Source\GamePlay\World\Attack.cs" />
+    <Compile Include="Source\GamePlay\World\Effect.cs" />
+    <Compile Include="Source\GamePlay\World\Effects\WindEffect.cs" />
     <Compile Include="Source\GamePlay\World\Projectile.cs" />
     <Compile Include="Source\GamePlay\World\Projectiles\CurlyLine.cs" />
     <Compile Include="Source\GamePlay\World\UI.cs" />
@@ -635,6 +637,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Assets\MainChar\animacao_adventurer.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Assets\Effects\effect_tornado.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

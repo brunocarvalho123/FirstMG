@@ -17,7 +17,8 @@ namespace FirstMG.Source.GamePlay
         private UI _ui;
         private List<Projectile> _projectiles      = new List<Projectile>();
         private List<Projectile> _enemyProjectiles = new List<Projectile>();
-        private List<Npc> _npcs = new List<Npc>();
+        private List<Effect>     _effects          = new List<Effect>();
+        private List<Npc>        _npcs             = new List<Npc>();
 
         private SquareGrid _grid;
 
@@ -36,6 +37,7 @@ namespace FirstMG.Source.GamePlay
 
             GameGlobals.PassProjectile     = AddProjectile;
             GameGlobals.PassNpc            = AddNpc;
+            GameGlobals.PassEffect         = AddEffect;
             GameGlobals.CheckScroll        = CheckScroll;
             GameGlobals.ResetScroll        = ResetScroll;
             GameGlobals.ExecuteAttack      = ExecuteAttack;
@@ -65,6 +67,11 @@ namespace FirstMG.Source.GamePlay
         public virtual void AddNpc(object a_npc)
         {
             _npcs.Add((Npc)a_npc);
+        }
+
+        public virtual void AddEffect(object a_effect)
+        {
+            _effects.Add((Effect)a_effect);
         }
 
         public virtual bool LandAttack(Attack a_attack, Unit a_target)
@@ -345,6 +352,16 @@ namespace FirstMG.Source.GamePlay
                         idx--;
                     }
                 }
+
+                for (int idx = 0; idx < _effects.Count(); idx++)
+                {
+                    _effects[idx].Update(_offset);
+                    if (_effects[idx].Done)
+                    {
+                        _effects.RemoveAt(idx);
+                        idx--;
+                    }
+                }
             }
             else
             {
@@ -393,6 +410,11 @@ namespace FirstMG.Source.GamePlay
             foreach (Npc npc in _npcs)
             {
                 npc.Draw(_offset);
+            }
+
+            foreach (Effect effect in _effects)
+            {
+                effect.Draw(_offset);
             }
 
             _grid.DrawGrid(_offset, "TileLayer");
