@@ -52,6 +52,11 @@ namespace FirstMG.Source.GamePlay
             _tiledBackground = new TiledBackground("Assets\\UI\\swamp_background", new Vector2(0,0), new Vector2(1920,1080), new Vector2(_grid.TotalPhysicalDims.X, _grid.TotalPhysicalDims.Y));
         }
 
+        public Vector2 Offset
+        {
+            get { return _offset; }
+        }
+
         public virtual void AddProjectile(object a_projectile)
         {
             _enemyProjectiles.Add((Projectile)a_projectile);

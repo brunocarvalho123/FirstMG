@@ -71,6 +71,15 @@ namespace FirstMG.Source.GamePlay
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 13), 4, 45, 1, 4, StopDashing, "DashL"));
         }
 
+        public MyTimer SwapTimer
+        {
+            get { return _swapTimer; }
+        }
+        public bool Swapping
+        {
+            get { return (_swappedEnemy != null && !_swappedEnemy.Dead); }
+        }
+
         public void NormalAttack(object a_obj)
         {
             if (Stamina >= 1)
@@ -110,19 +119,19 @@ namespace FirstMG.Source.GamePlay
                 Position = closestEnemy.Position + new Vector2(0, closestEnemy.Dimension.Y/2 * closestEnemy.BoundingBoxOffset.W - Dimension.Y/2);
                 closestEnemy.Position = tmpPos + new Vector2(0, Dimension.Y/2 * BoundingBoxOffset.W - closestEnemy.Dimension.Y/2);
                 Stamina -= 3;
-                _swapTimer.ResetToZero();
+                SwapTimer.ResetToZero();
                 _swappedEnemy = closestEnemy;
             }
         }
 
         public void SwapBack()
         {
-            if (_swappedEnemy != null && !_swappedEnemy.Dead)
+            if (Swapping)
             {
                 Vector2 tmpPos = Position;
                 Position = _swappedEnemy.Position + new Vector2(0, _swappedEnemy.Dimension.Y / 2 * _swappedEnemy.BoundingBoxOffset.W - Dimension.Y / 2);
                 _swappedEnemy.Position = tmpPos + new Vector2(0, Dimension.Y / 2 * BoundingBoxOffset.W - _swappedEnemy.Dimension.Y / 2);
-                _swapTimer.ResetToZero();
+                SwapTimer.ResetToZero();
                 _swappedEnemy = null;
             }
         }
@@ -198,7 +207,7 @@ namespace FirstMG.Source.GamePlay
                     _state = State.JUMP_ATTACKING;
                 }
 
-                if (Stamina >= 3 && (Globals.MyKeyboard.GetPress("R")))
+                if (Stamina >= 3 && !Swapping && (Globals.MyKeyboard.GetPress("R")))
                 {
                     SwapPositionWithClosestEnemy();
                 }
@@ -296,10 +305,10 @@ namespace FirstMG.Source.GamePlay
 
         public void UpdateTimers()
         {
-            if (_swappedEnemy != null && !_swappedEnemy.Dead)
+            if (Swapping)
             {
-                _swapTimer.UpdateTimer();
-                if (_swapTimer.Test())
+                SwapTimer.UpdateTimer();
+                if (SwapTimer.Test())
                 {
                     SwapBack();
                 }

@@ -67,6 +67,16 @@ namespace FirstMG.Source.GamePlay
                 _resetButton.Draw(new Vector2(Globals.ScreenWidth / 2, Globals.ScreenHeight / 2 + 100));
             }
 
+            if (a_world.MainCharacter.Swapping)
+            {
+                displayLine = "" + Convert.ToInt32((a_world.MainCharacter.SwapTimer.MSec - a_world.MainCharacter.SwapTimer.Timer)/1000 + 1);
+                stringDimension = _font.MeasureString(displayLine);
+                Globals.MySpriteBatch.DrawString(_font, 
+                                                 displayLine, 
+                                                 new Vector2(a_world.MainCharacter.Position.X, a_world.MainCharacter.Position.Y - a_world.MainCharacter.Dimension.Y / 2 - 35) + a_world.Offset, 
+                                                 Color.Black);
+            }
+
             _healthBar.Draw(new Vector2(100, 100));
             _staminaBar.Draw(new Vector2(300, 100));
 
