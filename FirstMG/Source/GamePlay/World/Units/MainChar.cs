@@ -109,7 +109,6 @@ namespace FirstMG.Source.GamePlay
 
                 Position = closestEnemy.Position + new Vector2(0, closestEnemy.Dimension.Y/2 * closestEnemy.BoundingBoxOffset.W - Dimension.Y/2);
                 closestEnemy.Position = tmpPos + new Vector2(0, Dimension.Y/2 * BoundingBoxOffset.W - closestEnemy.Dimension.Y/2);
-                GameGlobals.ResetScroll(Position);
                 Stamina -= 3;
                 _swapTimer.ResetToZero();
                 _swappedEnemy = closestEnemy;
@@ -123,7 +122,6 @@ namespace FirstMG.Source.GamePlay
                 Vector2 tmpPos = Position;
                 Position = _swappedEnemy.Position + new Vector2(0, _swappedEnemy.Dimension.Y / 2 * _swappedEnemy.BoundingBoxOffset.W - Dimension.Y / 2);
                 _swappedEnemy.Position = tmpPos + new Vector2(0, Dimension.Y / 2 * BoundingBoxOffset.W - _swappedEnemy.Dimension.Y / 2);
-                GameGlobals.ResetScroll(Position);
                 _swapTimer.ResetToZero();
                 _swappedEnemy = null;
             }
@@ -362,10 +360,7 @@ namespace FirstMG.Source.GamePlay
 
             base.Update(a_offset, a_grid);
             
-            if (Position.X != originalPosition.X)
-            {
-                GameGlobals.CheckScroll(Position);
-            }
+            GameGlobals.CheckScroll(Position);
 
             //a_grid.GetSlotFromPixel(Position, Vector2.Zero).Filled = true;
         }

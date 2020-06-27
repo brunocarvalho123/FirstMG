@@ -71,7 +71,7 @@ namespace FirstMG.Source.GamePlay
                 case GameGlobals.Orientation.LEFT:
                     float maxAttX = ownerBB.X - a_attack.Range;
                     if (targetBB.Y >= maxAttX &&
-                        a_attack.Owner.Position.X >= targetBB.Y &&
+                        a_attack.Owner.Position.X >= targetBB.X &&
                         ownerBB.Z <= targetBB.W &&
                         ownerBB.W >= targetBB.Z)
                     {
@@ -81,7 +81,7 @@ namespace FirstMG.Source.GamePlay
                 case GameGlobals.Orientation.RIGHT:
                     float maxAttY = ownerBB.Y + a_attack.Range;
                     if (targetBB.X <= maxAttY &&
-                        a_attack.Owner.Position.X <= targetBB.X &&
+                        a_attack.Owner.Position.X <= targetBB.Y &&
                         ownerBB.Z <= targetBB.W &&
                         ownerBB.W >= targetBB.Z)
                     {
@@ -91,7 +91,7 @@ namespace FirstMG.Source.GamePlay
                 case GameGlobals.Orientation.BOT:
                     float maxAttW = ownerBB.W + a_attack.Range;
                     if (targetBB.Z <= maxAttW &&
-                        a_attack.Owner.Position.Y <= targetBB.Z &&
+                        a_attack.Owner.Position.Y <= targetBB.W &&
                         ownerBB.X <= targetBB.Y &&
                         ownerBB.Y >= targetBB.X)
                     {
@@ -101,7 +101,7 @@ namespace FirstMG.Source.GamePlay
                 case GameGlobals.Orientation.TOP:
                     float maxAttZ = ownerBB.Z - a_attack.Range;
                     if (targetBB.W >= maxAttZ &&
-                        a_attack.Owner.Position.Y >= targetBB.W &&
+                        a_attack.Owner.Position.Y >= targetBB.Z &&
                         ownerBB.X <= targetBB.Y &&
                         ownerBB.Y >= targetBB.X)
                     {
@@ -182,18 +182,53 @@ namespace FirstMG.Source.GamePlay
         {
             Vector2 tmpPos = (Vector2)a_position;
             float diff = 0;
-            float maxHSpeed = 15.0f;
-
-            if ((tmpPos.X < (-_offset.X + (Engine.Globals.ScreenWidth * .5f))) && (tmpPos.X - (Engine.Globals.ScreenWidth * .5f) > _grid.StartingPhysicalPos.X) )
+            float diff1 = 0;
+            float diff2 = 0;
+            float maxHSpeed = 21.0f;
+            
+            // Left side outside borders
+            if ((tmpPos.X < (-_offset.X + (Engine.Globals.ScreenWidth * .5f))) && (tmpPos.X - (Engine.Globals.ScreenWidth * .5f) >= _grid.StartingPhysicalPos.X))
             {
                 diff = -_offset.X + (Engine.Globals.ScreenWidth * .5f) - tmpPos.X;
                 _offset = new Vector2(_offset.X + Math.Min(diff, maxHSpeed), _offset.Y);
             }
-            if (tmpPos.X > (-_offset.X + (Engine.Globals.ScreenWidth * .5f)) && (tmpPos.X + (Engine.Globals.ScreenWidth * .5f) < _grid.TotalPhysicalDims.X))
+            // Left side inside borders
+            else if ((tmpPos.X < (-_offset.X + (Engine.Globals.ScreenWidth * .5f))) && (tmpPos.X - (Engine.Globals.ScreenWidth * .5f) < _grid.StartingPhysicalPos.X))
+            {
+                diff1 = -_offset.X - _grid.StartingPhysicalPos.X;
+                diff2 = -_offset.X - maxHSpeed;
+                if (diff1 > Math.Abs(diff2))
+                {
+                    _offset = new Vector2(_offset.X + maxHSpeed, _offset.Y);
+                }
+                else
+                {
+                    _offset = new Vector2(_offset.X + _grid.StartingPhysicalPos.X, _offset.Y);
+                }
+            }
+
+            // Right side outside borders
+            if (tmpPos.X > (-_offset.X + (Engine.Globals.ScreenWidth * .5f)) && (tmpPos.X + (Engine.Globals.ScreenWidth * .5f) <= _grid.TotalPhysicalDims.X))
             {
                 diff = tmpPos.X - (-_offset.X + Engine.Globals.ScreenWidth * .5f);
                 _offset = new Vector2(_offset.X - Math.Min(maxHSpeed, diff), _offset.Y);
             }
+            // Right side inside borders
+            else if (tmpPos.X > (-_offset.X + (Engine.Globals.ScreenWidth * .5f)) && (tmpPos.X + (Engine.Globals.ScreenWidth * .5f) > _grid.TotalPhysicalDims.X))
+            {
+                diff1 = -_grid.TotalPhysicalDims.X + (Engine.Globals.ScreenWidth);
+                diff2 = _offset.X - maxHSpeed;
+                if (diff1 < diff2)
+                {
+                    _offset = new Vector2(diff2, _offset.Y);
+                }
+                else
+                {
+                    _offset = new Vector2(diff1, _offset.Y);
+                }
+            }
+
+
             //if (tmpPos.Y < (-_offset.Y + (Engine.Globals.ScreenHeight * .5f)))
             //{
             //    diff = -_offset.Y + (Engine.Globals.ScreenHeight * .5f) - tmpPos.Y;
@@ -205,12 +240,12 @@ namespace FirstMG.Source.GamePlay
             //    _offset = new Vector2(_offset.X, _offset.Y - Math.Min(maxVSpeed, diff));
             //}
 
-            _offset = new Vector2(_offset.X, 0);
+            _offset = new Vector2(Math.Min(_offset.X, _grid.StartingPhysicalPos.X), 0);
         }
 
         public virtual void LoadData(int a_level)
         {
-            int scale = 2;
+            float scale = 2f;
             XDocument xml = XDocument.Load("XML\\Levels\\Level" + a_level + ".xml");
 
             // Load MainChar
