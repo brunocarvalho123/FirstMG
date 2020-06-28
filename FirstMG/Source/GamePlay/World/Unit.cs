@@ -10,6 +10,18 @@ namespace FirstMG.Source.GamePlay
 {
     class Unit : Animated2D
     {
+        public enum State
+        {
+            STANDING,
+            JUMPING,
+            RUNNING,
+            ATTACKING,
+            DYING,
+            HURTING,
+            JUMP_ATTACKING,
+            DASHING
+        }
+
         /* Floats */
         private float _health;
         private float _healthMax;
@@ -145,6 +157,11 @@ namespace FirstMG.Source.GamePlay
         {
             get { return _orientation; }
             protected set { _orientation = value; }
+        }
+
+        public void Die(object a_obj)
+        {
+            Dead = true;
         }
 
         public virtual void GetHit(float a_damage)

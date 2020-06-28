@@ -12,16 +12,6 @@ namespace FirstMG.Source.GamePlay
 {
     class MainChar : Unit
     {
-        enum State
-        {
-            STANDING,
-            JUMPING,
-            RUNNING,
-            ATTACKING,
-            JUMP_ATTACKING,
-            DASHING
-        }
-
         private TimeSpan _jumpTimer         = TimeSpan.FromMilliseconds(151);
         private TimeSpan _extraGroundTimer  = TimeSpan.FromMilliseconds(76);
         private MyTimer  _staminaTimer      = new MyTimer(250);
@@ -31,7 +21,7 @@ namespace FirstMG.Source.GamePlay
         private bool     _wasOnGround       = false;
         private bool     _invulnerable      = false;
 
-        private State       _state       = State.STANDING;
+        private State    _state             = State.STANDING;
 
         Npc _swappedEnemy = null;
 
@@ -69,6 +59,9 @@ namespace FirstMG.Source.GamePlay
 
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 12), 4, 45, 1, 4, StopDashing, "DashR"));
             FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 13), 4, 45, 1, 4, StopDashing, "DashL"));
+
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 14), 5, 100, 1, 5, Die, "DieR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 15), 5, 100, 1, 5, Die, "DieL"));
         }
 
         public MyTimer SwapTimer
@@ -99,12 +92,21 @@ namespace FirstMG.Source.GamePlay
         {
             if (!_invulnerable && _state != State.DASHING)
             {
-                base.GetHit(a_damage);
-                //VSpeed = -50;
-                //HSpeed = -50;
-                // TODO: Make a decente knockback system
-                _invulnerable = true;
-                _invulnerableTimer.Reset();
+                //base.GetHit(a_damage);
+                //_invulnerable = true;
+                //_invulnerableTimer.Reset();
+
+                Health -= a_damage;
+                if (Health <= 0)
+                {
+                    _state = State.DYING;
+                }
+                else
+                {
+                    _invulnerable = true;
+                    _invulnerableTimer.Reset();
+                    CurrentAnimation = 0;
+                }
             }
         }
 
@@ -162,9 +164,9 @@ namespace FirstMG.Source.GamePlay
         {
             bool pressedSpace = Globals.MyKeyboard.GetPress("Space");
 
-            if (OnGround && HSpeed == 0 && _state != State.ATTACKING && _state != State.JUMP_ATTACKING) _state = State.STANDING;
+            if (OnGround && HSpeed == 0 && _state != State.ATTACKING && _state != State.JUMP_ATTACKING && _state != State.DYING) _state = State.STANDING;
 
-            if (_state != State.ATTACKING && _state != State.JUMP_ATTACKING)
+            if (_state != State.ATTACKING && _state != State.JUMP_ATTACKING && _state != State.DYING)
             {
                 // Runing stuff
                 if (Globals.MyKeyboard.GetPress("A") || Globals.MyKeyboard.GetPress("Left"))
@@ -303,6 +305,9 @@ namespace FirstMG.Source.GamePlay
                     break;
                 case State.STANDING:
                     SetAnimationByName("Idle" + ori);
+                    break;
+                case State.DYING:
+                    SetAnimationByName("Die" + ori);
                     break;
                 default:
                     _state = State.STANDING;

@@ -10,13 +10,13 @@ using Microsoft.Xna.Framework;
 
 namespace FirstMG.Source.GamePlay
 {
-    class Slime : Npc
+    class Demon : Npc
     {
 
         float _originalXPos;
 
-        public Slime(Vector2 a_position, Vector2 a_dimension) 
-            : base("Assets\\Enemies\\animacao_slime", a_position, a_dimension, new Vector2(5, 10))
+        public Demon(Vector2 a_position, Vector2 a_dimension) 
+            : base("Assets\\Enemies\\animacao_demon", a_position, a_dimension, new Vector2(6, 16))
         {
             Health = 4.0f;
             HealthMax = Health;
@@ -28,28 +28,33 @@ namespace FirstMG.Source.GamePlay
 
             Ori = GameGlobals.Orientation.LEFT;
 
-            BoundingBoxOffset = new Vector4(.70f, .70f, 0, .9f);
+            BoundingBoxOffset = new Vector4(.10f, .10f, .10f, .8f);
 
             FrameAnimations = true;
             CurrentAnimation = 0;
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 0), 4, 256, 0, "IdleL"));
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 1), 4, 256, 0, "IdleR"));
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 2), 4, 128, 0, "MoveL"));
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 3), 4, 128, 0, "MoveR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 0), 6, 256, 0, "IdleR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 1), 6, 256, 0, "IdleL"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 2), 6, 128, 0, "MoveR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 3), 6, 128, 0, "MoveL"));
 
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 4), 5, 128, 1, 4, NormalAttack, "AttL"));
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 5), 5, 128, 1, 4, NormalAttack, "AttR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 4), 6, 128, 1, 4, NormalAttack, "AttR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 5), 6, 128, 1, 4, NormalAttack, "AttL"));
 
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 6), 4, 100, 1, "HurtL"));
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 7), 4, 100, 1, "HurtR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 6), 3, 100, 1, "HurtR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 7), 3, 100, 1, "HurtL"));
 
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 8), 4, 100, 1, 4, Die, "DieL"));
-            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 9), 4, 100, 1, 4, Die, "DieR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 12), 4, 100, 1, 4, Die, "DieR"));
+            FrameAnimationList.Add(new FrameAnimation(new Vector2(FrameSize.X, FrameSize.Y), Frames, new Vector2(0, 13), 4, 100, 1, 4, Die, "DieL"));
         }
 
         public void NormalAttack(object a_obj)
         {
             GameGlobals.ExecuteEnemyAttack(new Attack(this, 60, 1, Ori));
+        }
+
+        public void Die(object a_obj)
+        {
+            Dead = true;
         }
 
         public override void GetHit(float a_damage)

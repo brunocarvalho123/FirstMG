@@ -51,7 +51,7 @@ namespace FirstMG.Source.GamePlay
             LoadData(1);
             
             _ui = new UI(ResetWorld, ChangeGameState);
-            _tiledBackground = new TiledBackground("Assets\\UI\\swamp_background", new Vector2(0,0), new Vector2(1920,1080), new Vector2(_grid.TotalPhysicalDims.X, _grid.TotalPhysicalDims.Y));
+            _tiledBackground = new TiledBackground("Assets\\UI\\blue_background", new Vector2(0,0), new Vector2(1920,1080), new Vector2(_grid.TotalPhysicalDims.X, _grid.TotalPhysicalDims.Y));
         }
 
         public Vector2 Offset
@@ -275,7 +275,7 @@ namespace FirstMG.Source.GamePlay
                     mcPosition = new Vector2(Convert.ToInt32(mainCharXML.Element("position").Value), 400);
                 }
             }
-            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(76 * scale, 64 * scale), /* frames */ new Vector2(6,14));
+            MainCharacter = new MainChar(mcAsset, /* position */ mcPosition, /* dimension */ new Vector2(76 * scale, 64 * scale), /* frames */ new Vector2(6,18));
 
             // Load map
             XElement map = XDocument.Load("XML\\Maps\\swamp.xml").Element("map");
@@ -412,12 +412,12 @@ namespace FirstMG.Source.GamePlay
                 npc.Draw(_offset);
             }
 
+            _grid.DrawGrid(_offset, "TileLayer");
+
             foreach (Effect effect in _effects)
             {
                 effect.Draw(_offset);
             }
-
-            _grid.DrawGrid(_offset, "TileLayer");
 
             _ui.Draw(this);
         }

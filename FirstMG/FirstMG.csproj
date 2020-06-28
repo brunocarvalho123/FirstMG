@@ -79,11 +79,13 @@
     <Compile Include="Source\GamePlay\World\Attack.cs" />
     <Compile Include="Source\GamePlay\World\Effect.cs" />
     <Compile Include="Source\GamePlay\World\Effects\WindEffect.cs" />
+    <Compile Include="Source\GamePlay\World\Units\Npcs\CrumblingBlock.cs" />
     <Compile Include="Source\GamePlay\World\Projectile.cs" />
     <Compile Include="Source\GamePlay\World\Projectiles\CurlyLine.cs" />
     <Compile Include="Source\GamePlay\World\UI.cs" />
     <Compile Include="Source\GamePlay\World\Unit.cs" />
     <Compile Include="Source\GamePlay\World\Units\Npc.cs" />
+    <Compile Include="Source\GamePlay\World\Units\Npcs\Demon.cs" />
     <Compile Include="Source\GamePlay\World\Units\Npcs\Slime.cs" />
     <Compile Include="Source\GamePlay\World\Units\Npcs\EvilOnion.cs" />
     <Compile Include="Source\GamePlay\World\Units\Npcs\FirstEnemy.cs" />
@@ -636,10 +638,19 @@
     <Content Include="Content\Assets\Enemies\animacao_slime.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Assets\Effects\effect_tornado.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Assets\Tiles\block_crumble.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Assets\Enemies\animacao_demon.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Assets\MainChar\animacao_adventurer.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Assets\Effects\effect_tornado.xnb">
+    <Content Include="Content\Assets\UI\blue_background.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -239,4 +239,20 @@
     </properties>
     <image width="27" height="26" source="Assets\Tiles\Swamp\Objects\Boxes\6"/>
   </tile>
+  <tile id="37">
+    <properties>
+      <property name="deadly" type="bool" value="true"/>
+      <property name="impassible" type="bool" value="false"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\spikes1"/>
+  </tile>
+  <tile id="38">
+    <properties>
+      <property name="animated" type="bool" value="true"/>
+      <property name="crumble" type="int" value="3000"/>
+      <property name="deadly" type="bool" value="false"/>
+      <property name="impassible" type="bool" value="true"/>
+    </properties>
+    <image width="32" height="32" source="Assets\Tiles\block_crumble"/>
+  </tile>
 </tileset>
